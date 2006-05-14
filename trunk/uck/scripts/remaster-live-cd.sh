@@ -2,15 +2,15 @@
 
 ISO_IMAGE="$1"
 CUTOMIZE_DIR="$2"
-ISO_MOUNT_DIR="/tmp/iso-source2"
+ISO_MOUNT_DIR=~/tmp/iso-source2
 SQUASHFS_IMAGE="$ISO_MOUNT_DIR/casper/filesystem.squashfs"
-SQUASHFS_MOUNT_DIR="/tmp/squashfs-source"
-REMASTER_DIR="/tmp/remaster-root"
+SQUASHFS_MOUNT_DIR=~/tmp/squashfs-source
+REMASTER_DIR=~/tmp/remaster-root
 REMASTER_CUSTOMIZE_RELATIVE_DIR="tmp/customize-dir"
 REMASTER_CUSTOMIZE_DIR="$REMASTER_DIR/$REMASTER_CUSTOMIZE_RELATIVE_DIR"
 CUSTOMIZATION_SCRIPT="$REMASTER_CUSTOMIZE_RELATIVE_DIR/customize"
-APT_CACHE_SAVE_DIR=/tmp/remaster-apt-cache
-NEW_FILES_DIR="/tmp/remaster-new-files"
+APT_CACHE_SAVE_DIR=~/tmp/remaster-apt-cache
+NEW_FILES_DIR=~/tmp/remaster-new-files
 LIVECD_ISO_DESCRIPTION="Remastered LiveCD"
 
 echo "Starting CD remastering on " `date`
@@ -30,7 +30,7 @@ function failure()
 function removeDirectory()
 {
 	DIR_TO_REMOVE="$1"
-	if [ "$DIR_TO_REMOVE" = "/"]; then
+	if [ "$DIR_TO_REMOVE" = "/" ]; then
 		failure "Trying to remove root directory"
 	fi
 	rm -rf "$DIR_TO_REMOVE"
@@ -46,7 +46,7 @@ if [ -z "$CUTOMIZE_DIR" ]; then
 	exit 1
 fi
 
-if false; then #KLDEBUG, KLSKIP 
+if true; then #KLDEBUG, KLSKIP 
 
 echo "Mounting ISO image..."
 mkdir -p "$ISO_MOUNT_DIR" || failure "Cannot create directory $ISO_MOUNT_DIR, error=$?"
@@ -143,12 +143,32 @@ echo "Updating files lists"
 chroot "$REMASTER_DIR" dpkg-query -W --showformat='${Package} ${Version}\n' > "$NEW_FILES_DIR/filesystem.manifest" || failure "Cannot update filesystem.manifest, error=$?"
 cp "$NEW_FILES_DIR/filesystem.manifest" "$NEW_FILES_DIR/filesystem.manifest-desktop" || failure "Failed to copy $NEW_FILES_DIR/filesystem.manifest to $NEW_FILES_DIR/filesystem.manifest-desktop"
 
+fi #KLSKIP
+
 echo "Preparing SquashFS image"
 mksquashfs "$REMASTER_DIR" "$NEW_FILES_DIR/filesystem.squashfs" || failure "Failed to create squashfs image to NEW_FILES_DIR/filesystem.squashfs, error=$?"
 
 echo "Removing remastering root dir"
 
 removeDirectory "$REMASTER_DIR"
+
+echo "Updating locale"
+
+if [ -e "$CUTOMIZE_DIR/livecd_locale" ]; then
+	LIVECD_LOCALE=`cat "$CUTOMIZE_DIR/locale"`
+	cat "$ISO_MOUNT_DIR/isolinux/isolinux.cfg" | sed 's#\<append\>#append debian-installer/locale=$LIVECD_LOCALE#g' >"$NEW_FILES_DIR/isolinux.cfg"
+	RESULT=$?
+	if [ $RESULT -ne 0 ]; then
+		failure "Failed to filter $ISO_MOUNT_DIR/isolinux/isolinux.cfg into $NEW_FILES_DIR/isolinux.cfg, error=$RESULT"
+	fi
+else
+	cat "$ISO_MOUNT_DIR/isolinux/isolinux.cfg" >"$NEW_FILES_DIR/isolinux.cfg"
+	RESULT=$?
+	if [ $RESULT -ne 0 ]; then
+		failure "Failed to copy $ISO_MOUNT_DIR/isolinux/isolinux.cfg into $NEW_FILES_DIR/isolinux.cfg, error=$RESULT"
+	fi
+fi
+
 
 echo "Updating md5sums"
 UPDATED_FILES="./casper/filesystem.manifest ./casper/filesystem.manifest-desktop ./casper/filesystem.squashfs"
@@ -175,18 +195,18 @@ find . -type f -print | while read CURRENT_FILE; do
 done
 popd
 
-fi #KLSKIP
-
 echo "Creating ISO image"    
 #Creating ISO
 #Overridden files: casper/filesystem.squashfs casper/filesystem.manifest casper/filesystem.manifest-desktop
 
-cp -a "$ISO_MOUNT_DIR/isolinux/isolinux.bin" "$NEW_FILES_DIR/" || failure "Error copying isolinux directory"
+cp -a "$ISO_MOUNT_DIR/isolinux/isolinux.bin" "$NEW_FILES_DIR/" || failure "Error copying isolinux.bin, error=$?"
 
 REPLACED_PATHS="-x $ISO_MOUNT_DIR/casper/filesystem.squashfs -x $ISO_MOUNT_DIR/casper/filesystem.manifest -x $ISO_MOUNT_DIR/casper/filesystem.manifest-desktop"
 CHANGED_PATHS="casper/filesystem.squashfs=$NEW_FILES_DIR/filesystem.squashfs casper/filesystem.manifest=$NEW_FILES_DIR/filesystem.manifest  casper/filesystem.manifest-desktop=$NEW_FILES_DIR/filesystem.manifest-desktop"
 REPLACED_PATHS="$REPLACED_PATHS -x $ISO_MOUNT_DIR/isolinux/isolinux.bin -x $ISO_MOUNT_DIR/isolinux/boot.cat"
-CHANGED_PATHS="$CHANGED_PATHS isolinux/isolinux.bin=$NEW_FILES_DIR/isolinux/isolinux.bin"
+CHANGED_PATHS="$CHANGED_PATHS isolinux/isolinux.bin=$NEW_FILES_DIR/isolinux.bin"
+REPLACED_PATHS="$REPLACED_PATHS -x $ISO_MOUNT_DIR/isolinux/isolinux.cfg "
+CHANGED_PATHS="$CHANGED_PATHS isolinux/isolinux.cfg=$NEW_FILES_DIR/isolinux.cfg"
 
 mkisofs -o "$NEW_FILES_DIR/livecd.iso" \
 	-b "isolinux/isolinux.bin" -c "isolinux/boot.cat" \
@@ -197,7 +217,7 @@ mkisofs -o "$NEW_FILES_DIR/livecd.iso" \
         "$ISO_MOUNT_DIR"
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
-	failure "Failed to create ISO image, error=$?"
+	failure "Failed to create ISO image, error=$RESULT"
 fi
 
 
