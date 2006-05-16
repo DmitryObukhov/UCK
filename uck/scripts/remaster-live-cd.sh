@@ -9,6 +9,9 @@ REMASTER_DIR=~/tmp/remaster-root
 REMASTER_CUSTOMIZE_RELATIVE_DIR="tmp/customize-dir"
 REMASTER_CUSTOMIZE_DIR="$REMASTER_DIR/$REMASTER_CUSTOMIZE_RELATIVE_DIR"
 CUSTOMIZATION_SCRIPT="$REMASTER_CUSTOMIZE_RELATIVE_DIR/customize"
+#Name of directory where packages downloaded by apt are kept across build runs
+#Allows saving bandwidth for downloading all updates
+#Important: no "/" at the end of directory name!
 APT_CACHE_SAVE_DIR=~/tmp/remaster-apt-cache
 NEW_FILES_DIR=~/tmp/remaster-new-files
 LIVECD_ISO_DESCRIPTION="Remastered LiveCD"
@@ -84,7 +87,7 @@ cp -f /etc/resolv.conf "$REMASTER_DIR/etc/resolv.conf" || failure "Failed to cop
 echo "Copying local apt cache, if available"
 if [ -e "$APT_CACHE_SAVE_DIR" ]; then
 	mv "$REMASTER_DIR/var/cache/apt/" "$REMASTER_DIR/var/cache/apt.original" || failure "Cannot move $REMASTER_DIR/var/cache/apt/ to $REMASTER_DIR/var/cache/apt.original, error=$?"
-	cp -a "$APT_CACHE_SAVE_DIR" "$REMASTER_DIR/var/cache/apt/" || failure "Cannot copy apt cache dir $APT_CACHE_SAVE_DIR to $REMASTER_DIR/var/cache/apt/, error=$?"
+	mv "$APT_CACHE_SAVE_DIR" "$REMASTER_DIR/var/cache/apt" || failure "Cannot copy apt cache dir $APT_CACHE_SAVE_DIR to $REMASTER_DIR/var/cache/apt/, error=$?"
 else
 	cp -a "$REMASTER_DIR/var/cache/apt/" "$REMASTER_DIR/var/cache/apt.original" || failure "Cannot copy $REMASTER_DIR/var/cache/apt/ to $REMASTER_DIR/var/cache/apt.original, error=$?"
 fi
@@ -92,22 +95,6 @@ fi
 echo "Running customization script..."
 chroot "$REMASTER_DIR" "/$CUSTOMIZATION_SCRIPT" || failure "Running customization script failed, error=$?"
 echo "Customization script finished"
-
-#while true; do
-#	echo "Press 'c' to cleanup and unmount everything, 'b' to leave directories and exit"
-#	read KEY
-#	if [ "$KEY" = "c" ]; then
-#		echo "Cleaning up..."
-#		break
-#	elif [ "$KEY" = "b" ]; then
-#		echo "Exiting..." 
-#		exit 0
-#	else
-#		echo "Invalid command: $KEY"
-#	fi
-#done
-#KLDEBUG
-
 
 echo "Saving apt cache"
 if [ -e "$APT_CACHE_SAVE_DIR" ]; then
@@ -155,7 +142,7 @@ removeDirectory "$REMASTER_DIR"
 echo "Updating locale"
 
 if [ -e "$CUTOMIZE_DIR/livecd_locale" ]; then
-	LIVECD_LOCALE=`cat "$CUTOMIZE_DIR/locale"`
+	LIVECD_LOCALE=`cat "$CUTOMIZE_DIR/livecd_locale"`
 	cat "$ISO_MOUNT_DIR/isolinux/isolinux.cfg" | sed 's#\<append\>#append debian-installer/locale=$LIVECD_LOCALE#g' >"$NEW_FILES_DIR/isolinux.cfg"
 	RESULT=$?
 	if [ $RESULT -ne 0 ]; then
