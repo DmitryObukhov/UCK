@@ -143,7 +143,7 @@ echo "Updating locale"
 
 if [ -e "$CUTOMIZE_DIR/livecd_locale" ]; then
 	LIVECD_LOCALE=`cat "$CUTOMIZE_DIR/livecd_locale"`
-	cat "$ISO_MOUNT_DIR/isolinux/isolinux.cfg" | sed 's#\<append\>#append debian-installer/locale=$LIVECD_LOCALE#g' >"$NEW_FILES_DIR/isolinux.cfg"
+	cat "$ISO_MOUNT_DIR/isolinux/isolinux.cfg" | sed "s#\<append\>#append debian-installer/locale=$LIVECD_LOCALE#g" >"$NEW_FILES_DIR/isolinux.cfg"
 	RESULT=$?
 	if [ $RESULT -ne 0 ]; then
 		failure "Failed to filter $ISO_MOUNT_DIR/isolinux/isolinux.cfg into $NEW_FILES_DIR/isolinux.cfg, error=$RESULT"
