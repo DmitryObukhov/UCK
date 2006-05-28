@@ -6,6 +6,7 @@ ISO_MOUNT_DIR=~/tmp/iso-source2
 SQUASHFS_IMAGE="$ISO_MOUNT_DIR/casper/filesystem.squashfs"
 SQUASHFS_MOUNT_DIR=~/tmp/squashfs-source
 REMASTER_DIR=~/tmp/remaster-root
+ISO_REMASTER_DIR=~/tmp/remaster-iso
 REMASTER_CUSTOMIZE_RELATIVE_DIR="tmp/customize-dir"
 REMASTER_CUSTOMIZE_DIR="$REMASTER_DIR/$REMASTER_CUSTOMIZE_RELATIVE_DIR"
 CUSTOMIZATION_SCRIPT="$REMASTER_CUSTOMIZE_RELATIVE_DIR/customize"
@@ -17,7 +18,7 @@ NEW_FILES_DIR=~/tmp/remaster-new-files
 LIVECD_ISO_DESCRIPTION="Remastered LiveCD"
 
 echo "Starting CD remastering on " `date`
-echo "Cutomization dir=$CUSTOMIZE_DIR" 
+echo "Customization dir=$CUSTOMIZE_DIR" 
 
 function usage()
 {
@@ -30,7 +31,7 @@ function failure()
 	exit 2
 }
 
-function removeDirectory()
+function remove_directory()
 {
 	DIR_TO_REMOVE="$1"
 	if [ "$DIR_TO_REMOVE" = "/" ]; then
@@ -60,6 +61,17 @@ function mount_iso()
 	mount "$ISO_IMAGE" "$ISO_MOUNT_DIR" -o loop || failure "Cannot mount $ISO_IMAGE in $ISO_MOUNT_DIR, error=$?"
 }
 
+function unmount_iso()
+{
+	umount "$ISO_MOUNT_DIR" || echo "Failed to unmount ISO mount directory $ISO_MOUNT_DIR, error=$?"
+	rmdir "$ISO_MOUNT_DIR" || echo "Failed to remove ISO mount directory $ISO_MOUNT_DIR, error=$?"
+}
+
+function unpack_iso()
+{
+	cp -a "$ISO_MOUNT_DIR" "$ISO_REMASTER_DIR" || failure "Failed to unpack ISO from $ISO_MOUNT_DIR to $ISO_REMASTER_DIR"
+}
+
 function unpack_squashfs()
 {
 	echo "Mounting SquashFS image..."
@@ -75,6 +87,9 @@ function unpack_squashfs()
 	
 	echo "Copying data to remastering root directory..."
 	cp -a "$SQUASHFS_MOUNT_DIR" "$REMASTER_DIR" || failure "Cannot copy files from $SQUASHFS_MOUNT_DIR to $REMASTER_DIR, error=$?"
+	
+	umount "$SQUASHFS_MOUNT_DIR" || echo "Failed to unmount SQUASHFS mount directory $SQUASHFS_MOUNT_DIR, error=$?"
+	rmdir "$SQUASHFS_MOUNT_DIR" || echo "Failed to remove SQUASHFS mount directory $SQUASHFS_MOUNT_DIR, error=$?"
 }
 
 function prepare_rootfs_for_net_update()
@@ -132,10 +147,7 @@ function prepare_new_files_directories()
 {
 	echo "Preparing directory for new files"
 	if [ -e "$NEW_FILES_DIR" ]; then
-		if [ "$NEW_FILES_DIR"  = "/" ]; then
-			failure "Trying to remove root!"
-		fi
-		removeDirectory "$NEW_FILES_DIR" || failure "Failed to remove directory $NEW_FILES_DIR"
+		remove_directory "$NEW_FILES_DIR" || failure "Failed to remove directory $NEW_FILES_DIR"
 	fi
 	mkdir -p "$NEW_FILES_DIR"
 }
@@ -143,15 +155,18 @@ function prepare_new_files_directories()
 function pack_rootfs()
 {
 	echo "Updating files lists"
-	chroot "$REMASTER_DIR" dpkg-query -W --showformat='${Package} ${Version}\n' > "$NEW_FILES_DIR/filesystem.manifest" || failure "Cannot update filesystem.manifest, error=$?"
-	cp "$NEW_FILES_DIR/filesystem.manifest" "$NEW_FILES_DIR/filesystem.manifest-desktop" || failure "Failed to copy $NEW_FILES_DIR/filesystem.manifest to $NEW_FILES_DIR/filesystem.manifest-desktop"
+	chroot "$REMASTER_DIR" dpkg-query -W --showformat='${Package} ${Version}\n' > "$ISO_REMASTER_DIR/casper/filesystem.manifest" || failure "Cannot update filesystem.manifest, error=$?"
+	cp "$ISO_REMASTER_DIR/casper/filesystem.manifest" "$ISO_REMASTER_DIR/casper/filesystem.manifest-desktop" || failure "Failed to copy $ISO_REMASTER_DIR/casper/filesystem.manifest to $ISO_REMASTER_DIR/casper/filesystem.manifest-desktop"
 	
 	echo "Preparing SquashFS image"
-	mksquashfs "$REMASTER_DIR" "$NEW_FILES_DIR/filesystem.squashfs" || failure "Failed to create squashfs image to NEW_FILES_DIR/filesystem.squashfs, error=$?"
+	if [ -e "$ISO_REMASTER_DIR/casper/filesystem.squashfs" ]; then
+		rm -f "$ISO_REMASTER_DIR/casper/filesystem.squashfs" || failure "Cannot remove $ISO_REMASTER_DIR/casper/filesystem.squashfs to make room for created squashfs image, error=$?"
+	fi
+	mksquashfs "$REMASTER_DIR" "$ISO_REMASTER_DIR/casper/filesystem.squashfs" || failure "Failed to create squashfs image to $ISO_REMASTER_DIR/casper/filesystem.squashfs, error=$?"
 	
 	echo "Removing remastering root dir"
 	
-	removeDirectory "$REMASTER_DIR"
+	remove_directory "$REMASTER_DIR"
 }
 
 function update_iso_locale()
@@ -160,60 +175,36 @@ function update_iso_locale()
 	
 	if [ -e "$CUSTOMIZE_DIR/livecd_locale" ]; then
 		LIVECD_LOCALE=`cat "$CUSTOMIZE_DIR/livecd_locale"`
-		cat "$ISO_MOUNT_DIR/isolinux/isolinux.cfg" | sed "s#\<append\>#append debian-installer/locale=$LIVECD_LOCALE#g" >"$NEW_FILES_DIR/isolinux.cfg"
+		cat "$ISO_REMASTER_DIR/isolinux/isolinux.cfg" | sed "s#\<append\>#append debian-installer/locale=$LIVECD_LOCALE#g" >"$NEW_FILES_DIR/isolinux.cfg"
 		RESULT=$?
 		if [ $RESULT -ne 0 ]; then
-			failure "Failed to filter $ISO_MOUNT_DIR/isolinux/isolinux.cfg into $NEW_FILES_DIR/isolinux.cfg, error=$RESULT"
+			failure "Failed to filter $ISO_REMASTER_DIR/isolinux/isolinux.cfg into $NEW_FILES_DIR/isolinux.cfg, error=$RESULT"
 		fi
-	else
-		cat "$ISO_MOUNT_DIR/isolinux/isolinux.cfg" >"$NEW_FILES_DIR/isolinux.cfg"
-		RESULT=$?
-		if [ $RESULT -ne 0 ]; then
-			failure "Failed to copy $ISO_MOUNT_DIR/isolinux/isolinux.cfg into $NEW_FILES_DIR/isolinux.cfg, error=$RESULT"
-		fi
+		
+		cp -a "$NEW_FILES_DIR/isolinux.cfg" "$ISO_REMASTER_DIR/isolinux/isolinux.cfg" || failure "Failed to copy $NEW_FILES_DIR/isolinux.cfg to $ISO_REMASTER_DIR/isolinux/isolinux.cfg, error=$?"
 	fi
 }
 
 function pack_isofs()
 {
 	echo "Updating md5sums"
-	UPDATED_FILES="./casper/filesystem.manifest ./casper/filesystem.manifest-desktop ./casper/filesystem.squashfs"
-	pushd "$ISO_MOUNT_DIR"
-	find . -type f -print | while read CURRENT_FILE; do
-		FOUND=0
-		for UPDATED_FILE in $UPDATED_FILES; do
-			if [ "$UPDATED_FILE" = "$CURRENT_FILE" ]; then
-				MODIFIED_FILE=`basename "$UPDATED_FILE"`
-				SUM=`md5sum "$NEW_FILES_DIR/$MODIFIED_FILE"`
-				RESULT=$?
-				if [ $RESULT -ne 0 ]; then
-					failure "Failed to compute md5sum for $NEW_FILES_DIR/$MODIFIED_FILE, error=$RESULT "
-				fi
-				SUM=`echo $SUM | cut -d' ' -f1`
-				echo "$SUM  $UPDATED_FILE" >>"$NEW_FILES_DIR/md5sum.txt"
-				
-				FOUND=1
-			fi
-		done
-		if [ "$FOUND" -eq 0 ]; then
-			md5sum "$CURRENT_FILE" >>"$NEW_FILES_DIR/md5sum.txt"
-		fi
-	done
+	pushd "$ISO_REMASTER_DIR"
+	find . -type f -print0 | xargs -0 md5sum > md5sum.txt
 	popd
 	
 	echo "Creating ISO image"    
 	
-	cp -a "$ISO_MOUNT_DIR/isolinux/isolinux.bin" "$NEW_FILES_DIR/" || failure "Error copying isolinux.bin, error=$?"
+#	cp -a "$ISO_MOUNT_DIR/isolinux/isolinux.bin" "$NEW_FILES_DIR/" || failure "Error copying isolinux.bin, error=$?"
 	#cp -a "$ISO_MOUNT_DIR/isolinux/pl.tr" "$NEW_FILES_DIR/en.tr" || failure "Error copying pl.tr to en.tr, error=$?"
 	
-	REPLACED_PATHS="-x $ISO_MOUNT_DIR/casper/filesystem.squashfs -x $ISO_MOUNT_DIR/casper/filesystem.manifest -x $ISO_MOUNT_DIR/casper/filesystem.manifest-desktop"
-	CHANGED_PATHS="casper/filesystem.squashfs=$NEW_FILES_DIR/filesystem.squashfs casper/filesystem.manifest=$NEW_FILES_DIR/filesystem.manifest  casper/filesystem.manifest-desktop=$NEW_FILES_DIR/filesystem.manifest-desktop"
-	REPLACED_PATHS="$REPLACED_PATHS -x $ISO_MOUNT_DIR/isolinux/isolinux.bin -x $ISO_MOUNT_DIR/isolinux/boot.cat"
-	CHANGED_PATHS="$CHANGED_PATHS isolinux/isolinux.bin=$NEW_FILES_DIR/isolinux.bin"
-	#REPLACED_PATHS="$REPLACED_PATHS -x $ISO_MOUNT_DIR/isolinux/en.tr "
-	#CHANGED_PATHS="$CHANGED_PATHS isolinux/en.tr=$NEW_FILES_DIR/en.tr"
-	REPLACED_PATHS="$REPLACED_PATHS -x $ISO_MOUNT_DIR/casper/initrd.gz "
-	CHANGED_PATHS="$CHANGED_PATHS casper/initrd.gz=$NEW_FILES_DIR/initrd.gz"
+# 	REPLACED_PATHS="-x $ISO_MOUNT_DIR/casper/filesystem.squashfs -x $ISO_MOUNT_DIR/casper/filesystem.manifest -x $ISO_MOUNT_DIR/casper/filesystem.manifest-desktop"
+# 	CHANGED_PATHS="casper/filesystem.squashfs=$NEW_FILES_DIR/filesystem.squashfs casper/filesystem.manifest=$NEW_FILES_DIR/filesystem.manifest  casper/filesystem.manifest-desktop=$NEW_FILES_DIR/filesystem.manifest-desktop"
+# 	REPLACED_PATHS="$REPLACED_PATHS -x $ISO_MOUNT_DIR/isolinux/isolinux.bin -x $ISO_MOUNT_DIR/isolinux/boot.cat"
+# 	CHANGED_PATHS="$CHANGED_PATHS isolinux/isolinux.bin=$NEW_FILES_DIR/isolinux.bin"
+# 	#REPLACED_PATHS="$REPLACED_PATHS -x $ISO_MOUNT_DIR/isolinux/en.tr "
+# 	#CHANGED_PATHS="$CHANGED_PATHS isolinux/en.tr=$NEW_FILES_DIR/en.tr"
+# 	REPLACED_PATHS="$REPLACED_PATHS -x $ISO_MOUNT_DIR/casper/initrd.gz "
+# 	CHANGED_PATHS="$CHANGED_PATHS casper/initrd.gz=$NEW_FILES_DIR/initrd.gz"
 	
 	mkisofs -o "$NEW_FILES_DIR/livecd.iso" \
 		-b "isolinux/isolinux.bin" -c "isolinux/boot.cat" \
@@ -221,7 +212,7 @@ function pack_isofs()
 		-V "$LIVECD_ISO_DESCRIPTION" -cache-inodes -r -J -l \
 		$REPLACED_PATHS \
 		-graft-points $CHANGED_PATHS \
-		"$ISO_MOUNT_DIR"
+		"$ISO_REMASTER_DIR"
 	RESULT=$?
 	if [ $RESULT -ne 0 ]; then
 		failure "Failed to create ISO image, error=$RESULT"
@@ -238,29 +229,36 @@ if [ -z "$CUSTOMIZE_DIR" ]; then
 	exit 1
 fi
 
-if true; then #KLDEBUG, KLSKIP 
+CUSTOMIZE_ROOTFS=`false`
 
 mount_iso
-unpack_squashfs
-prepare_rootfs_for_net_update
-run_rootfs_chroot_customization
+
+if [ $CUSTOMIZE_ROOTFS ] ; then 
+	unpack_squashfs
+fi
+
+unpack_iso
+
+unmount_iso
+
+if [ $CUSTOMIZE_ROOTFS ] ; then 
+	prepare_rootfs_for_net_update
+	run_rootfs_chroot_customization
+fi
 
 echo "Pausing for manual customization, press Enter when finished..."
 read DUMMY
 
-fi #KLSKIP
+if [ $CUSTOMIZE_ROOTFS ] ; then 
+	save_apt_cache
+	clean_rootfs
+fi
 
-save_apt_cache
-clean_rootfs
 prepare_new_files_directories
-pack_rootfs
+
+if [ $CUSTOMIZE_ROOTFS ] ; then 
+	pack_rootfs
+fi
 
 update_iso_locale
-
 pack_isofs
-
-umount "$SQUASHFS_MOUNT_DIR" || echo "Failed to unmount SQUASHFS mount directory $SQUASHFS_MOUNT_DIR, error=$?"
-rmdir "$SQUASHFS_MOUNT_DIR" || echo "Failed to remove SQUASHFS mount directory $SQUASHFS_MOUNT_DIR, error=$?"
-
-umount "$ISO_MOUNT_DIR" || echo "Failed to unmount ISO mount directory $ISO_MOUNT_DIR, error=$?"
-rmdir "$ISO_MOUNT_DIR" || echo "Failed to remove ISO mount directory $ISO_MOUNT_DIR, error=$?"
