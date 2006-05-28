@@ -99,6 +99,10 @@ function unmount_iso()
 
 function unpack_iso()
 {
+	if [ -e "$ISO_REMASTER_DIR" ] ; then
+		remove_directory "$ISO_REMASTER_DIR" || failure "Failed to remove directory $ISO_REMASTER_DIR, error=$?"
+	fi
+
 	cp -a "$ISO_MOUNT_DIR" "$ISO_REMASTER_DIR" || failure "Failed to unpack ISO from $ISO_MOUNT_DIR to $ISO_REMASTER_DIR"
 }
 
@@ -288,9 +292,10 @@ if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
 	customize_initrd
 fi
 
-
-echo "Pausing for manual customization, press Enter when finished..."
-read DUMMY
+if [ "$MANUAL_CUSTOMIZATION_PAUSE" = "yes" ] ; then
+	echo "Pausing for manual customization, press Enter when finished..."
+	read DUMMY
+fi
 
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then 
 	save_apt_cache
