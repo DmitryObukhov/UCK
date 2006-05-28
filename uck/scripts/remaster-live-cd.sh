@@ -106,7 +106,7 @@ function unpack_iso()
 	cp -a "$ISO_MOUNT_DIR" "$ISO_REMASTER_DIR" || failure "Failed to unpack ISO from $ISO_MOUNT_DIR to $ISO_REMASTER_DIR"
 }
 
-function unpack_squashfs()
+function unpack_rootfs()
 {
 	echo "Mounting SquashFS image..."
 	
@@ -114,9 +114,7 @@ function unpack_squashfs()
 	mount -t squashfs "$SQUASHFS_IMAGE" "$SQUASHFS_MOUNT_DIR" -o loop || failure "Cannot mount $SQUASHFS_IMAGE in $SQUASHFS_MOUNT_DIR, error=$?"
 	
 	if [ -e "$REMASTER_DIR" ]; then
-		echo "Remaster root directory $REMASTER_DIR already exists, aborting. "
-		echo "If it doesn't contain valuable data, remove it and restart the script "
-		exit 3
+		remove_directory "$REMASTER_DIR" || failure "Failed to remove directory $REMASTER_DIR, error=$?"
 	fi
 	
 	echo "Copying data to remastering root directory..."
@@ -196,7 +194,15 @@ function pack_rootfs()
 	if [ -e "$ISO_REMASTER_DIR/casper/filesystem.squashfs" ]; then
 		rm -f "$ISO_REMASTER_DIR/casper/filesystem.squashfs" || failure "Cannot remove $ISO_REMASTER_DIR/casper/filesystem.squashfs to make room for created squashfs image, error=$?"
 	fi
-	mksquashfs "$REMASTER_DIR" "$ISO_REMASTER_DIR/casper/filesystem.squashfs" || failure "Failed to create squashfs image to $ISO_REMASTER_DIR/casper/filesystem.squashfs, error=$?"
+	
+	EXTRA_OPTS=""
+	
+	if [ -e "$CUSTOMIZE_DIR/rootfs.sort" ] ; then
+		#FIXME: space not allowed in $CUSTOMIZE_DIR
+		EXTRA_OPTS="-sort $CUSTOMIZE_DIR/rootfs.sort"
+	fi
+	
+	mksquashfs "$REMASTER_DIR" "$ISO_REMASTER_DIR/casper/filesystem.squashfs" $EXTRA_OPTS || failure "Failed to create squashfs image to $ISO_REMASTER_DIR/casper/filesystem.squashfs, error=$?"
 	
 	echo "Removing remastering root dir"
 	
@@ -266,6 +272,10 @@ fi
 CUSTOMIZE_ROOTFS="no"
 CUSTOMIZE_INITRD="no"
 
+if [ -e "$CUSTOMIZE_DIR/customize" ]; then
+	CUSTOMIZE_ROOTFS="yes"
+fi
+
 if [ -e "$CUSTOMIZE_DIR/customize_initrd" ]; then
 	CUSTOMIZE_INITRD="yes"
 fi
@@ -274,7 +284,7 @@ mount_iso
 unpack_iso
 
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then 
-	unpack_squashfs
+	unpack_rootfs
 fi
 
 if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then 
