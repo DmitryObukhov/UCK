@@ -1,0 +1,31 @@
+#!/bin/bash
+#install polish language packs
+
+function prepare_install()
+{
+	apt-get update
+}
+
+function install_packages()
+{
+	apt-get install --assume-yes --force-yes "$@"
+}
+
+function remove_packages()
+{
+	apt-get --purge remove --assume-yes --force-yes "$@"
+}
+
+prepare_install
+install_packages language-pack-pl language-support-pl language-pack-kde-pl
+REMOVED_PACKAGES="language-pack-en language-support-en language-pack-kde-en language-pack-kde-en-base \
+	wamerican wbritish mozilla-firefox-locale-en-gb myspell-en-gb myspell-en-us \
+	aspell-en \"
+	openoffice.org-thesaurus-en-us openoffice.org-l10n-en-gb openoffice.org-l10n-en-za"
+
+#Remove language packs apart from Polish and English.
+REMOVED_PACKAGES="$REMOVED_PACKAGES language-pack-af language-pack-af-base language-pack-ar language-pack-ar-base language-pack-az language-pack-az-base language-pack-bg language-pack-bg-base language-pack-bn language-pack-bn-base language-pack-br language-pack-br-base language-pack-bs language-pack-bs-base language-pack-ca language-pack-ca-base language-pack-cs language-pack-cs-base language-pack-cy language-pack-cy-base language-pack-da language-pack-da-base language-pack-de language-pack-de-base language-pack-eo language-pack-eo-base language-pack-es language-pack-es-base language-pack-fr language-pack-fr-base language-pack-hi language-pack-hi-base language-pack-ja language-pack-ja-base language-pack-kde-af language-pack-kde-af-base language-pack-kde-ar language-pack-kde-ar-base language-pack-kde-az language-pack-kde-az-base language-pack-kde-bg language-pack-kde-bg-base language-pack-kde-bn language-pack-kde-bn-base language-pack-kde-br language-pack-kde-br-base language-pack-kde-bs language-pack-kde-bs-base language-pack-kde-ca language-pack-kde-ca-base language-pack-kde-cs language-pack-kde-cs-base language-pack-kde-cy language-pack-kde-cy-base language-pack-kde-da language-pack-kde-da-base language-pack-kde-de language-pack-kde-de-base language-pack-kde-eo language-pack-kde-eo-base language-pack-kde-es language-pack-kde-es-base language-pack-kde-fr language-pack-kde-fr-base language-pack-kde-hi language-pack-kde-hi-base language-pack-kde-ja language-pack-kde-ja-base language-pack-kde-nl language-pack-kde-nl-base language-pack-kde-pt language-pack-kde-pt-base language-pack-kde-ru language-pack-kde-ru-base language-pack-kde-zh language-pack-kde-zh-base language-pack-nl language-pack-nl-base language-pack-pt language-pack-pt-base language-pack-ru language-pack-ru-base language-pack-zh language-pack-zh-base"
+	
+#Removing openoffice.org-l10n-en-us uninstalls Openoffice
+
+remove_packages $REMOVED_PACKAGES
