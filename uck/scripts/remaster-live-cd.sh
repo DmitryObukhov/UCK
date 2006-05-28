@@ -7,6 +7,7 @@ SQUASHFS_IMAGE="$ISO_MOUNT_DIR/casper/filesystem.squashfs"
 SQUASHFS_MOUNT_DIR=~/tmp/squashfs-source
 REMASTER_DIR=~/tmp/remaster-root
 ISO_REMASTER_DIR=~/tmp/remaster-iso
+INITRD_REMASTER_DIR=~/tmp/remaster-initrd
 REMASTER_CUSTOMIZE_RELATIVE_DIR="tmp/customize-dir"
 REMASTER_CUSTOMIZE_DIR="$REMASTER_DIR/$REMASTER_CUSTOMIZE_RELATIVE_DIR"
 CUSTOMIZATION_SCRIPT="$REMASTER_CUSTOMIZE_RELATIVE_DIR/customize"
@@ -42,16 +43,45 @@ function remove_directory()
 
 function unpack_initrd()
 {
-	#not ready yet
-	failure "Not implemented"
-	cat $1 | cpio -i 
+	if [ -e  "$INITRD_REMASTER_DIR" ]; then
+		remove_directory "$INITRD_REMASTER_DIR" || failure "Cannot remove $INITRD_REMASTER_DIR"
+	fi
+	mkdir -p "$INITRD_REMASTER_DIR" || failure "Cannot create directory $INITRD_REMASTER_DIR"
+	
+	pushd "$INITRD_REMASTER_DIR" || failure "Failed to change directory to $INITRD_REMASTER_DIR, error=$?"
+	cat "$ISO_REMASTER_DIR/casper/initrd.gz" | gzip -d | cpio -i 
+	RESULT=$?
+	
+	if [ $RESULT -ne 0 ]; then
+		failure "Failed to unpack $ISO_REMASTER_DIR/casper/initrd.gz to $INITRD_REMASTER_DIR, error=$RESULT"
+	fi
+	
+	popd 
 }
 
 function pack_initrd()
 {
-	#not ready yet
-	failure "Not implemented"
-	find | cpio -H newc -o | gzip >initrd.gz
+	pushd "$INITRD_REMASTER_DIR" || failure "Failed to change directory to $INITRD_REMASTER_DIR, error=$?"
+	find | cpio -H newc -o | gzip >"$NEW_FILES_DIR/initrd.gz"
+	RESULT=$?
+	if [ $RESULT -ne 0 ]; then
+		failure "Failed to compress initird image $INITRD_REMASTER_DIR to $NEW_FILES_DIR/initrd.gz, error=$RESULT"
+	fi
+	popd 
+	
+	if [ -e "$ISO_REMASTER_DIR/casper/initrd.gz" ]; then
+		rm -f "$ISO_REMASTER_DIR/casper/initrd.gz" || failure "Failed to remove $ISO_REMASTER_DIR/casper/initrd.gz, error=$?"
+	fi
+	
+	cp -a "$NEW_FILES_DIR/initrd.gz" "$ISO_REMASTER_DIR/casper/initrd.gz" || failure "Failed to copy $NEW_FILES_DIR/initrd.gz to $ISO_REMASTER_DIR/casper/initrd.gz, error=$?"
+}
+
+function customize_initrd()
+{
+	echo "Running initird customization script $CUSTOMIZE_DIR/customize_initrd, initrd remaster dir is $INITRD_REMASTER_DIR"
+	export INITRD_REMASTER_DIR
+	"$CUSTOMIZE_DIR/customize_initrd" || failure "Running initird customization script $CUSTOMIZE_DIR/customize_initrd with remaster dir $INITRD_REMASTER_DIR failed, error=$?"
+	export -n INITRD_REMASTER_DIR
 }
 
 function mount_iso()
@@ -229,34 +259,51 @@ if [ -z "$CUSTOMIZE_DIR" ]; then
 	exit 1
 fi
 
-CUSTOMIZE_ROOTFS=`false`
+CUSTOMIZE_ROOTFS="no"
+CUSTOMIZE_INITRD="no"
+
+if [ -e "$CUSTOMIZE_DIR/customize_initrd" ]; then
+	CUSTOMIZE_INITRD="yes"
+fi
 
 mount_iso
+unpack_iso
 
-if [ $CUSTOMIZE_ROOTFS ] ; then 
+if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then 
 	unpack_squashfs
 fi
 
-unpack_iso
+if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then 
+	unpack_initrd
+fi
 
 unmount_iso
 
-if [ $CUSTOMIZE_ROOTFS ] ; then 
+if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then 
 	prepare_rootfs_for_net_update
 	run_rootfs_chroot_customization
 fi
 
+if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then 
+	customize_initrd
+fi
+
+
 echo "Pausing for manual customization, press Enter when finished..."
 read DUMMY
 
-if [ $CUSTOMIZE_ROOTFS ] ; then 
+if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then 
 	save_apt_cache
 	clean_rootfs
 fi
 
 prepare_new_files_directories
 
-if [ $CUSTOMIZE_ROOTFS ] ; then 
+if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then 
+	pack_initrd
+fi
+
+if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then 
 	pack_rootfs
 fi
 
