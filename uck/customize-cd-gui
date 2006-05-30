@@ -1,0 +1,191 @@
+#!/bin/bash
+
+if [ -z "$DIALOG" ] ; then
+	if [ ! -z "$DISPLAY" ] ; then
+		DIALOG=`which kdialog`
+		
+		if [ ! -z "$DIALOG" ]; then
+			DIALOG_TYPE=kdialog
+		else
+			DIALOG=`which Xdialog`
+			
+			if [ ! -z "$DIALOG" ]; then
+				DIALOG_TYPE=dialog
+			fi
+		fi
+	fi
+	
+	if [ -z "$DIALOG" ]; then
+		DIALOG=`which dialog`
+		
+		if [ ! -z "$DIALOG" ]; then
+			DIALOG_TYPE=dialog
+		fi
+	fi
+fi
+
+if [ -z "$DIALOG" ]; then
+	failure "You need kdialog, Xdialog or dialog application to run this script, please install it using 'apt-get install packagename' where packagename is 'kdebase-bin' for kdialog, 'xdialog' for dialog, 'dialog' for dialog. If you are using text-mode, you need to install dialog."
+fi
+
+function failure()
+{
+	echo "$@"
+	exit 1
+}
+
+function dialog_menu()
+{
+	DESCRIPTION="$1"
+	shift
+	
+	if [ "$DIALOG_TYPE" = "kdialog" ] ; then
+		for i; do
+			PARAMS="$PARAMS $i $i"
+		done
+		$DIALOG --menu "$DESCRIPTION" $PARAMS 
+	else
+		for i; do
+			PARAMS="$PARAMS $i Language"
+		done
+		$DIALOG --stdout --menu "$DESCRIPTION" 20 30 10 $PARAMS 
+	fi
+}
+
+function dialog_choose_file()
+{
+	TITLE="$1"
+	if [ "$DIALOG_TYPE" = "kdialog" ] ; then
+		$DIALOG --title "$TITLE" --getopenfilename "`pwd`/"
+	else
+		$DIALOG --stdout --title "$TITLE" --fselect "`pwd`/" 20 80 
+	fi
+}
+
+function dialog_msgbox()
+{
+	TITLE="$1"
+	TEXT="$2"
+	$DIALOG --title "$TITLE" --msgbox "$TEXT" 20 80 
+}
+
+WELCOME_TEXT=`cat <<EOF
+Welcome in Ubuntu live CD language customization tool.
+
+This tool allows creating Ubuntu live CD in your language, with
+all language packs necessary preinstalled on CD.
+It also changes boot screen to appear in chosen language.
+
+Requirements:
+1. about 5 GB of free disk space in $HOME/tmp
+2. Internet access for fetching language packs.
+3. Enabled apt-source line "deb-src http://archive.ubuntu.com/ubuntu/ dapper main" - necessary for bootlogo building.
+
+Author: Krzysztof Lichota <krzysiek-ubuntulivecdbuild@lichota.net>
+Homepage: http://lichota.net/~krzysiek/projects/ubuntu-livecd-customization/
+License: GPL v2
+EOF
+`
+
+PRE_START_TEXT=`cat <<EOF
+All necessary information has been gathered.
+Building will start now.
+
+Note: You will have to provide your password to gain administrative privileges using sudo (necessary to mount ISO files).
+
+Your live CD will be created as 
+~/tmp/remaster-new-files/livecd.iso
+
+Please fasten your seatbelts and enjoy the ride.
+EOF
+`
+
+BUILD_SUCCESS_TEXT=`cat <<EOF
+Building have been finished successfully.
+
+You can find your live CD in 
+~/tmp/remaster-new-files/livecd.iso
+
+To test it, you can run (qemu package must be installed):
+qemu -cdrom ~/tmp/remaster-new-files/livecd.iso -boot d -m 256
+
+EOF
+`
+
+BUILD_FAILURE_TEXT=`cat <<EOF
+Building failed.
+
+Please examine file build.log which has been created in directory where you run the script.
+
+If you still cannot find the problem, please send this file along with description to address
+krzysiek-ubuntulivecdbuild@lichota.net
+EOF
+`
+
+dialog_msgbox "Welcome" "$WELCOME_TEXT"
+
+AVAILABLE_LANGUAGES=`apt-cache pkgnames language-support | cut -d'-' -f3 | sort`
+
+CD_LANG=`dialog_menu "Please choose language" $AVAILABLE_LANGUAGES`
+
+if [ -z "$CD_LANG" ] ; then
+	failure "Script cancelled by user"
+fi
+
+DESKTOP_TYPE=`dialog_menu "Please choose desktop environment " kde gnome`
+
+if [ -z "$DESKTOP_TYPE" ] ; then
+	failure "Script cancelled by user"
+fi
+
+while true; do
+	ISO_IMAGE=`dialog_choose_file "Please choose ISO image which will be used as base for customized live CD"`
+	
+	if [ -z "$ISO_IMAGE" ] ; then
+		failure "Script cancelled by user"
+	fi
+	
+	if [ ! -r "$ISO_IMAGE" ] ; then
+		dialog_msgbox "Not existing file" "File $ISO_IMAGE does not exist"
+		continue
+	fi
+	
+	if [ ! -r "$ISO_IMAGE" ] ; then
+		dialog_msgbox "Unreadable file" "File $ISO_IMAGE cannot be read, do you have permissions for this file?"
+		continue
+	fi
+	
+	if [ "`file --brief --mime \"$ISO_IMAGE\"`" != "application/x-iso9660" ] ; then
+		dialog_msgbox "Wrong file" "File $ISO_IMAGE does not seem to be a valid ISO9660 image"
+		continue
+	fi
+	break
+done
+
+dialog_msgbox "Ready to build" "$PRE_START_TEXT"
+
+echo "Preparing build environment..."
+BUILD_DIR=`mktemp -d`
+
+SCRIPT_DIR=`dirname "$0"`
+cp -a "$SCRIPT_DIR"/customization-profiles/localized_cd/* "$BUILD_DIR"/
+
+echo "$CD_LANG" >"$BUILD_DIR"/livecd_locale
+echo "$DESKTOP_TYPE" >"$BUILD_DIR"/desktop_type
+
+echo "Running build process..."
+sudo bash "$SCRIPT_DIR"/scripts/remaster-live-cd.sh "$ISO_IMAGE" "$BUILD_DIR" 2>&1 | tee -a build.log
+RESULT=$?
+
+if [ $RESULT -ne 0 ]; then
+	dialog_msgbox "Build failure" "$BUILD_FAILURE_TEXT"
+else
+	dialog_msgbox "Build success" "$BUILD_SUCCESS_TEXT"
+fi
+
+if [ "$BUILD_DIR" = "/" ] ; then
+	failure "Trying to remove root dir"
+else
+	rm -rf "$BUILD_DIR"
+fi
+

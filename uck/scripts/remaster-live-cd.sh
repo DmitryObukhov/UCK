@@ -319,8 +319,6 @@ if [ "$CUSTOMIZE_ISO" = "yes" ] ; then
 	customize_iso
 fi
 
-MANUAL_CUSTOMIZATION_PAUSE=yes
-
 if [ "$MANUAL_CUSTOMIZATION_PAUSE" = "yes" ] ; then
 	echo "Pausing for manual customization, press Enter when finished..."
 	read DUMMY
@@ -341,5 +339,6 @@ if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 	pack_rootfs
 fi
 
-update_iso_locale
+
+#update_iso_locale #Disabled, bootlogo does it
 pack_isofs

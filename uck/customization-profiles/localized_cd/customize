@@ -1,0 +1,48 @@
+#!/bin/bash
+
+function failure()
+{
+	echo "$@"
+	exit 1
+}
+
+function prepare_install()
+{
+	apt-get update || failure "apt-get update failed, error=$?"
+}
+
+function install_packages()
+{
+	apt-get install --assume-yes --force-yes "$@" || failure "apt-get install $@ failed, error=$?"
+}
+
+function remove_packages()
+{
+	apt-get --purge remove --assume-yes --force-yes "$@" || failure "apt-get remove $@ failed, error=$?"
+}
+
+SCRIPT_DIR=`dirname "$0"`
+LIVECD_LANG=`cat "$SCRIPT_DIR/livecd_locale"`
+
+if [ -z "$LIVECD_LANG" ]; then
+	failure "Live CD language not set, please put language code (for example: en, pl, fr) into $SCRIPT_DIR/livecd_locale"
+fi
+
+DESKTOP_FLAVOUR=`cat "$SCRIPT_DIR/desktop_type"`
+if [ -z "$DESKTOP_FLAVOUR" ]; then
+	failure "Live CD desktop type not set, please put desktop code (for example: kde, gnome) into $SCRIPT_DIR/desktop_type"
+fi
+
+prepare_install || failure "Preparing installation failed, error=$?"
+
+echo "Installing language pack ($LIVECD_LANG)..."
+install_packages language-pack-$LIVECD_LANG language-support-$LIVECD_LANG language-pack-$DESKTOP_FLAVOUR-$LIVECD_LANG || failure "Installing language packs failed, error=$?"
+
+#NOTE: we first install language pack, then remove others as installing language pack might pull packages 
+#which were not previously present
+echo "Removing unnecessary language packages..."
+REMOVED_PACKAGES=`dpkg-query --show | cut -f1 | grep '^language-' | grep -v "[-]$LIVECD_LANG\>"`
+remove_packages $REMOVED_PACKAGES || failure "Removing packages failed, error=$?"
+
+
+echo "Done"
