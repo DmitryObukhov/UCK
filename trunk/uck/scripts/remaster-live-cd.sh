@@ -84,6 +84,14 @@ function customize_initrd()
 	export -n INITRD_REMASTER_DIR
 }
 
+function customize_iso()
+{
+	echo "Running ISO customization script $CUSTOMIZE_DIR/customize_iso, iso remaster dir is $ISO_REMASTER_DIR"
+	export ISO_REMASTER_DIR
+	"$CUSTOMIZE_DIR/customize_iso" || failure "Running ISO customization script $CUSTOMIZE_DIR/customize_iso with remaster dir $ISO_REMASTER_DIR failed, error=$?"
+	export -n ISO_REMASTER_DIR
+}
+
 function mount_iso()
 {
 	echo "Mounting ISO image..."
@@ -271,6 +279,7 @@ fi
 
 CUSTOMIZE_ROOTFS="no"
 CUSTOMIZE_INITRD="no"
+CUSTOMIZE_ISO="no"
 
 if [ -e "$CUSTOMIZE_DIR/customize" ]; then
 	CUSTOMIZE_ROOTFS="yes"
@@ -278,6 +287,10 @@ fi
 
 if [ -e "$CUSTOMIZE_DIR/customize_initrd" ]; then
 	CUSTOMIZE_INITRD="yes"
+fi
+
+if [ -e "$CUSTOMIZE_DIR/customize_iso" ]; then
+	CUSTOMIZE_ISO="yes"
 fi
 
 mount_iso
@@ -301,6 +314,12 @@ fi
 if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then 
 	customize_initrd
 fi
+
+if [ "$CUSTOMIZE_ISO" = "yes" ] ; then 
+	customize_iso
+fi
+
+MANUAL_CUSTOMIZATION_PAUSE=yes
 
 if [ "$MANUAL_CUSTOMIZATION_PAUSE" = "yes" ] ; then
 	echo "Pausing for manual customization, press Enter when finished..."
