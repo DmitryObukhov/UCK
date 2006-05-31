@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "Nothing to do, just forcing rebuild of squashfs"
