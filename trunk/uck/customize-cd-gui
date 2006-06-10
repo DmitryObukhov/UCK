@@ -52,6 +52,44 @@ function dialog_menu()
 	fi
 }
 
+function dialog_multi_choice()
+{
+	DESCRIPTION="$1"
+	shift
+	
+	if [ "$DIALOG_TYPE" = "kdialog" ] ; then
+		for i; do
+			PARAMS="$PARAMS $i $i 0"
+		done
+		$DIALOG --separate-output --checklist "$DESCRIPTION" $PARAMS 
+		RESULT=$?
+	else
+		for i; do
+			PARAMS="$PARAMS $i Language 0"
+		done
+		$DIALOG --stdout --separate-output --checklist "$DESCRIPTION" 20 30 10 $PARAMS 
+		RESULT=$?
+	fi
+	
+	return $RESULT
+}
+
+function dialog_line_input()
+{
+	DESCRIPTION="$1"
+	INITIAL_VALUE="$2"
+	
+	if [ "$DIALOG_TYPE" = "kdialog" ] ; then
+		$DIALOG --inputbox "$DESCRIPTION" "$INITIAL_VALUE"
+		RESULT=$?
+	else
+		$DIALOG --stdout --inputbox "$DESCRIPTION" 20 30 "$INITIAL_VALUE"
+		RESULT=$?
+	fi
+	
+	return $RESULT
+}
+
 function dialog_choose_file()
 {
 	TITLE="$1"
@@ -124,17 +162,32 @@ EOF
 
 dialog_msgbox "Welcome" "$WELCOME_TEXT"
 
-AVAILABLE_LANGUAGES=`apt-cache pkgnames language-support | cut -d'-' -f3 | sort`
+AVAILABLE_LANGUAGE_PACKS=`apt-cache pkgnames language-support | cut -d'-' -f3 | sort`
 
-CD_LANG=`dialog_menu "Please choose language" $AVAILABLE_LANGUAGES`
+CD_LANGS=`dialog_multi_choice "Please choose language packs to install (you can choose more than one)" $AVAILABLE_LANGUAGE_PACKS`
+RESULT=$?
 
-if [ -z "$CD_LANG" ] ; then
+if [ $RESULT -ne 0 ] ; then
 	failure "Script cancelled by user"
 fi
 
-DESKTOP_TYPE=`dialog_menu "Please choose desktop environment " kde gnome`
+if [ ! -r /usr/share/gfxboot/themes/Ubuntu/langlist ]; then
+	failure "Cannot read file /usr/share/gfxboot/themes/Ubuntu/langlist, please check that you have package gfxboot-theme-ubuntu installed"
+fi
 
-if [ -z "$DESKTOP_TYPE" ] ; then
+AVAILABLE_BOOT_LANGS=$(cat /usr/share/gfxboot/themes/Ubuntu/langlist)
+
+BOOT_CD_LANG=`dialog_menu "Please choose language which will be used at boot of live CD" $AVAILABLE_BOOT_LANGS`
+RESULT=$?
+
+if [ $RESULT -ne 0 ] ; then
+	failure "Script cancelled by user"
+fi
+
+DESKTOP_TYPES=`dialog_multi_choice "Please choose desktop environments (you can choose more than one) " kde gnome`
+
+RESULT=$?
+if [ $RESULT -ne 0 ] ; then
 	failure "Script cancelled by user"
 fi
 
@@ -162,6 +215,24 @@ while true; do
 	break
 done
 
+while true; do
+	ISO_DESCRIPTION=`dialog_line_input "Please enter name for CD (you can leave it blank, 32 chars max)" "Customized Ubuntu live CD" `
+	RESULT=$?
+	
+	if [ $RESULT -ne 0 ] ; then
+		failure "Script cancelled by user"
+	fi
+	
+	DESCRIPTION_LEN=`echo "$ISO_DESCRIPTION" | wc -c`
+	
+	if [ "$DESCRIPTION_LEN"  -gt 32  ]; then
+		dialog_msgbox "Wrong ISO description" "Description can only have 32 characters, while yours has $DESCRIPTION_LEN characters"
+		continue
+	fi
+	break
+done
+
+
 dialog_msgbox "Ready to build" "$PRE_START_TEXT"
 
 echo "Preparing build environment..."
@@ -170,18 +241,21 @@ BUILD_DIR=`mktemp -d`
 SCRIPT_DIR=`dirname "$0"`
 cp -a "$SCRIPT_DIR"/customization-profiles/localized_cd/* "$BUILD_DIR"/
 
-echo "$CD_LANG" >"$BUILD_DIR"/livecd_locale
-echo "$DESKTOP_TYPE" >"$BUILD_DIR"/desktop_type
+echo "$CD_LANGS" >"$BUILD_DIR"/language_packs
+echo "$BOOT_CD_LANG" >"$BUILD_DIR"/livecd_locale
+echo "$DESKTOP_TYPES" >"$BUILD_DIR"/desktop_types
+echo "$ISO_DESCRIPTION" >"$BUILD_DIR"/iso_description
 
 echo "Running build process..."
-sudo bash "$SCRIPT_DIR"/scripts/remaster-live-cd.sh "$ISO_IMAGE" "$BUILD_DIR" 2>&1 | tee -a build.log
+(sudo bash "$SCRIPT_DIR"/scripts/remaster-live-cd.sh "$ISO_IMAGE" "$BUILD_DIR" 
 RESULT=$?
 
 if [ $RESULT -ne 0 ]; then
 	dialog_msgbox "Build failure" "$BUILD_FAILURE_TEXT"
 else
 	dialog_msgbox "Build success" "$BUILD_SUCCESS_TEXT"
-fi
+fi 
+) 2>&1 | tee -a build.log
 
 if [ "$BUILD_DIR" = "/" ] ; then
 	failure "Trying to remove root dir"

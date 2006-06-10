@@ -22,26 +22,45 @@ function remove_packages()
 }
 
 SCRIPT_DIR=`dirname "$0"`
-LIVECD_LANG=`cat "$SCRIPT_DIR/livecd_locale"`
+LIVECD_LANGS=`cat "$SCRIPT_DIR/language_packs"`
 
-if [ -z "$LIVECD_LANG" ]; then
-	failure "Live CD language not set, please put language code (for example: en, pl, fr) into $SCRIPT_DIR/livecd_locale"
+if [ -z "$LIVECD_LANGS" ]; then
+	failure "Live CD language not set, please put language packs codes (for example: en, pl, fr) into $SCRIPT_DIR/language_packs"
 fi
 
-DESKTOP_FLAVOUR=`cat "$SCRIPT_DIR/desktop_type"`
-if [ -z "$DESKTOP_FLAVOUR" ]; then
-	failure "Live CD desktop type not set, please put desktop code (for example: kde, gnome) into $SCRIPT_DIR/desktop_type"
+DESKTOP_FLAVOURS=`cat "$SCRIPT_DIR/desktop_types"`
+if [ -z "$DESKTOP_FLAVOURS" ]; then
+	failure "Live CD desktop type not set, please put desktop codes (for example: kde, gnome) into $SCRIPT_DIR/desktop_types"
 fi
 
 prepare_install || failure "Preparing installation failed, error=$?"
 
-echo "Installing language pack ($LIVECD_LANG)..."
-install_packages language-pack-$LIVECD_LANG language-support-$LIVECD_LANG language-pack-$DESKTOP_FLAVOUR-$LIVECD_LANG || failure "Installing language packs failed, error=$?"
+echo "Installing language packs ($LIVECD_LANGS)..."
+
+PACKAGES_TO_INSTALL=""
+
+LANGPACKS_CONCATENATED=""
+
+for LANGPACK in $LIVECD_LANGS; do
+	PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL language-pack-$LANGPACK language-support-$LANGPACK"
+	
+	for FLAVOUR in $DESKTOP_FLAVOURS; do
+		PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL language-pack-$FLAVOUR-$LANGPACK"
+	done
+	
+	if [ -z "$LANGPACKS_CONCATENATED" ]; then
+		LANGPACKS_CONCATENATED="$LANGPACK"
+	else
+		LANGPACKS_CONCATENATED="$LANGPACKS_CONCATENATED|$LANGPACK"
+	fi
+done
+
+install_packages $PACKAGES_TO_INSTALL || failure "Installing language packs failed, error=$?"
 
 #NOTE: we first install language pack, then remove others as installing language pack might pull packages 
 #which were not previously present
 echo "Removing unnecessary language packages..."
-REMOVED_PACKAGES=`dpkg-query --show | cut -f1 | grep '^language-' | grep -v "[-]$LIVECD_LANG\>"`
+REMOVED_PACKAGES=`dpkg-query --show | cut -f1 | grep -E '^(language-pack|language-support)' | grep -v -E "[-]($LANGPACKS_CONCATENATED)\>"`
 remove_packages $REMOVED_PACKAGES || failure "Removing packages failed, error=$?"
 
 
