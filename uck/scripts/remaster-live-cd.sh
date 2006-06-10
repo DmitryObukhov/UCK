@@ -16,7 +16,6 @@ CUSTOMIZATION_SCRIPT="$REMASTER_CUSTOMIZE_RELATIVE_DIR/customize"
 #Important: no "/" at the end of directory name!
 APT_CACHE_SAVE_DIR=~/tmp/remaster-apt-cache
 NEW_FILES_DIR=~/tmp/remaster-new-files
-LIVECD_ISO_DESCRIPTION="Remastered LiveCD"
 
 echo "Starting CD remastering on " `date`
 echo "Customization dir=$CUSTOMIZE_DIR" 
@@ -242,25 +241,26 @@ function pack_isofs()
 	
 	echo "Creating ISO image"    
 	
-#	cp -a "$ISO_MOUNT_DIR/isolinux/isolinux.bin" "$NEW_FILES_DIR/" || failure "Error copying isolinux.bin, error=$?"
-	#cp -a "$ISO_MOUNT_DIR/isolinux/pl.tr" "$NEW_FILES_DIR/en.tr" || failure "Error copying pl.tr to en.tr, error=$?"
+	LIVECD_ISO_DESCRIPTION="Remastered Ubuntu LiveCD"
 	
-# 	REPLACED_PATHS="-x $ISO_MOUNT_DIR/casper/filesystem.squashfs -x $ISO_MOUNT_DIR/casper/filesystem.manifest -x $ISO_MOUNT_DIR/casper/filesystem.manifest-desktop"
-# 	CHANGED_PATHS="casper/filesystem.squashfs=$NEW_FILES_DIR/filesystem.squashfs casper/filesystem.manifest=$NEW_FILES_DIR/filesystem.manifest  casper/filesystem.manifest-desktop=$NEW_FILES_DIR/filesystem.manifest-desktop"
-# 	REPLACED_PATHS="$REPLACED_PATHS -x $ISO_MOUNT_DIR/isolinux/isolinux.bin -x $ISO_MOUNT_DIR/isolinux/boot.cat"
-# 	CHANGED_PATHS="$CHANGED_PATHS isolinux/isolinux.bin=$NEW_FILES_DIR/isolinux.bin"
-# 	#REPLACED_PATHS="$REPLACED_PATHS -x $ISO_MOUNT_DIR/isolinux/en.tr "
-# 	#CHANGED_PATHS="$CHANGED_PATHS isolinux/en.tr=$NEW_FILES_DIR/en.tr"
-# 	REPLACED_PATHS="$REPLACED_PATHS -x $ISO_MOUNT_DIR/casper/initrd.gz "
-# 	CHANGED_PATHS="$CHANGED_PATHS casper/initrd.gz=$NEW_FILES_DIR/initrd.gz"
+	if [ -e "$CUSTOMIZE_DIR/iso_description" ] ; then
+		LIVECD_ISO_DESCRIPTION=`cat "$CUSTOMIZE_DIR/iso_description"`
+	fi
+	
+	echo "ISO description set to: $LIVECD_ISO_DESCRIPTION"
+	
+	MKISOFS_EXTRA_OPTIONS=""
+	if [ -e "$CUSTOMIZE_DIR/mkisofs_extra_options" ] ; then
+		MKISOFS_EXTRA_OPTIONS=`cat "$CUSTOMIZE_DIR/mkisofs_extra_options"`
+	fi
 	
 	mkisofs -o "$NEW_FILES_DIR/livecd.iso" \
 		-b "isolinux/isolinux.bin" -c "isolinux/boot.cat" \
 		-no-emul-boot -boot-load-size 4 -boot-info-table \
 		-V "$LIVECD_ISO_DESCRIPTION" -cache-inodes -r -J -l \
-		$REPLACED_PATHS \
-		-graft-points $CHANGED_PATHS \
+		$MKISOFS_EXTRA_OPTIONS \
 		"$ISO_REMASTER_DIR"
+	
 	RESULT=$?
 	if [ $RESULT -ne 0 ]; then
 		failure "Failed to create ISO image, error=$RESULT"

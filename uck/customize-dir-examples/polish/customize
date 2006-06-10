@@ -18,7 +18,7 @@ function remove_packages()
 
 prepare_install
 echo "Installing language pack..."
-install_packages language-pack-pl language-support-pl language-pack-kde-pl
+install_packages language-pack-pl language-support-pl language-pack-kde-pl myspell-dictionary-pl openoffice.org-hyphenation-pl   openoffice.org-thesaurus-pl openoffice.org-help-pl
 #REMOVED_PACKAGES="language-pack-en language-support-en language-pack-kde-en language-pack-kde-en-base \
 #	wamerican wbritish mozilla-firefox-locale-en-gb myspell-en-gb myspell-en-us \
 #	aspell-en \"
