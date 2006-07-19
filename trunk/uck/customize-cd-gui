@@ -1,33 +1,5 @@
 #!/bin/bash
 
-if [ -z "$DIALOG" ] ; then
-	if [ ! -z "$DISPLAY" ] ; then
-		DIALOG=`which kdialog`
-		
-		if [ ! -z "$DIALOG" ]; then
-			DIALOG_TYPE=kdialog
-		else
-			DIALOG=`which Xdialog`
-			
-			if [ ! -z "$DIALOG" ]; then
-				DIALOG_TYPE=dialog
-			fi
-		fi
-	fi
-	
-	if [ -z "$DIALOG" ]; then
-		DIALOG=`which dialog`
-		
-		if [ ! -z "$DIALOG" ]; then
-			DIALOG_TYPE=dialog
-		fi
-	fi
-fi
-
-if [ -z "$DIALOG" ]; then
-	failure "You need kdialog, Xdialog or dialog application to run this script, please install it using 'apt-get install packagename' where packagename is 'kdebase-bin' for kdialog, 'xdialog' for dialog, 'dialog' for dialog. If you are using text-mode, you need to install dialog."
-fi
-
 function failure()
 {
 	echo "$@"
@@ -38,17 +10,17 @@ function dialog_menu()
 {
 	DESCRIPTION="$1"
 	shift
-	
+
 	if [ "$DIALOG_TYPE" = "kdialog" ] ; then
 		for i; do
 			PARAMS="$PARAMS $i $i"
 		done
-		$DIALOG --menu "$DESCRIPTION" $PARAMS 
+		$DIALOG --menu "$DESCRIPTION" $PARAMS
 	else
 		for i; do
 			PARAMS="$PARAMS $i Language"
 		done
-		$DIALOG --stdout --menu "$DESCRIPTION" 20 30 10 $PARAMS 
+		$DIALOG --stdout --menu "$DESCRIPTION" 20 30 10 $PARAMS
 	fi
 }
 
@@ -56,21 +28,21 @@ function dialog_multi_choice()
 {
 	DESCRIPTION="$1"
 	shift
-	
+
 	if [ "$DIALOG_TYPE" = "kdialog" ] ; then
 		for i; do
 			PARAMS="$PARAMS $i $i 0"
 		done
-		$DIALOG --separate-output --checklist "$DESCRIPTION" $PARAMS 
+		$DIALOG --separate-output --checklist "$DESCRIPTION" $PARAMS
 		RESULT=$?
 	else
 		for i; do
 			PARAMS="$PARAMS $i Language 0"
 		done
-		$DIALOG --stdout --separate-output --checklist "$DESCRIPTION" 20 30 10 $PARAMS 
+		$DIALOG --stdout --separate-output --checklist "$DESCRIPTION" 20 30 10 $PARAMS
 		RESULT=$?
 	fi
-	
+
 	return $RESULT
 }
 
@@ -78,7 +50,7 @@ function dialog_line_input()
 {
 	DESCRIPTION="$1"
 	INITIAL_VALUE="$2"
-	
+
 	if [ "$DIALOG_TYPE" = "kdialog" ] ; then
 		$DIALOG --inputbox "$DESCRIPTION" "$INITIAL_VALUE"
 		RESULT=$?
@@ -86,7 +58,7 @@ function dialog_line_input()
 		$DIALOG --stdout --inputbox "$DESCRIPTION" 20 30 "$INITIAL_VALUE"
 		RESULT=$?
 	fi
-	
+
 	return $RESULT
 }
 
@@ -96,7 +68,7 @@ function dialog_choose_file()
 	if [ "$DIALOG_TYPE" = "kdialog" ] ; then
 		$DIALOG --title "$TITLE" --getopenfilename "`pwd`/"
 	else
-		$DIALOG --stdout --title "$TITLE" --fselect "`pwd`/" 20 80 
+		$DIALOG --stdout --title "$TITLE" --fselect "`pwd`/" 20 80
 	fi
 }
 
@@ -104,8 +76,36 @@ function dialog_msgbox()
 {
 	TITLE="$1"
 	TEXT="$2"
-	$DIALOG --title "$TITLE" --msgbox "$TEXT" 20 80 
+	$DIALOG --title "$TITLE" --msgbox "$TEXT" 20 80
 }
+
+if [ -z "$DIALOG" ] ; then
+	if [ ! -z "$DISPLAY" ] ; then
+		DIALOG=`which kdialog`
+
+		if [ ! -z "$DIALOG" ]; then
+			DIALOG_TYPE=kdialog
+		else
+			DIALOG=`which Xdialog`
+
+			if [ ! -z "$DIALOG" ]; then
+				DIALOG_TYPE=dialog
+			fi
+		fi
+	fi
+
+	if [ -z "$DIALOG" ]; then
+		DIALOG=`which dialog`
+
+		if [ ! -z "$DIALOG" ]; then
+			DIALOG_TYPE=dialog
+		fi
+	fi
+fi
+
+if [ -z $DIALOG ]; then
+	failure "You need kdialog, Xdialog or dialog application to run this script, please install it using 'apt-get install packagename' where packagename is 'kdebase-bin' for kdialog, 'xdialog' for dialog, 'dialog' for dialog. If you are using text-mode, you need to install dialog."
+fi
 
 WELCOME_TEXT=`cat <<EOF
 Welcome in Ubuntu live CD language customization tool.
@@ -131,7 +131,7 @@ Building will start now.
 
 Note: You will have to provide your password to gain administrative privileges using sudo (necessary to mount ISO files).
 
-Your live CD will be created as 
+Your live CD will be created as
 ~/tmp/remaster-new-files/livecd.iso
 
 Please fasten your seatbelts and enjoy the ride.
@@ -141,7 +141,7 @@ EOF
 BUILD_SUCCESS_TEXT=`cat <<EOF
 Building have been finished successfully.
 
-You can find your live CD in 
+You can find your live CD in
 ~/tmp/remaster-new-files/livecd.iso
 
 To test it, you can run (qemu package must be installed):
@@ -193,21 +193,21 @@ fi
 
 while true; do
 	ISO_IMAGE=`dialog_choose_file "Please choose ISO image which will be used as base for customized live CD"`
-	
+
 	if [ -z "$ISO_IMAGE" ] ; then
 		failure "Script cancelled by user"
 	fi
-	
+
 	if [ ! -r "$ISO_IMAGE" ] ; then
 		dialog_msgbox "Not existing file" "File $ISO_IMAGE does not exist"
 		continue
 	fi
-	
+
 	if [ ! -r "$ISO_IMAGE" ] ; then
 		dialog_msgbox "Unreadable file" "File $ISO_IMAGE cannot be read, do you have permissions for this file?"
 		continue
 	fi
-	
+
 	if [ "`file --brief --mime \"$ISO_IMAGE\"`" != "application/x-iso9660" ] ; then
 		dialog_msgbox "Wrong file" "File $ISO_IMAGE does not seem to be a valid ISO9660 image"
 		continue
@@ -218,13 +218,13 @@ done
 while true; do
 	ISO_DESCRIPTION=`dialog_line_input "Please enter name for CD (you can leave it blank, 32 chars max)" "Customized Ubuntu live CD" `
 	RESULT=$?
-	
+
 	if [ $RESULT -ne 0 ] ; then
 		failure "Script cancelled by user"
 	fi
-	
+
 	DESCRIPTION_LEN=`echo "$ISO_DESCRIPTION" | wc -c`
-	
+
 	if [ "$DESCRIPTION_LEN"  -gt 32  ]; then
 		dialog_msgbox "Wrong ISO description" "Description can only have 32 characters, while yours has $DESCRIPTION_LEN characters"
 		continue
@@ -247,14 +247,14 @@ echo "$DESKTOP_TYPES" >"$BUILD_DIR"/desktop_types
 echo "$ISO_DESCRIPTION" >"$BUILD_DIR"/iso_description
 
 echo "Running build process..."
-(sudo bash "$SCRIPT_DIR"/scripts/remaster-live-cd.sh "$ISO_IMAGE" "$BUILD_DIR" 
+(sudo bash "$SCRIPT_DIR"/scripts/remaster-live-cd.sh "$ISO_IMAGE" "$BUILD_DIR"
 RESULT=$?
 
 if [ $RESULT -ne 0 ]; then
 	dialog_msgbox "Build failure" "$BUILD_FAILURE_TEXT"
 else
 	dialog_msgbox "Build success" "$BUILD_SUCCESS_TEXT"
-fi 
+fi
 ) 2>&1 | tee -a build.log
 
 if [ "$BUILD_DIR" = "/" ] ; then

@@ -1,0 +1,28 @@
+---------
+-- 1.2 --
+---------
+
+* GUI:
+* Backend:
+	* Fixed bug 49612, now if no dialog/kdialog/xdialog is detected an error message is printed out.
+
+---------
+-- 1.1 --
+---------
+
+* GUI:
+	* Added support for installing multiple language packs.
+	* Added support for setting boot language, it can be language variant also (for example pt_BR).
+	* Added possibility of changing CD label.
+	* Fixed removing language-selector-qt and thus kubuntu-desktop. Should fix Malone bug #47846.
+	* Fixed reporting build success in case of backend failure.
+* Backend:
+	* Added support for setting boot language, it can be language variant also (for example pt_BR).
+	* Added possibility of changing CD label.
+	* Added possibility of passing extra options to mkisofs.
+
+---------
+-- 1.0 --
+---------
+
+Initial release.
