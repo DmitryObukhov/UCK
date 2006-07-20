@@ -3,6 +3,8 @@
 ---------
 
 * GUI:
+	* Support for gtk has been added (using zenity).
+	* Some info messages were updated
 * Backend:
 	* Fixed bug 49612, now if no dialog/kdialog/xdialog is detected an error message is printed out.
 
