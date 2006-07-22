@@ -1,0 +1,119 @@
+#!/bin/bash
+
+###################################################################################
+# UCK - Ubuntu Customization Kit                                                  #
+# Copyright (C) 2006  UCK Team                                                    #
+#                                                                                 #
+# This program is free software; you can redistribute it and/or                   #
+# modify it under the terms of the GNU General Public License                     #
+# as published by the Free Software Foundation; either version 2                  #
+# of the License.                                                                 #
+#                                                                                 #
+# This program is distributed in the hope that it will be useful,                 #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of                  #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                   #
+# GNU General Public License for more details.                                    #
+#                                                                                 #
+# You should have received a copy of the GNU General Public License               #
+# along with this program; if not, write to the Free Software                     #
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. #
+###################################################################################
+
+ISO_IMAGE="$1"
+CUSTOMIZE_DIR="$2"
+ISO_MOUNT_DIR=~/tmp/iso-source2
+SQUASHFS_IMAGE="$ISO_MOUNT_DIR/casper/filesystem.squashfs"
+SQUASHFS_MOUNT_DIR=~/tmp/squashfs-source
+REMASTER_DIR=~/tmp/remaster-root
+ISO_REMASTER_DIR=~/tmp/remaster-iso
+INITRD_REMASTER_DIR=~/tmp/remaster-initrd
+REMASTER_CUSTOMIZE_RELATIVE_DIR="tmp/customize-dir"
+REMASTER_CUSTOMIZE_DIR="$REMASTER_DIR/$REMASTER_CUSTOMIZE_RELATIVE_DIR"
+CUSTOMIZATION_SCRIPT="$REMASTER_CUSTOMIZE_RELATIVE_DIR/customize"
+#Name of directory where packages downloaded by apt are kept across build runs
+#Allows saving bandwidth for downloading all updates
+#Important: no "/" at the end of directory name!
+APT_CACHE_SAVE_DIR=~/tmp/remaster-apt-cache
+NEW_FILES_DIR=~/tmp/remaster-new-files
+
+echo "Starting CD remastering on " `date`
+echo "Customization dir=$CUSTOMIZE_DIR"
+
+export LC_ALL=C
+
+. libraries/gui.sh
+. libraries/remaster-live-cd.sh
+
+if [ -z "$ISO_IMAGE" ]; then
+	usage
+	exit 1
+fi
+
+if [ -z "$CUSTOMIZE_DIR" ]; then
+	usage
+	exit 1
+fi
+
+CUSTOMIZE_ROOTFS="no"
+CUSTOMIZE_INITRD="no"
+CUSTOMIZE_ISO="no"
+
+if [ -e "$CUSTOMIZE_DIR/customize" ]; then
+	CUSTOMIZE_ROOTFS="yes"
+fi
+
+if [ -e "$CUSTOMIZE_DIR/customize_initrd" ]; then
+	CUSTOMIZE_INITRD="yes"
+fi
+
+if [ -e "$CUSTOMIZE_DIR/customize_iso" ]; then
+	CUSTOMIZE_ISO="yes"
+fi
+
+mount_iso
+unpack_iso
+
+if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
+	unpack_rootfs
+fi
+
+if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
+	unpack_initrd
+fi
+
+unmount_iso
+
+if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
+	prepare_rootfs_for_net_update
+	run_rootfs_chroot_customization
+fi
+
+if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
+	customize_initrd
+fi
+
+if [ "$CUSTOMIZE_ISO" = "yes" ] ; then
+	customize_iso
+fi
+
+if [ "$MANUAL_CUSTOMIZATION_PAUSE" = "yes" ] ; then
+	echo "Pausing for manual customization, press Enter when finished..."
+	read DUMMY
+fi
+
+if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
+	save_apt_cache
+	clean_rootfs
+fi
+
+prepare_new_files_directories
+
+if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
+	pack_initrd
+fi
+
+if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
+	pack_rootfs
+fi
+
+pack_isofs
