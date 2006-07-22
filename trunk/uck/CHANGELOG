@@ -3,28 +3,31 @@
 ---------
 
 * GUI:
-	* Support for gtk has been added (using zenity).
-	* Some info messages were updated
+	* Support for gtk has been added (using zenity). (Fabrizio Balliano)
+	* Some info messages were updated. (Fabrizio Balliano)
 * Backend:
-	* Fixed bug 49612, now if no dialog/kdialog/xdialog is detected an error message is printed out.
+	* successful building message was added with the path to the ISO. (Fabrizio Balliano)
+	* md5sum is now generated also for the final ISO. (Fabrizio Balliano)
+	* proc and sys are now mounted in the chrooted environment. (Fabrizio Balliano)
+	* Fixed bug 49612, now if no dialog/kdialog/xdialog is detected an error message is printed out. (Fabrizio Balliano)
 
 ---------
 -- 1.1 --
 ---------
 
 * GUI:
-	* Added support for installing multiple language packs.
-	* Added support for setting boot language, it can be language variant also (for example pt_BR).
-	* Added possibility of changing CD label.
-	* Fixed removing language-selector-qt and thus kubuntu-desktop. Should fix Malone bug #47846.
-	* Fixed reporting build success in case of backend failure.
+	* Added support for installing multiple language packs. (Krzysztof Lichota)
+	* Added support for setting boot language, it can be language variant also (for example pt_BR). (Krzysztof Lichota)
+	* Added possibility of changing CD label. (Krzysztof Lichota)
+	* Fixed removing language-selector-qt and thus kubuntu-desktop. Should fix Malone bug #47846. (Krzysztof Lichota)
+	* Fixed reporting build success in case of backend failure. (Krzysztof Lichota)
 * Backend:
-	* Added support for setting boot language, it can be language variant also (for example pt_BR).
-	* Added possibility of changing CD label.
-	* Added possibility of passing extra options to mkisofs.
+	* Added support for setting boot language, it can be language variant also (for example pt_BR). (Krzysztof Lichota)
+	* Added possibility of changing CD label. (Krzysztof Lichota)
+	* Added possibility of passing extra options to mkisofs. (Krzysztof Lichota)
 
 ---------
 -- 1.0 --
 ---------
 
-Initial release.
+Initial release. (Krzysztof Lichota)
