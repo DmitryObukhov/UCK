@@ -76,9 +76,9 @@ function pack_initrd()
 
 function customize_initrd()
 {
-	echo "Running initird customization script $CUSTOMIZE_DIR/customize_initrd, initrd remaster dir is $INITRD_REMASTER_DIR"
+	echo "Running initrd customization script $CUSTOMIZE_DIR/customize_initrd, initrd remaster dir is $INITRD_REMASTER_DIR"
 	export INITRD_REMASTER_DIR
-	"$CUSTOMIZE_DIR/customize_initrd" || failure "Running initird customization script $CUSTOMIZE_DIR/customize_initrd with remaster dir $INITRD_REMASTER_DIR failed, error=$?"
+	. $CUSTOMIZE_DIR/customize_initrd || failure "Running initird customization script $CUSTOMIZE_DIR/customize_initrd with remaster dir $INITRD_REMASTER_DIR failed, error=$?"
 	export -n INITRD_REMASTER_DIR
 }
 
@@ -99,8 +99,10 @@ function mount_iso()
 
 function unmount_iso()
 {
-	umount "$ISO_MOUNT_DIR" || echo "Failed to unmount ISO mount directory $ISO_MOUNT_DIR, error=$?"
-	rmdir "$ISO_MOUNT_DIR" || echo "Failed to remove ISO mount directory $ISO_MOUNT_DIR, error=$?"
+	if [ -e "$ISO_MOUNT_DIR" ] ; then
+		umount "$ISO_MOUNT_DIR" || echo "Failed to unmount ISO mount directory $ISO_MOUNT_DIR, error=$?"
+		rmdir "$ISO_MOUNT_DIR" || echo "Failed to remove ISO mount directory $ISO_MOUNT_DIR, error=$?"
+	fi
 }
 
 function unpack_iso()
@@ -215,10 +217,18 @@ function pack_rootfs()
 	fi
 
 	mksquashfs "$REMASTER_DIR" "$ISO_REMASTER_DIR/casper/filesystem.squashfs" $EXTRA_OPTS || failure "Failed to create squashfs image to $ISO_REMASTER_DIR/casper/filesystem.squashfs, error=$?"
+}
 
+function remove_remaster_dir()
+{
 	echo "Removing remastering root dir"
-
 	remove_directory "$REMASTER_DIR"
+}
+
+function remove_remaster_initrd()
+{
+	echo "Removing remastering root dir"
+	remove_directory "$INITRD_REMASTER_DIR"
 }
 
 function update_iso_locale()
