@@ -35,6 +35,7 @@ CUSTOMIZATION_SCRIPT="$REMASTER_CUSTOMIZE_RELATIVE_DIR/customize"
 #Important: no "/" at the end of directory name!
 APT_CACHE_SAVE_DIR=~/tmp/remaster-apt-cache
 NEW_FILES_DIR=~/tmp/remaster-new-files
+KEEP_PREVIOUS_ISO_EXTRACTION="no"
 
 echo "Starting CD remastering on " `date`
 echo "Customization dir=$CUSTOMIZE_DIR"
@@ -70,8 +71,18 @@ if [ -e "$CUSTOMIZE_DIR/customize_iso" ]; then
 	CUSTOMIZE_ISO="yes"
 fi
 
-mount_iso
-unpack_iso
+if [ -e "$ISO_REMASTER_DIR" ] ; then
+	dialog_question "Previous data found" "UCK found a previous ISO extraction directory, do you want to continue a previous session?"
+	RESULT=$?
+	if [ $RESULT == 0 ] ; then
+		KEEP_PREVIOUS_ISO_EXTRACTION="yes"
+	fi
+fi
+
+if [ "$KEEP_PREVIOUS_ISO_EXTRACTION" = "no" ] ; then
+	mount_iso
+	unpack_iso
+fi
 
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 	unpack_rootfs

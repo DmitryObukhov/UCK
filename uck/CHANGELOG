@@ -6,6 +6,8 @@
 	* Support for gtk has been added (using zenity). (Fabrizio Balliano)
 	* Some info messages were updated. (Fabrizio Balliano)
 * Backend:
+	* if a previous ISO extraction was found system ask user if want to continue a previous session or extract ISO again. (Fabrizio Balliano)
+	* libraries splitting and file reorganization. (Fabrizio Balliano)
 	* successful building message was added with the path to the ISO. (Fabrizio Balliano)
 	* md5sum is now generated also for the final ISO. (Fabrizio Balliano)
 	* proc and sys are now mounted in the chrooted environment. (Fabrizio Balliano)

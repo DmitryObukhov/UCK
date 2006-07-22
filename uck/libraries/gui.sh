@@ -91,23 +91,21 @@ function dialog_multi_choice()
 			PARAMS="$PARAMS $i $i"
 		done
 		$DIALOG --list --checklist --multiple --text "$DESCRIPTION" --column "" --column ""  $PARAMS
-		RESULT=$?
 	else
 		if [ "$DIALOG_TYPE" = "kdialog" ] ; then
 			for i; do
 				PARAMS="$PARAMS $i $i 0"
 			done
 			$DIALOG --separate-output --checklist "$DESCRIPTION" $PARAMS
-			RESULT=$?
 		else
 			for i; do
 				PARAMS="$PARAMS $i Language 0"
 			done
 			$DIALOG --stdout --separate-output --checklist "$DESCRIPTION" 20 30 10 $PARAMS
-			RESULT=$?
 		fi
 	fi
 
+	RESULT=$?
 	return $RESULT
 }
 
@@ -118,17 +116,15 @@ function dialog_line_input()
 
 	if [ "$DIALOG_TYPE" = "zenity" ] ; then
 		$DIALOG --entry --text "$DESCRIPTION" --entry-text "$INITIAL_VALUE"
-		RESULT=$?
 	else
 		if [ "$DIALOG_TYPE" = "kdialog" ] ; then
 			$DIALOG --inputbox "$DESCRIPTION" "$INITIAL_VALUE"
-			RESULT=$?
 		else
 			$DIALOG --stdout --inputbox "$DESCRIPTION" 20 30 "$INITIAL_VALUE"
-			RESULT=$?
 		fi
 	fi
 
+	RESULT=$?
 	return $RESULT
 }
 
@@ -158,3 +154,17 @@ function dialog_msgbox()
 		$DIALOG --title "$TITLE" --msgbox "$TEXT" 20 80
 	fi
 }
+
+function dialog_question()
+{
+	TITLE="$1"
+	TEXT="$2"
+
+	if [ "$DIALOG_TYPE" = "zenity" ]; then
+		$DIALOG --title "$TITLE" --question --text "$TEXT"
+	else
+		$DIALOG --title "$TITLE" --yesno "$TEXT" 20 80
+	fi
+}
+
+find_dialog
