@@ -5,11 +5,11 @@
 * GUI:
 	* Support for gtk has been added (using zenity). (Fabrizio Balliano)
 	* Some info messages were updated. (Fabrizio Balliano)
+	* now we ask user if he wants to keep remaster directories to evetually do some manual customization in a second time. (Fabrizio Balliano)
 * Backend:
+	* a bug with initrd customization was fixed, now temporary initrd.gz is removed after use. (Fabrizio Balliano)
 	* a bug with initrd script calling was fixed, now all variables are available in the script too. (Fabrizio Balliano)
-	* now we ask user if he wants to keep remaster directory to evetually do some manual customization in a second time. (Fabrizio Balliano)
-	* if a previous remastering directory is found the system asks user to continue a previous session or extract squashfs again. (Fabrizio Balliano)
-	* if a previous ISO extraction is found the system asks user if want to continue a previous session or extract ISO again. (Fabrizio Balliano)
+	* if a previous remastering directories are found the system continues a previous session. (Fabrizio Balliano)
 	* libraries splitting and file reorganization. (Fabrizio Balliano)
 	* successful building message was added with the path to the ISO. (Fabrizio Balliano)
 	* md5sum is now generated also for the final ISO. (Fabrizio Balliano)
