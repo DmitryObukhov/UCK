@@ -71,7 +71,7 @@ function pack_initrd()
 		rm -f "$ISO_REMASTER_DIR/casper/initrd.gz" || failure "Failed to remove $ISO_REMASTER_DIR/casper/initrd.gz, error=$?"
 	fi
 
-	cp -a "$NEW_FILES_DIR/initrd.gz" "$ISO_REMASTER_DIR/casper/initrd.gz" || failure "Failed to copy $NEW_FILES_DIR/initrd.gz to $ISO_REMASTER_DIR/casper/initrd.gz, error=$?"
+	mv "$NEW_FILES_DIR/initrd.gz" "$ISO_REMASTER_DIR/casper/initrd.gz" || failure "Failed to copy $NEW_FILES_DIR/initrd.gz to $ISO_REMASTER_DIR/casper/initrd.gz, error=$?"
 }
 
 function customize_initrd()
@@ -86,8 +86,10 @@ function customize_iso()
 {
 	echo "Running ISO customization script $CUSTOMIZE_DIR/customize_iso, iso remaster dir is $ISO_REMASTER_DIR"
 	export ISO_REMASTER_DIR
+	export CUSTOMIZE_DIR
 	"$CUSTOMIZE_DIR/customize_iso" || failure "Running ISO customization script $CUSTOMIZE_DIR/customize_iso with remaster dir $ISO_REMASTER_DIR failed, error=$?"
 	export -n ISO_REMASTER_DIR
+	export -n CUSTOMIZE_DIR
 }
 
 function mount_iso()
@@ -107,10 +109,7 @@ function unmount_iso()
 
 function unpack_iso()
 {
-	if [ -e "$ISO_REMASTER_DIR" ] ; then
-		remove_directory "$ISO_REMASTER_DIR" || failure "Failed to remove directory $ISO_REMASTER_DIR, error=$?"
-	fi
-
+	remove_iso_remaster_dir
 	cp -a "$ISO_MOUNT_DIR" "$ISO_REMASTER_DIR" || failure "Failed to unpack ISO from $ISO_MOUNT_DIR to $ISO_REMASTER_DIR"
 }
 
@@ -221,6 +220,14 @@ function pack_rootfs()
 	mksquashfs "$REMASTER_DIR" "$ISO_REMASTER_DIR/casper/filesystem.squashfs" $EXTRA_OPTS || failure "Failed to create squashfs image to $ISO_REMASTER_DIR/casper/filesystem.squashfs, error=$?"
 }
 
+function remove_iso_remaster_dir()
+{
+	if [ -e "$ISO_REMASTER_DIR" ] ; then
+		echo "Removing ISO remastering dir"
+		remove_directory "$ISO_REMASTER_DIR" || failure "Failed to remove directory $ISO_REMASTER_DIR, error=$?"
+	fi
+}
+
 function remove_remaster_dir()
 {
 	echo "Removing remastering root dir"
@@ -286,6 +293,4 @@ function pack_isofs()
 	echo "Generating md5sum for newly created ISO..."
 	cd $NEW_FILES_DIR
 	md5sum livecd.iso > livecd.iso.md5
-
-	echo "Generation completed SUCCESSFULLY, find your ISO in $NEW_FILES_DIR"
 }
