@@ -22,11 +22,11 @@
 ISO_IMAGE="$1"
 CUSTOMIZE_DIR="$2"
 ISO_MOUNT_DIR=~/tmp/iso-source2
-SQUASHFS_IMAGE="$ISO_MOUNT_DIR/casper/filesystem.squashfs"
-SQUASHFS_MOUNT_DIR=~/tmp/squashfs-source
 REMASTER_DIR=~/tmp/remaster-root
 ISO_REMASTER_DIR=~/tmp/remaster-iso
 INITRD_REMASTER_DIR=~/tmp/remaster-initrd
+SQUASHFS_IMAGE="$ISO_REMASTER_DIR/casper/filesystem.squashfs"
+SQUASHFS_MOUNT_DIR=~/tmp/squashfs-source
 REMASTER_CUSTOMIZE_RELATIVE_DIR="tmp/customize-dir"
 REMASTER_CUSTOMIZE_DIR="$REMASTER_DIR/$REMASTER_CUSTOMIZE_RELATIVE_DIR"
 CUSTOMIZATION_SCRIPT="$REMASTER_CUSTOMIZE_RELATIVE_DIR/customize"
@@ -78,6 +78,7 @@ fi
 if [ "$KEEP_PREVIOUS_ISO_EXTRACTION" = "no" ] || [ ! -e "$ISO_REMASTER_DIR" ] ; then
 	mount_iso
 	unpack_iso
+	unmount_iso
 fi
 
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
@@ -89,8 +90,6 @@ if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 		unpack_rootfs
 	fi
 fi
-
-unmount_iso
 
 if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
 	unpack_initrd

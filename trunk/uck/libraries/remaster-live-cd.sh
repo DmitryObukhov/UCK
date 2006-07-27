@@ -130,7 +130,7 @@ function unpack_rootfs()
 	umount "$SQUASHFS_MOUNT_DIR" || echo "Failed to unmount SQUASHFS mount directory $SQUASHFS_MOUNT_DIR, error=$?"
 	rmdir "$SQUASHFS_MOUNT_DIR" || echo "Failed to remove SQUASHFS mount directory $SQUASHFS_MOUNT_DIR, error=$?"
 
-	if [ "$KEEP_PREVIOUS_REMASTER_DIR" = "no" ] ; then
+	if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 		mount -t proc proc "$REMASTER_DIR/proc" || echo "Failed to unmount $REMASTER_DIR/proc, error=$?"
 		mount -t sysfs sysfs "$REMASTER_DIR/sys" || echo "Failed to unmount $REMASTER_DIR/sys, error=$?"
 	fi
