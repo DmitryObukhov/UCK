@@ -86,7 +86,7 @@ if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 		KEEP_PREVIOUS_REMASTER_DIR="yes"
 	fi
 
-	if [ "$KEEP_PREVIOUS_REMASTER_DIR" = "no" ] || [ ! -e "REMASTER_DIR" ] ; then
+	if [ "$KEEP_PREVIOUS_REMASTER_DIR" = "no" ] || [ ! -e "$REMASTER_DIR" ] ; then
 		unpack_rootfs
 	fi
 fi
