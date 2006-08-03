@@ -140,3 +140,7 @@ if [ "$KEEP_PREVIOUS_ISO_EXTRACTION" = "no" ] ; then
 fi
 
 echo "Generation completed SUCCESSFULLY, find your ISO in $NEW_FILES_DIR"
+
+unmount_all
+
+exit 0

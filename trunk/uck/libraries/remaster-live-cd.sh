@@ -24,9 +24,23 @@ function usage()
 	echo "Usage: $0 path-to-iso-file.iso customization-dir/"
 }
 
+function unmount_all()
+{
+	echo "Trying to unmount X11 sockets directory (ignore errors)..."
+	umount "$REMASTER_DIR/tmp/.X11-unix"
+	
+	for i in "$REMASTER_DIR"/lib/modules/*/volatile "$REMASTER_DIR"/proc "$REMASTER_DIR"/sys "$REMASTER_DIR"/dev/pts; do
+		echo "Trying to unmount directory $i (ignore errors)..."
+		umount "$i"
+	done
+}
+
 function failure()
 {
 	echo "$@"
+	
+	unmount_all
+	
 	exit 2
 }
 
@@ -131,9 +145,12 @@ function unpack_rootfs()
 	rmdir "$SQUASHFS_MOUNT_DIR" || echo "Failed to remove SQUASHFS mount directory $SQUASHFS_MOUNT_DIR, error=$?"
 
 	if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
-		mount -t proc proc "$REMASTER_DIR/proc" || echo "Failed to unmount $REMASTER_DIR/proc, error=$?"
-		mount -t sysfs sysfs "$REMASTER_DIR/sys" || echo "Failed to unmount $REMASTER_DIR/sys, error=$?"
+		mount -t proc proc "$REMASTER_DIR/proc" || echo "Failed to mount $REMASTER_DIR/proc, error=$?"
+		mount -t sysfs sysfs "$REMASTER_DIR/sys" || echo "Failed to mount $REMASTER_DIR/sys, error=$?"
 	fi
+	
+	#create backup of root directory
+	chroot "$REMASTER_DIR" cp -a /root /root.saved || failure "Failed to create backup of /root directory, error=$?"
 }
 
 function prepare_rootfs_for_net_update()
@@ -155,9 +172,32 @@ function run_rootfs_chroot_customization()
 	echo "Copying customization files..."
 	cp -a "$CUSTOMIZE_DIR" "$REMASTER_CUSTOMIZE_DIR" || failure "Cannot copy files from $CUSTOMIZE_DIR to $REMASTER_CUSTOMIZE_DIR, error=$?"
 
+	echo "Mounting X11 sockets directory to allow access from customization environment..."
+	mkdir -p "$REMASTER_DIR/tmp/.X11-unix" || failure "Cannot create mount directory $REMASTER_DIR/tmp/.X11-unix, error=$?"
+	mount --bind /tmp/.X11-unix "$REMASTER_DIR/tmp/.X11-unix" || failure "Cannot bind mount /tmp/.X11-unix in  $REMASTER_DIR/tmp/.X11-unix, error=$?"
+	
+	if [ -e "$CUSTOMIZE_DIR/Xcookie" ] ; then
+		echo "Creating user directory..."
+		chroot "$REMASTER_DIR" mkdir /home/$USERNAME || failure "Cannot create user directory, error=$?"
+		echo "Copying X authorization file to chroot filesystem..."
+		#xauth extract - $DISPLAY 
+		#cat "$CUSTOMIZE_DIR/Xcookie" 
+		cat "$CUSTOMIZE_DIR/Xcookie" | chroot "$REMASTER_DIR" xauth merge - -f /root/.Xauthority || failure "Failed to merge X authorization file, error=$?"
+	fi
+
 	echo "Running customization script..."
-	chroot "$REMASTER_DIR" "/$CUSTOMIZATION_SCRIPT" || failure "Running customization script failed, error=$?"
+	chroot "$REMASTER_DIR" "/$CUSTOMIZATION_SCRIPT"
+	RESULT=$?
+	if [ "$RESULT" -ne 0 ]; then
+		echo "Unmounting X11 sockets directory..."
+		umount "$REMASTER_DIR/tmp/.X11-unix"
+		
+		failure "Running customization script failed, error=$RESULT"
+	fi
 	echo "Customization script finished"
+	
+	echo "Unmounting X11 sockets directory..."
+	umount "$REMASTER_DIR/tmp/.X11-unix" || failure "Failed to unmount $REMASTER_DIR/tmp/.X11-unix, error=$?"
 }
 
 function save_apt_cache()
@@ -183,9 +223,22 @@ function clean_rootfs()
 	#Run in chroot to be on safe side
 	chroot "$REMASTER_DIR" 'rm -rf /tmp/* /tmp/.* /var/tmp/* /var/tmp/.*' || echo "Warning: Cannot remove temoporary files, error=$?. Ignoring"
 
+	chroot "$REMASTER_DIR" rm -rf '/tmp/*' '/tmp/.*' '/var/tmp/*' '/var/tmp/.*' #2>/dev/null
+ 	
+	#Clean up files which are created by running X apps.
+	#chroot "$REMASTER_DIR" 'rm -rf /root/.kde /root/share /root/socket-* /root/.qt /root/tmp-* /root/cache-* /root/.ICEauthority'  2>/dev/null
+	echo "Restoring /root directory"
+	chroot "$REMASTER_DIR" rm -rf /root || failure "Cannot remove /root directory, error=$?"
+	chroot "$REMASTER_DIR" mv /root.saved /root
+	
+	echo "Removing /home/username directory, if created"
+	chroot "$REMASTER_DIR" rm -rf /home/$USERNAME # 2>/dev/null
+
+	echo "Restoring resolv.conf"
 	#mv -f "$RESOLV_CONF_BACKUP" "$REMASTER_DIR/etc/resolv.conf" || failure "Failed to restore resolv.conf, error=$?"
 	rm -f "$REMASTER_DIR/etc/resolv.conf" || failure "Failed to remove resolv.conf, error=$?"
 
+	echo "Unmounting /proc and /sys"
 	umount "$REMASTER_DIR/proc"
 	umount "$REMASTER_DIR/sys"
 }
@@ -236,7 +289,7 @@ function remove_remaster_dir()
 
 function remove_remaster_initrd()
 {
-	echo "Removing remastering root dir"
+	echo "Removing initrd remastering dir"
 	remove_directory "$INITRD_REMASTER_DIR"
 }
 
