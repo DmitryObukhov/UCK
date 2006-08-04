@@ -3,7 +3,7 @@
 ---------
 
 * GUI:
-	* Added ability to use package manager inside CD image to customize packages installed.
+	* Added ability to use package manager inside CD image to customize packages installed (Krzysztof Lichota).
 	* Support for gtk has been added (using zenity). (Fabrizio Balliano)
 	* Some info messages were updated. (Fabrizio Balliano)
 	* now we ask user if he wants to keep remaster directories to evetually do some manual customization in a second time. (Fabrizio Balliano)
@@ -16,8 +16,8 @@
 	* md5sum is now generated also for the final ISO. (Fabrizio Balliano)
 	* proc and sys are now mounted in the chrooted environment. (Fabrizio Balliano)
 	* Fixed bug 49612, now if no dialog/kdialog/xdialog is detected an error message is printed out. (Fabrizio Balliano)
-	* Added possibility of running X programs from CD image in user's X server.
-	* Added unmounting all filesystems upon exit.
+	* Added possibility of running X programs from CD image in user's X server (Krzysztof Lichota).
+	* Added unmounting all filesystems upon exit (Krzysztof Lichota).
 
 ---------
 -- 1.1 --
