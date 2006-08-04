@@ -65,7 +65,7 @@ function dialog_menu()
 		for i; do
 			PARAMS="$PARAMS $i"
 		done
-		$DIALOG --list --text "$DESCRIPTION" --column "" $PARAMS
+		$DIALOG --list --text "$DESCRIPTION" --column "" $PARAMS --width=500 --height=400
 	else
 		if [ "$DIALOG_TYPE" = "kdialog" ] ; then
 			for i; do
@@ -90,7 +90,7 @@ function dialog_multi_choice()
 		for i; do
 			PARAMS="$PARAMS $i $i"
 		done
-		$DIALOG --list --checklist --multiple --text "$DESCRIPTION" --column "" --column ""  $PARAMS
+		$DIALOG --list --checklist --multiple --text "$DESCRIPTION" --column "" --column ""  $PARAMS --width=500 --height=400
 	else
 		if [ "$DIALOG_TYPE" = "kdialog" ] ; then
 			for i; do
@@ -149,7 +149,7 @@ function dialog_msgbox()
 	TEXT="$2"
 
 	if [ "$DIALOG_TYPE" = "zenity" ]; then
-		$DIALOG --title "$TITLE" --info --text "$TEXT"
+		echo -n "$TEXT" | $DIALOG --title "$TITLE" --text-info --width=500 --height=400
 	else
 		$DIALOG --title "$TITLE" --msgbox "$TEXT" 20 80
 	fi
