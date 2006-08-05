@@ -48,27 +48,19 @@ EOF
 `
 RUN_PACKAGE_APP_TEXT=`cat <<EOF
 Package manager will be run your Xserver, but with the title "UCK package manager".
-It will appear when unpacking CD and installing predefined packages 
-is done, so it might take a long time.
+It will appear when unpacking CD and installing predefined packages is done, so it might take a long time.
 All operations you do there will affect only customized CD.
 You can:
-- Add/remove packages 
+- Add/remove packages
 - Add/remove repositories.
 - Upgrade all packages (to get security updates and newest versions of packages).
 See Note 2 for information about upgrading kernel packages.
 
 When you finish customization, quit the application and building process will proceed.
 
-Note 1: package application will be run after language packs are installed 
-according to previous selections, so you do not have to do this again.
+Note 1: package application will be run after language packs are installed according to previous selections, so you do not have to do this again.
 
-Note 2: upgrading kernel package DOES NOT update kernel used to run live CD, only
-the kernel which will be installed in new system. So you cannot rely on getting
-live CD to work due to update in kernel package (in case some fixes in new kernel
-fix bug which prevent using live CD). Please also be sure to leave package 
-linux-image-VERSION_OF_KERNEL_ON_CD (currently linux-image-2.6.15-23-386)
-as it contains modules necessary to run properly live CD (the most apparent symptom 
-of this issue is that mouse does not work).
+Note 2: upgrading kernel package DOES NOT update kernel used to run live CD, only the kernel which will be installed in new system. So you cannot rely on getting live CD to work due to update in kernel package (in case some fixes in new kernel fix bug which prevent using live CD). Please also be sure to leave package linux-image-VERSION_OF_KERNEL_ON_CD (currently linux-image-2.6.15-23-386) as it contains modules necessary to run properly live CD (the most apparent symptom of this issue is that mouse does not work).
 
 Note 3: if you upgrade packages, add first (manually in package manager) repository:
 deb http://archive.ubuntu.com/ubuntu/ dapper-updates main restricted
@@ -76,8 +68,7 @@ as it will be available after installation and will cause immediate updates.
 
 Note 4: sources.list changes are not propagated to installed system.
 
-Note 5: Simple upgrading system increases CD size, as new kernel image is installed
-apart from current kernel image (and some other updates might increase size). 
+Note 5: Simple upgrading system increases CD size, as new kernel image is installed apart from current kernel image (and some other updates might increase size).
 You must remove something from image to make it fit on CD.
 
 
@@ -206,7 +197,7 @@ if [ "$RUN_PACKAGE_APP" = "yes" ] ; then
 	dialog_msgbox "Running package application notes" "$RUN_PACKAGE_APP_TEXT"
 
 	DESKTOP_TYPE=`dialog_menu "Please choose desktop environment which you want to use for customization" kde gnome`
-	
+
 	RESULT=$?
 	if [ $RESULT -ne 0 ] ; then
 		failure "Script cancelled by user"
