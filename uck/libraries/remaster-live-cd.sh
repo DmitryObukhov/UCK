@@ -28,8 +28,8 @@ function unmount_all()
 {
 	echo "Trying to unmount X11 sockets directory (ignore errors)..."
 	umount "$REMASTER_DIR/tmp/.X11-unix"
-	
-	for i in "$REMASTER_DIR"/lib/modules/*/volatile "$REMASTER_DIR"/proc "$REMASTER_DIR"/sys "$REMASTER_DIR"/dev/pts; do
+
+	for i in "$ISO_MOUNT_DIR" "$REMASTER_DIR"/lib/modules/*/volatile "$REMASTER_DIR"/proc "$REMASTER_DIR"/sys "$REMASTER_DIR"/dev/pts; do
 		echo "Trying to unmount directory $i (ignore errors)..."
 		umount "$i"
 	done
@@ -38,9 +38,9 @@ function unmount_all()
 function failure()
 {
 	echo "$@"
-	
+
 	unmount_all
-	
+
 	exit 2
 }
 
@@ -148,7 +148,7 @@ function unpack_rootfs()
 		mount -t proc proc "$REMASTER_DIR/proc" || echo "Failed to mount $REMASTER_DIR/proc, error=$?"
 		mount -t sysfs sysfs "$REMASTER_DIR/sys" || echo "Failed to mount $REMASTER_DIR/sys, error=$?"
 	fi
-	
+
 	#create backup of root directory
 	chroot "$REMASTER_DIR" cp -a /root /root.saved || failure "Failed to create backup of /root directory, error=$?"
 }
@@ -175,13 +175,13 @@ function run_rootfs_chroot_customization()
 	echo "Mounting X11 sockets directory to allow access from customization environment..."
 	mkdir -p "$REMASTER_DIR/tmp/.X11-unix" || failure "Cannot create mount directory $REMASTER_DIR/tmp/.X11-unix, error=$?"
 	mount --bind /tmp/.X11-unix "$REMASTER_DIR/tmp/.X11-unix" || failure "Cannot bind mount /tmp/.X11-unix in  $REMASTER_DIR/tmp/.X11-unix, error=$?"
-	
+
 	if [ -e "$CUSTOMIZE_DIR/Xcookie" ] ; then
 		echo "Creating user directory..."
 		chroot "$REMASTER_DIR" mkdir /home/$USERNAME || failure "Cannot create user directory, error=$?"
 		echo "Copying X authorization file to chroot filesystem..."
-		#xauth extract - $DISPLAY 
-		#cat "$CUSTOMIZE_DIR/Xcookie" 
+		#xauth extract - $DISPLAY
+		#cat "$CUSTOMIZE_DIR/Xcookie"
 		cat "$CUSTOMIZE_DIR/Xcookie" | chroot "$REMASTER_DIR" xauth merge - -f /root/.Xauthority || failure "Failed to merge X authorization file, error=$?"
 	fi
 
@@ -191,11 +191,11 @@ function run_rootfs_chroot_customization()
 	if [ "$RESULT" -ne 0 ]; then
 		echo "Unmounting X11 sockets directory..."
 		umount "$REMASTER_DIR/tmp/.X11-unix"
-		
+
 		failure "Running customization script failed, error=$RESULT"
 	fi
 	echo "Customization script finished"
-	
+
 	echo "Unmounting X11 sockets directory..."
 	umount "$REMASTER_DIR/tmp/.X11-unix" || failure "Failed to unmount $REMASTER_DIR/tmp/.X11-unix, error=$?"
 }
@@ -224,13 +224,13 @@ function clean_rootfs()
 	chroot "$REMASTER_DIR" 'rm -rf /tmp/* /tmp/.* /var/tmp/* /var/tmp/.*' || echo "Warning: Cannot remove temoporary files, error=$?. Ignoring"
 
 	chroot "$REMASTER_DIR" rm -rf '/tmp/*' '/tmp/.*' '/var/tmp/*' '/var/tmp/.*' #2>/dev/null
- 	
+
 	#Clean up files which are created by running X apps.
 	#chroot "$REMASTER_DIR" 'rm -rf /root/.kde /root/share /root/socket-* /root/.qt /root/tmp-* /root/cache-* /root/.ICEauthority'  2>/dev/null
 	echo "Restoring /root directory"
 	chroot "$REMASTER_DIR" rm -rf /root || failure "Cannot remove /root directory, error=$?"
 	chroot "$REMASTER_DIR" mv /root.saved /root
-	
+
 	echo "Removing /home/username directory, if created"
 	chroot "$REMASTER_DIR" rm -rf /home/$USERNAME # 2>/dev/null
 
