@@ -1,0 +1,6 @@
+customize-cd-gui usr/bin
+remaster-live-cd usr/bin
+docs/* usr/share/doc/uck/html
+customize-dir-examples/* usr/share/doc/uck/examples
+libraries/* usr/lib/uck
+customization-profiles/* usr/lib/uck/scripts/customization-profiles

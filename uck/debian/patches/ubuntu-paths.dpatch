@@ -1,0 +1,55 @@
+#!/bin/sh -e
+## DP: Upgrade paths to match the package's routes
+
+if [ $# -ne 1 ]; then
+    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+    exit 1
+fi
+
+case "$1" in
+    -patch) patch -f --no-backup-if-mismatch -p1 < $0;;
+    -unpatch) patch -f --no-backup-if-mismatch -R -p1 < $0;;
+    *)
+	echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+	exit 1;;
+esac
+
+exit 0
+=== modified file 'customize-cd-gui'
+--- uck-1.2.orig/customize-cd-gui	2006-08-06 11:28:16 +0000
++++ uck-1.2/customize-cd-gui	2006-08-06 11:46:00 +0000
+@@ -114,7 +114,7 @@
+ # EXECUTION STARTS HERE #
+ #########################
+ 
+-. libraries/gui.sh
++. /usr/lib/uck/gui.sh
+ 
+ dialog_msgbox "Welcome" "$WELCOME_TEXT"
+ 
+@@ -209,8 +209,9 @@
+ echo "Preparing build environment..."
+ BUILD_DIR=`mktemp -d`
+ 
+-SCRIPT_DIR=`dirname "$0"`
+-cp -a "$SCRIPT_DIR"/customization-profiles/localized_cd/* "$BUILD_DIR"/
++CUST_SCRIPT_DIR=/usr/lib/uck/scripts
++SCRIPT_DIR=/usr/bin
++cp -a "$CUST_SCRIPT_DIR"/customization-profiles/localized_cd/* "$BUILD_DIR"/
+ 
+ echo "$CD_LANGS" >"$BUILD_DIR"/language_packs
+ echo "$BOOT_CD_LANG" >"$BUILD_DIR"/livecd_locale
+
+=== modified file 'remaster-live-cd'
+--- uck-1.2.orig/remaster-live-cd	2006-08-06 11:28:16 +0000
++++ uck-1.2/remaster-live-cd	2006-08-06 11:46:34 +0000
+@@ -41,7 +41,7 @@
+ 
+ export LC_ALL=C
+ 
+-. libraries/remaster-live-cd.sh
++. /usr/lib/uck/remaster-live-cd.sh
+ 
+ if [ -z "$ISO_IMAGE" ]; then
+ 	usage
+
