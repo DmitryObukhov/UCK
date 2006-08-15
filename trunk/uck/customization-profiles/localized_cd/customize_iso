@@ -29,7 +29,7 @@ done
 make DEFAULT_LANG="$BOOT_LANG" || failure "Failed to build gfxboot theme, error=$?"
 pushd boot
 #fix list of languages to contain all languages for which there are language packs on CD
-ls -1 *.tr | while read i ; do echo $(basename $i .tr) ; done | grep -E "^$LANGPACKS_CONCATENATED(_.*)?" >langlist
+ls -1 *.tr | while read i ; do echo $(basename $i .tr) ; done | grep -E "^($LANGPACKS_CONCATENATED)\>(_.*)?" >langlist
 popd
 
 cp -af boot/* "$ISO_REMASTER_DIR/isolinux/" || failure "Error while copying boot files ( " boot/* " ) to $ISO_REMASTER_DIR/isolinux/, error=$?"
