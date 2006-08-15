@@ -1,4 +1,13 @@
 ---------
+-- 1.3 --
+---------
+
+* GUI:
+* Backend:
+	* Fixed bug 55981 - partially matching language names have been
+	added to boot languages (Krzysztof Lichota).
+
+---------
 -- 1.2 --
 ---------
 
