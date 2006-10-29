@@ -8,6 +8,8 @@
 	(Krzysztof Lichota).
 	* Fixed bug 55981 - partially matching language names have been
 	added to boot languages (Krzysztof Lichota).
+	* Fixed bug 55693- Edgy languages list file position is now
+	correctly detected (Fabrizio Balliano)
 
 ---------
 -- 1.2 --
