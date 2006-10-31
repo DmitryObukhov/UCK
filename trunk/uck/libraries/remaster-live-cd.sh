@@ -178,7 +178,7 @@ function run_rootfs_chroot_customization()
 
 	if [ -e "$CUSTOMIZE_DIR/Xcookie" ] ; then
 		echo "Creating user directory..."
-		chroot "$REMASTER_DIR" mkdir /home/$USERNAME || failure "Cannot create user directory, error=$?"
+		chroot "$REMASTER_DIR" mkdir "/home/$UCK_USERNAME" || failure "Cannot create user directory, error=$?"
 		echo "Copying X authorization file to chroot filesystem..."
 		#xauth extract - $DISPLAY
 		#cat "$CUSTOMIZE_DIR/Xcookie"
@@ -232,7 +232,7 @@ function clean_rootfs()
 	chroot "$REMASTER_DIR" mv /root.saved /root
 
 	echo "Removing /home/username directory, if created"
-	chroot "$REMASTER_DIR" rm -rf /home/$USERNAME # 2>/dev/null
+	chroot "$REMASTER_DIR" rm -rf "/home/$UCK_USERNAME" # 2>/dev/null
 
 	echo "Restoring resolv.conf"
 	#mv -f "$RESOLV_CONF_BACKUP" "$REMASTER_DIR/etc/resolv.conf" || failure "Failed to restore resolv.conf, error=$?"
