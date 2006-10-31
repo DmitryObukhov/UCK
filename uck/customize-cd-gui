@@ -229,7 +229,9 @@ if [ "$RUN_PACKAGE_APP" = "yes" ] ; then
 fi
 
 echo "Running build process..."
-(sudo bash "$SCRIPT_DIR"/remaster-live-cd "$ISO_IMAGE" "$BUILD_DIR"
+(
+export UCK_USERNAME="$USER"
+sudo bash "$SCRIPT_DIR"/remaster-live-cd "$ISO_IMAGE" "$BUILD_DIR"
 RESULT=$?
 
 if [ $RESULT -ne 0 ]; then

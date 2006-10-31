@@ -3,6 +3,8 @@
 ---------
 
 * GUI:
+	* Fixed bug 60130 (Cannot create /home directory, file exists) by
+	passing name of user in some other variable.
 * Backend:
 	* Fix for bug 61600 (Checksum errors for generated ISO image)
 	(Krzysztof Lichota).
