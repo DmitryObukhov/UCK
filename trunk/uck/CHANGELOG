@@ -1,4 +1,12 @@
 ---------
+-- 1.4 --
+---------
+
+Examples:
+	* Applied fix for bootchart not installed on local machine (by Jyrki
+	Muukkonen), see bug 72842.
+
+---------
 -- 1.3 --
 ---------
 
