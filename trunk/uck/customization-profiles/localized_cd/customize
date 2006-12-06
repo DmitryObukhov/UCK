@@ -71,7 +71,13 @@ if [ "$RUN_PACKAGE_APP" = "yes" ] ; then
 	
 	if [ "$DESKTOP_TYPE" = "kde" ]; then
 		WINDOW_MANAGER="kwin"
-		PACKAGE_APP="adept"
+		PACKAGE_APP=`which adept`
+		if [ $? -ne 0 ]; then
+			PACKAGE_APP=`which adept_manager`
+			if [ $? -ne 0 ]; then
+				failure "Cannot find neither adept not adept_manager"
+			fi
+		fi
 		PACKAGE_APP_OPTIONS=(--nofork --caption "UCK Package Manager")
 	elif [ "$DESKTOP_TYPE" = "gnome" ]; then
 		WINDOW_MANAGER="metacity"
