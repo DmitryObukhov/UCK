@@ -126,14 +126,16 @@ fi
 
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 	pack_rootfs
-
-	if [ "$KEEP_PREVIOUS_REMASTER_DIR" = "no" ] ; then
-		remove_remaster_dir
-	fi
 fi
 
 remove_remaster_initrd
 pack_isofs
+
+if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
+	if [ "$KEEP_PREVIOUS_REMASTER_DIR" = "no" ] ; then
+		remove_remaster_dir
+	fi
+fi
 
 if [ "$KEEP_PREVIOUS_ISO_EXTRACTION" = "no" ] ; then
 	remove_iso_remaster_dir
