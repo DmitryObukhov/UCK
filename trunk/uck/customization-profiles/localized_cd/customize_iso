@@ -41,3 +41,12 @@ if [ "$BUILD_DIR" = "/" ] ; then
 else
 	rm -rf "$BUILD_DIR"
 fi
+
+#copy kernel and initrd, in case it was changed during installation
+echo "REMASTER_DIR=$REMASTER_DIR"
+VMLINUZ=`ls -1 "$REMASTER_DIR"/boot/vmlinuz* | sort | tail -n1`
+INITRD="$REMASTER_DIR"/boot/initrd.img-$(echo `basename $VMLINUZ` | cut -d'-' -f 2-)
+#INITRD=`ls -1 "$REMASTER_DIR"/boot/initrd* | sort | tail -n1`
+cp -f "$VMLINUZ" "$ISO_REMASTER_DIR/casper/vmlinuz"
+cp -f "$INITRD" "$ISO_REMASTER_DIR/casper/initrd.gz"
+
