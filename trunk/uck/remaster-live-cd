@@ -43,6 +43,9 @@ export LC_ALL=C
 
 . libraries/remaster-live-cd.sh
 
+trap unmount_all EXIT
+trap unmount_all SIGINT
+
 if [ -z "$ISO_IMAGE" ]; then
 	usage
 	exit 1
@@ -81,6 +84,8 @@ if [ "$KEEP_PREVIOUS_ISO_EXTRACTION" = "no" ] || [ ! -e "$ISO_REMASTER_DIR" ] ; 
 	unmount_iso
 fi
 
+export ISO_REMASTER_DIR
+
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 	if [ -e "$CUSTOMIZE_DIR/keep_rootfs_extraction" ] ; then
 		KEEP_PREVIOUS_REMASTER_DIR="yes"
@@ -89,10 +94,12 @@ if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 	if [ "$KEEP_PREVIOUS_REMASTER_DIR" = "no" ] || [ ! -e "$REMASTER_DIR" ] ; then
 		unpack_rootfs
 	fi
+	export REMASTER_DIR
 fi
 
 if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
 	unpack_initrd
+	export INITRD_REMASTER_DIR
 fi
 
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
@@ -128,18 +135,24 @@ if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 	pack_rootfs
 fi
 
+
 remove_remaster_initrd
+export -n INITRD_REMASTER_DIR
+
 pack_isofs
 
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 	if [ "$KEEP_PREVIOUS_REMASTER_DIR" = "no" ] ; then
 		remove_remaster_dir
 	fi
+	export -n REMASTER_DIR
 fi
 
 if [ "$KEEP_PREVIOUS_ISO_EXTRACTION" = "no" ] ; then
 	remove_iso_remaster_dir
 fi
+
+export -n ISO_REMASTER_DIR
 
 echo "Generation completed SUCCESSFULLY, find your ISO in $NEW_FILES_DIR"
 
