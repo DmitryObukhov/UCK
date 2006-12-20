@@ -274,7 +274,7 @@ else
 		dialog_msgbox "ISO size error" "Warning: ISO image might be too big to fit on 700MB CD-ROM"
 	fi
 fi
-) | tee -a build.log
+) 2>&1 | tee -a build.log
 
 if [ "$BUILD_DIR" = "/" ] ; then
 	failure "Trying to remove root dir"
