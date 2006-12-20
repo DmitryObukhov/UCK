@@ -29,7 +29,7 @@ function unmount_all()
 	echo "Trying to unmount X11 sockets directory (ignore errors)..."
 	umount "$REMASTER_DIR/tmp/.X11-unix"
 
-	for i in "$ISO_MOUNT_DIR" "$REMASTER_DIR"/lib/modules/*/volatile "$REMASTER_DIR"/proc "$REMASTER_DIR"/sys "$REMASTER_DIR"/dev/pts; do
+	for i in "$SQUASHFS_MOUNT_DIR" "$ISO_MOUNT_DIR" "$REMASTER_DIR"/lib/modules/*/volatile "$REMASTER_DIR"/proc "$REMASTER_DIR"/sys "$REMASTER_DIR"/dev/pts; do
 		echo "Trying to unmount directory $i (ignore errors)..."
 		umount "$i"
 	done
@@ -182,7 +182,9 @@ function run_rootfs_chroot_customization()
 		echo "Copying X authorization file to chroot filesystem..."
 		#xauth extract - $DISPLAY
 		#cat "$CUSTOMIZE_DIR/Xcookie"
-		cat "$CUSTOMIZE_DIR/Xcookie" | chroot "$REMASTER_DIR" xauth merge - -f /root/.Xauthority || failure "Failed to merge X authorization file, error=$?"
+		#Looks like some apps look for Xauthority in root directory and some in user dir :/
+		cat "$CUSTOMIZE_DIR/Xcookie" | chroot "$REMASTER_DIR" xauth -f /root/.Xauthority merge - || failure "Failed to merge X authorization file, error=$?"
+		cat "$CUSTOMIZE_DIR/Xcookie" | chroot "$REMASTER_DIR" xauth merge - || failure "Failed to merge X authorization file in user directory, error=$?"
 	fi
 
 	echo "Running customization script..."
@@ -340,6 +342,7 @@ function pack_isofs()
 
 	mkisofs -o "$NEW_FILES_DIR/livecd.iso" \
 		-b "isolinux/isolinux.bin" -c "isolinux/boot.cat" \
+		-p "Ubuntu Customization Kit - http://uck.sf.net" \
 		-no-emul-boot -boot-load-size 4 -boot-info-table \
 		-V "$LIVECD_ISO_DESCRIPTION" -cache-inodes -r -J -l \
 		$MKISOFS_EXTRA_OPTIONS \
