@@ -140,6 +140,7 @@ remove_remaster_initrd
 export -n INITRD_REMASTER_DIR
 
 pack_isofs
+unmount_all
 
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 	if [ "$KEEP_PREVIOUS_REMASTER_DIR" = "no" ] ; then
@@ -156,6 +157,5 @@ export -n ISO_REMASTER_DIR
 
 echo "Generation completed SUCCESSFULLY, find your ISO in $NEW_FILES_DIR"
 
-unmount_all
 
 exit 0
