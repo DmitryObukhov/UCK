@@ -60,23 +60,35 @@ function dialog_menu()
 {
 	DESCRIPTION="$1"
 	shift
+	
+	declare -a PARAMS
 
 	if [ "$DIALOG_TYPE" = "zenity" ]; then
-		for i; do
-			PARAMS="$PARAMS $i"
+		declare -i i=0
+		for v; do
+			PARAMS[$i]="$v"
+			i+=1
 		done
 		$DIALOG --list --text "$DESCRIPTION" --column "" $PARAMS --width=500 --height=400
 	else
 		if [ "$DIALOG_TYPE" = "kdialog" ] ; then
-			for i; do
-				PARAMS="$PARAMS $i $i"
+			declare -i i=0
+			for v; do
+				PARAMS[$i]="$v"
+				i+=1
+				PARAMS[$i]="$v" #yes, 2 times as kdialog requires key and value
+				i+=1
 			done
-			$DIALOG --menu "$DESCRIPTION" $PARAMS
+			$DIALOG --menu "$DESCRIPTION" "${PARAMS[@]}"
 		else
-			for i; do
-				PARAMS="$PARAMS $i Language"
+			declare -i i=0
+			for v; do
+				PARAMS[$i]="$v"
+				i+=1
+				PARAMS[$i]="Language"
+				i+=1
 			done
-			$DIALOG --stdout --menu "$DESCRIPTION" 20 30 10 $PARAMS
+			$DIALOG --stdout --menu "$DESCRIPTION" 20 30 10 "${PARAMS[@]}"
 		fi
 	fi
 }
