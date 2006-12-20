@@ -1,5 +1,7 @@
 #!/bin/bash
 
+LIVECD_ISO_LOCATION=~/tmp/remaster-new-files/livecd.iso
+
 ###################################################################################
 # UCK - Ubuntu Customization Kit                                                  #
 # Copyright (C) 2006  UCK Team                                                    #
@@ -46,21 +48,22 @@ Authors: http://uck.sourceforge.net/team
 License: GPL v2
 EOF
 `
-RUN_PACKAGE_APP_TEXT=`cat <<EOF
-Package manager will be run your Xserver, but with the title "UCK package manager".
+RUN_CUSTOMIZATIONS_TEXT=`cat <<EOF
+You will be provided with menu to choose from customization actions when build reaches proper place.
+
+This menu app will be run your Xserver, but with the title "UCK customization menu".
 It will appear when unpacking CD and installing predefined packages is done, so it might take a long time.
 All operations you do there will affect only customized CD.
 You can:
-- Add/remove packages
-- Add/remove repositories.
-- Upgrade all packages (to get security updates and newest versions of packages).
-See Note 2 for information about upgrading kernel packages.
+- Run package manager to add or remove software or repositories (see Note 2 for information about upgrading kernel packages).
+- Run console app for manual customizations in shell.
+- Run predefined customization actions.
 
 When you finish customization, quit the application and building process will proceed.
 
 Note 1: package application will be run after language packs are installed according to previous selections, so you do not have to do this again.
 
-Note 2: upgrading kernel package DOES NOT update kernel used to run live CD, only the kernel which will be installed in new system. So you cannot rely on getting live CD to work due to update in kernel package (in case some fixes in new kernel fix bug which prevent using live CD). Please also be sure to leave package linux-image-VERSION_OF_KERNEL_ON_CD (currently linux-image-2.6.15-23-386) as it contains modules necessary to run properly live CD (the most apparent symptom of this issue is that mouse does not work).
+Note 2: upgrading kernel package updates kernel used to run live CD (latest one available will be used). You can remove earlier version using package application, just like any other package.
 
 Note 3: if you upgrade packages, add first (manually in package manager) repository:
 deb http://archive.ubuntu.com/ubuntu/ dapper-updates main restricted
@@ -68,10 +71,8 @@ as it will be available after installation and will cause immediate updates.
 
 Note 4: sources.list changes are not propagated to installed system.
 
-Note 5: Simple upgrading system increases CD size, as new kernel image is installed apart from current kernel image (and some other updates might increase size).
-You must remove something from image to make it fit on CD.
-
-
+Note 5: Simple upgrading system increases CD size, as some other updates might increase size.
+You will probably have to remove something from image to make it fit on CD.
 EOF
 `
 
@@ -82,7 +83,7 @@ Building will start now.
 Note: You will have to provide your password to gain administrative privileges using sudo (necessary to mount ISO files).
 
 Your live CD will be created as
-~/tmp/remaster-new-files/livecd.iso
+$LIVECD_ISO_LOCATION
 
 Please fasten your seatbelts and enjoy the ride.
 EOF
@@ -92,10 +93,10 @@ BUILD_SUCCESS_TEXT=`cat <<EOF
 Building have been finished successfully.
 
 You can find your live CD in
-~/tmp/remaster-new-files/livecd.iso
+$LIVECD_ISO_LOCATION
 
 To test it, you can run (qemu package must be installed):
-qemu -cdrom ~/tmp/remaster-new-files/livecd.iso -boot d -m 256
+qemu -cdrom $LIVECD_ISO_LOCATION -boot d -m 256
 
 EOF
 `
@@ -115,6 +116,16 @@ EOF
 #########################
 
 . libraries/gui.sh
+
+function gui_failure()
+{
+        dialog_msgbox "Error" "$@"
+	failure "$@"
+}
+
+if [ `id -un` = "root" ] ; then
+  gui_failure "UCK GUI should not be run as root. Please run as usual user. Prompt for password will appear when administrator privileges are required."
+fi
 
 dialog_msgbox "Welcome" "$WELCOME_TEXT"
 
@@ -190,15 +201,15 @@ while true; do
 	break
 done
 
-RUN_PACKAGE_APP=`dialog_menu "Do you want to customize CD package selection and packages repositories using Adept/Synaptic?" yes no`
+RUN_MANUAL_CUSTOMIZATIONS=`dialog_menu "Do you want to customize CD manually during build (using package utilities, console, etc.)?" yes no`
 
 RESULT=$?
 if [ $RESULT -ne 0 ] ; then
 	failure "Script cancelled by user"
 fi
 
-if [ "$RUN_PACKAGE_APP" = "yes" ] ; then
-	dialog_msgbox "Running package application notes" "$RUN_PACKAGE_APP_TEXT"
+if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
+	dialog_msgbox "Running manual customization notes" "$RUN_CUSTOMIZATIONS_TEXT"
 
 	DESKTOP_TYPE=`dialog_menu "Please choose desktop environment which you want to use for customization" kde gnome`
 
@@ -215,18 +226,34 @@ BUILD_DIR=`mktemp -d`
 
 SCRIPT_DIR=`dirname "$0"`
 cp -a "$SCRIPT_DIR"/customization-profiles/localized_cd/* "$BUILD_DIR"/
+cp -a libraries/gui.sh "$BUILD_DIR"/
 
 echo "$CD_LANGS" >"$BUILD_DIR"/language_packs
 echo "$BOOT_CD_LANG" >"$BUILD_DIR"/livecd_locale
 echo "$DESKTOP_TYPES" >"$BUILD_DIR"/desktop_types
 echo "$ISO_DESCRIPTION" >"$BUILD_DIR"/iso_description
-echo "$RUN_PACKAGE_APP" >"$BUILD_DIR"/run_package_app
+echo "$RUN_MANUAL_CUSTOMIZATIONS" >"$BUILD_DIR"/run_manual_customizations
 echo "$DESKTOP_TYPE" >"$BUILD_DIR"/desktop_type
 
-if [ "$RUN_PACKAGE_APP" = "yes" ] ; then
+if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	echo "Creating X authentication cookie..."
 	xauth extract - $DISPLAY > "$BUILD_DIR"/Xcookie || failure "Cannot create Xauthentication cookie in $BUILD_DIR/Xcookie, error=$?"
 fi
+
+# SUDO_APP=`which kdesu`
+# if [ $? -ne 0 ]; then
+#   SUDO_APP=`which gksudo`
+#   if [ $? -ne 0 ]; then
+#     gui_failure "Cannot find kdesu or gksudo to run script as root."
+#   fi
+# fi
+# CONSOLE_APP=`which konsole`
+# if [ $? -ne 0 ]; then
+#   CONSOLE_APP=`which gnome-terminal`
+#   if [ $? -ne 0 ]; then
+#     gui_failure "Cannot find konsole or gnome-terminal."
+#   fi
+# fi
 
 echo "Running build process..."
 (
@@ -238,12 +265,20 @@ if [ $RESULT -ne 0 ]; then
 	dialog_msgbox "Build failure" "$BUILD_FAILURE_TEXT"
 else
 	dialog_msgbox "Build success" "$BUILD_SUCCESS_TEXT"
+	
+	MAX_CD_700MB_SIZE=737280000 #From http://en.wikipedia.org/wiki/CD-ROM
+	
+	ISO_SIZE=`stat --format='%s' "$LIVECD_ISO_LOCATION"`
+	
+	if [ $ISO_SIZE -ge $MAX_CD_700MB_SIZE ] ; then
+		dialog_msgbox "ISO size error" "Warning: ISO image might be too big to fit on 700MB CD-ROM"
+	fi
 fi
-) 2>&1 | tee -a build.log
-
+) | tee -a build.log
 
 if [ "$BUILD_DIR" = "/" ] ; then
 	failure "Trying to remove root dir"
 else
 	rm -rf "$BUILD_DIR"
 fi
+
