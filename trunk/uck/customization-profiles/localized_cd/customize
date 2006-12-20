@@ -22,8 +22,10 @@ function remove_packages()
 }
 
 SCRIPT_DIR=`dirname "$0"`
+. "$SCRIPT_DIR/gui.sh"
+
 LIVECD_LANGS=`cat "$SCRIPT_DIR/language_packs"`
-RUN_PACKAGE_APP=`cat "$SCRIPT_DIR/run_package_app"`
+RUN_MANUAL_CUSTOMIZATIONS=`cat "$SCRIPT_DIR/run_manual_customizations"`
 DESKTOP_TYPE=`cat "$SCRIPT_DIR/desktop_type"`
 
 if [ -z "$LIVECD_LANGS" ]; then
@@ -65,12 +67,14 @@ echo "Removing unnecessary language packages..."
 REMOVED_PACKAGES=`dpkg-query --show | cut -f1 | grep -E '^(language-pack|language-support)' | grep -v -E "[-]($LANGPACKS_CONCATENATED)\>"`
 remove_packages $REMOVED_PACKAGES || failure "Removing packages failed, error=$?"
 
-if [ "$RUN_PACKAGE_APP" = "yes" ] ; then
+if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	echo "Mounting pts filesystem..."
 	mount -t devpts none /dev/pts || failure "Cannot mount pts filesystem, error=$?"
 	
 	if [ "$DESKTOP_TYPE" = "kde" ]; then
 		WINDOW_MANAGER="kwin"
+		CONSOLE_APP="konsole"
+		CONSOLE_APP_OPTIONS=(--caption "UCK customization console")
 		PACKAGE_APP=`which adept`
 		if [ $? -ne 0 ]; then
 			PACKAGE_APP=`which adept_manager`
@@ -81,21 +85,49 @@ if [ "$RUN_PACKAGE_APP" = "yes" ] ; then
 		PACKAGE_APP_OPTIONS=(--nofork --caption "UCK Package Manager")
 	elif [ "$DESKTOP_TYPE" = "gnome" ]; then
 		WINDOW_MANAGER="metacity"
+		CONSOLE_APP="gnome-terminal"
+		CONSOLE_APP_OPTIONS=(-t "UCK customization console")
 		PACKAGE_APP="synaptic"
 		PACKAGE_APP_OPTIONS=(-t "UCK Package manager")
 	else
 		failure "Unknown desktop type: $DESKTOP_TYPE"
 	fi
 	
+	#FIXME: move menu to separate file?
+	
 	while true ; do
-		echo "Starting package application..."
-		$PACKAGE_APP "${PACKAGE_APP_OPTIONS[@]}"
+		CHOICE_PACKAGE_MANAGER="Run package manager"
+		CHOICE_CONSOLE="Run console application"
+		CHOICE_EXIT="Continue building"
+		CHOICE=`dialog_menu "Please choose customization action" "$CHOICE_PACKAGE_MANAGER" "$CHOICE_CONSOLE" "$CHOICE_EXIT"`
 		RESULT=$?
 		
-		if [ $RESULT -ne 0 ]; then
-			echo "Running package application $PACKAGE_APP failed, error=$RESULT, restarting it..."
-		else
+		if [ $RESULT -ne 0 ] ; then
+			failure "Script cancelled by user"
+		fi
+		#workaround for KDE bug (https://bugs.kde.org/show_bug.cgi?id=139025)
+		CHOICE=`echo "$CHOICE" | grep -v -i kwrited | tail -n1`
+		
+		echo "CHOICE='$CHOICE'"
+		
+		if [ "$CHOICE" = "$CHOICE_EXIT" ] ; then
 			break
+		elif [ "$CHOICE" = "$CHOICE_PACKAGE_MANAGER" ] ; then
+			echo "Starting package application..."
+			$PACKAGE_APP "${PACKAGE_APP_OPTIONS[@]}"
+			RESULT=$?
+			
+			if [ $RESULT -ne 0 ]; then
+				dialog_msgbox "Failure" "Running package application $PACKAGE_APP failed, error=$RESULT"
+			fi
+		elif [ "$CHOICE" = "$CHOICE_CONSOLE" ] ; then
+			echo "Starting console application..."
+			$CONSOLE_APP "${CONSOLE_APP_OPTIONS[@]}"
+			RESULT=$?
+			
+			if [ $RESULT -ne 0 ]; then
+				dialog_msgbox "Failure" "Running console application $CONSOLE_APP failed, error=$RESULT"
+			fi
 		fi
 	done
 	
