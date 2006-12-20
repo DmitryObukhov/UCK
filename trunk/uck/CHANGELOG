@@ -1,3 +1,5 @@
+
+
 ---------
 -- 1.4 --
 ---------
@@ -6,6 +8,28 @@
 	* Fix for bug 73950 (uck fails on starting adept) - added checking
 	if adept or adept_manager is installed and running package app 
 	appropriately.
+	* Changed messages to apply to customization menu.
+	* Changed information about upgrading kernels - now upgrading kernel should
+	be possible.
+	* Added check for running GUI as root.
+	* Added function for reporting gui errors.
+	* Added check for CD size at the end of build process.
+
+* Backend:
+	* Added trapping signals to unmount filesystems in case of error.
+	* Added exporting proper *REMASTER_DIR environment variables to use in
+	customization scripts.
+	* Added customization menu in localized_cd with options to run console or package manager.
+	* Added workaround in localized_cd for bug when running kdialog as first app in session.
+	* Added code to install latest kernel on CD in
+	localized_cd/customize_iso. Allows upgrade of kernels inside root filesystem.
+	* Added unmounting squashFs filesystem in unmount_all.
+	* Added merging X cookie into both user and /root directories.
+	Seems some apps look for it in one and others in the other directory :/
+	* Fixed bug in merging Xcookie - order of arguments was reversed, so cookie
+	was in fact merged in user, not /root directory.
+	* Added UCK as preparer in ISO image :)
+	* Fixed bug in dialog_menu in gui.sh library - it did not handle choices with spaces.
 
 Examples:
 	* Applied fix for bootchart not installed on local machine (by Jyrki
