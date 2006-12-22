@@ -1,12 +1,10 @@
-
-
 ---------
 -- 1.4 --
 ---------
 
 * GUI:
 	* Fix for bug 73950 (uck fails on starting adept) - added checking
-	if adept or adept_manager is installed and running package app 
+	if adept or adept_manager is installed and running package app
 	appropriately.
 	* Changed messages to apply to customization menu.
 	* Changed information about upgrading kernels - now upgrading kernel should
@@ -30,6 +28,9 @@
 	was in fact merged in user, not /root directory.
 	* Added UCK as preparer in ISO image :)
 	* Fixed bug in dialog_menu in gui.sh library - it did not handle choices with spaces.
+
+Package:
+	* customize-cd-gui was renamed to uck-gui
 
 Examples:
 	* Applied fix for bootchart not installed on local machine (by Jyrki
