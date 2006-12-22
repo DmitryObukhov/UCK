@@ -60,7 +60,7 @@ function dialog_menu()
 {
 	DESCRIPTION="$1"
 	shift
-	
+
 	declare -a PARAMS
 
 	if [ "$DIALOG_TYPE" = "zenity" ]; then
@@ -69,7 +69,7 @@ function dialog_menu()
 			PARAMS[$i]="$v"
 			i+=1
 		done
-		$DIALOG --list --text "$DESCRIPTION" --column "" $PARAMS --width=500 --height=400
+		$DIALOG --list --text "$DESCRIPTION" --column "" "${PARAMS[@]}" --width=500 --height=400
 	else
 		if [ "$DIALOG_TYPE" = "kdialog" ] ; then
 			declare -i i=0
