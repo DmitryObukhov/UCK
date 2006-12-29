@@ -11,7 +11,8 @@
 	be possible.
 	* Added check for running GUI as root.
 	* Added function for reporting gui errors.
-	* Added check for CD size at the end of build process.
+	* Added check for CD size at the end of build process - implements
+	wish 56132.
 
 * Backend:
 	* Added trapping signals to unmount filesystems in case of error.
@@ -28,6 +29,7 @@
 	was in fact merged in user, not /root directory.
 	* Added UCK as preparer in ISO image :)
 	* Fixed bug in dialog_menu in gui.sh library - it did not handle choices with spaces.
+	* Moved unmounting before removing remastering directories.
 
 Package:
 	* customize-cd-gui was renamed to uck-gui
