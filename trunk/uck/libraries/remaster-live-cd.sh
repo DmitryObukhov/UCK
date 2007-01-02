@@ -30,8 +30,15 @@ function unmount_all()
 	umount "$REMASTER_DIR/tmp/.X11-unix"
 
 	for i in "$SQUASHFS_MOUNT_DIR" "$ISO_MOUNT_DIR" "$REMASTER_DIR"/lib/modules/*/volatile "$REMASTER_DIR"/proc "$REMASTER_DIR"/sys "$REMASTER_DIR"/dev/pts; do
-		echo "Trying to unmount directory $i (ignore errors)..."
-		umount "$i"
+		echo "Checking unmounting directory $i..."
+		if mountpoint "$i"; then
+			echo "Killing processes using mount point $i."
+			fuser -v -k -m "$i"
+			echo "Unmounting directory $i..."
+			umount "$i" || failure "Cannot unmount directory $i, error=$?"
+		else
+			echo "Directory $i not mounted."
+		fi
 	done
 }
 

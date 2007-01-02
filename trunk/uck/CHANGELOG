@@ -30,6 +30,8 @@
 	* Added UCK as preparer in ISO image :)
 	* Fixed bug in dialog_menu in gui.sh library - it did not handle choices with spaces.
 	* Moved unmounting before removing remastering directories.
+	* Added killing processes still using mountpoints and more thorough
+	unmounting checks.
 
 Package:
 	* customize-cd-gui was renamed to uck-gui
