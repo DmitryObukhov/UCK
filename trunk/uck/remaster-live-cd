@@ -141,6 +141,8 @@ export -n INITRD_REMASTER_DIR
 
 pack_isofs
 unmount_all
+#reset EXIT handler from unmount_all to none
+trap - EXIT
 
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 	if [ "$KEEP_PREVIOUS_REMASTER_DIR" = "no" ] ; then
