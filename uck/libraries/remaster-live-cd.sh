@@ -24,22 +24,63 @@ function usage()
 	echo "Usage: $0 path-to-iso-file.iso customization-dir/"
 }
 
-function unmount_all()
+#Unmounts directory, kills processes using this directory if necessary
+function force_unmount_directory()
+{
+	DIR_TO_UNMOUNT="$1"
+	echo "Checking if unmounting directory $DIR_TO_UNMOUNT is necessary..."
+	if mountpoint "$DIR_TO_UNMOUNT"; then
+		echo "Killing processes using mount point $DIR_TO_UNMOUNT."
+		fuser -v -k -m "$DIR_TO_UNMOUNT"
+		echo "Unmounting directory $DIR_TO_UNMOUNT..."
+		umount "$DIR_TO_UNMOUNT" || failure "Cannot unmount directory $DIR_TO_UNMOUNT, error=$?"
+	else
+		echo "Directory $DIR_TO_UNMOUNT not mounted."
+	fi
+}
+
+#Unmounts directory, if unmounting fails, fails also.
+function unmount_directory()
+{
+	DIR_TO_UNMOUNT="$1"
+	echo "Checking if unmounting directory $DIR_TO_UNMOUNT is necessary..."
+	if mountpoint "$DIR_TO_UNMOUNT"; then
+		for i in `seq 6`; do
+			umount "$DIR_TO_UNMOUNT" 
+			RESULT=$?
+			if [ $RESULT -ne 0 ]; then
+				echo "Unmounting directory $DIR_TO_UNMOUNT not possible, error=$? (try $i), sleeping 10 seconds"
+				sleep 10
+			else
+				return 0
+			fi
+		done
+		failure "Cannot unmount directory $DIR_TO_UNMOUNT, error=$?"
+	else
+		echo "Directory $DIR_TO_UNMOUNT not mounted."
+	fi
+}
+
+function unmount_pseudofilesystems()
 {
 	echo "Trying to unmount X11 sockets directory (ignore errors)..."
-	umount "$REMASTER_DIR/tmp/.X11-unix"
 
-	for i in "$SQUASHFS_MOUNT_DIR" "$ISO_MOUNT_DIR" "$REMASTER_DIR"/lib/modules/*/volatile "$REMASTER_DIR"/proc "$REMASTER_DIR"/sys "$REMASTER_DIR"/dev/pts; do
-		echo "Checking unmounting directory $i..."
-		if mountpoint "$i"; then
-			echo "Killing processes using mount point $i."
-			fuser -v -k -m "$i"
-			echo "Unmounting directory $i..."
-			umount "$i" || failure "Cannot unmount directory $i, error=$?"
-		else
-			echo "Directory $i not mounted."
-		fi
+	for i in "$REMASTER_DIR/tmp/.X11-unix" "$REMASTER_DIR"/lib/modules/*/volatile "$REMASTER_DIR"/proc "$REMASTER_DIR"/sys "$REMASTER_DIR"/dev/pts; do
+		unmount_directory "$i"
 	done
+}
+
+function unmount_loopfilesystems()
+{
+	for i in "$SQUASHFS_MOUNT_DIR" "$ISO_MOUNT_DIR"; do
+		force_unmount_directory "$i"
+	done
+}
+
+function unmount_all()
+{
+	unmount_pseudofilesystems
+	unmount_loopfilesystems
 }
 
 function failure()
@@ -247,9 +288,8 @@ function clean_rootfs()
 	#mv -f "$RESOLV_CONF_BACKUP" "$REMASTER_DIR/etc/resolv.conf" || failure "Failed to restore resolv.conf, error=$?"
 	rm -f "$REMASTER_DIR/etc/resolv.conf" || failure "Failed to remove resolv.conf, error=$?"
 
-	echo "Unmounting /proc and /sys"
-	umount "$REMASTER_DIR/proc"
-	umount "$REMASTER_DIR/sys"
+	echo "Unmounting pseudo filesystems"
+	unmount_pseudofilesystems
 }
 
 function prepare_new_files_directories()
