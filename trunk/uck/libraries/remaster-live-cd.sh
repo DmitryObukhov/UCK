@@ -45,6 +45,7 @@ function unmount_directory()
 	DIR_TO_UNMOUNT="$1"
 	echo "Checking if unmounting directory $DIR_TO_UNMOUNT is necessary..."
 	if mountpoint "$DIR_TO_UNMOUNT"; then
+		RESULT=0
 		for i in `seq 6`; do
 			umount "$DIR_TO_UNMOUNT" 
 			RESULT=$?
@@ -55,7 +56,9 @@ function unmount_directory()
 				return 0
 			fi
 		done
-		failure "Cannot unmount directory $DIR_TO_UNMOUNT, error=$?"
+		echo "Cannot unmount directory $DIR_TO_UNMOUNT, processes still using the directory:"
+		fuser -v -m "$DIR_TO_UNMOUNT"
+		failure "Cannot unmount directory $DIR_TO_UNMOUNT, error=$RESULT"
 	else
 		echo "Directory $DIR_TO_UNMOUNT not mounted."
 	fi
