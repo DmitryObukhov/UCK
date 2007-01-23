@@ -4,9 +4,12 @@ echo "Using INITRD_REMASTER_DIR=$INITRD_REMASTER_DIR"
 MY_CUSTOMIZATION_DIR=`dirname "$0"`
 
 #copy instrumented squashfs module
-cp -f "$MY_CUSTOMIZATION_DIR/squashfs.ko" "$INITRD_REMASTER_DIR/lib/modules/2.6.15-23-386/kernel/fs/squashfs/squashfs.ko"
+
+DESTINATION_FILE="$INITRD_REMASTER_DIR/lib/modules/2.6.15-27-386/kernel/fs/squashfs/squashfs.ko"
+
+cp -f "$MY_CUSTOMIZATION_DIR/squashfs.ko" "$DESTINATION_FILE"
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
-	echo "Failed to copy $MY_CUSTOMIZATION_DIR/squashfs.ko $INITRD_REMASTER_DIR/lib/modules/2.6.15-23-386/kernel/fs/squashfs/squashfs.ko, error=$RESULT"
+	echo "Failed to copy $MY_CUSTOMIZATION_DIR/squashfs.ko to $DESTINATION_FILE, error=$RESULT"
 	exit 4
 fi
