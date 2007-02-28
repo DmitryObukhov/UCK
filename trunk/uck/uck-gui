@@ -265,11 +265,11 @@ if [ $RESULT -ne 0 ]; then
 	dialog_msgbox "Build failure" "$BUILD_FAILURE_TEXT"
 else
 	dialog_msgbox "Build success" "$BUILD_SUCCESS_TEXT"
-	
+
 	MAX_CD_700MB_SIZE=737280000 #From http://en.wikipedia.org/wiki/CD-ROM
-	
+
 	ISO_SIZE=`stat --format='%s' "$LIVECD_ISO_LOCATION"`
-	
+
 	if [ $ISO_SIZE -ge $MAX_CD_700MB_SIZE ] ; then
 		dialog_msgbox "ISO size error" "Warning: ISO image might be too big to fit on 700MB CD-ROM"
 	fi
@@ -282,3 +282,7 @@ else
 	rm -rf "$BUILD_DIR"
 fi
 
+if [ $DISPLAY ] ; then
+  echo -n "Press ENTER to close the terminal"
+  read FAKE_EXIT_CHECK
+fi
