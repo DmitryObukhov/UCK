@@ -102,7 +102,7 @@ function dialog_multi_choice()
 		for i; do
 			PARAMS="$PARAMS $i $i"
 		done
-		$DIALOG --list --checklist --multiple --text "$DESCRIPTION" --column "" --column ""  $PARAMS --width=500 --height=400
+		$DIALOG --separator $'\n' --list --checklist --multiple --text "$DESCRIPTION" --column "" --column ""  $PARAMS --width=500 --height=400
 	else
 		if [ "$DIALOG_TYPE" = "kdialog" ] ; then
 			for i; do
