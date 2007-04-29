@@ -3,7 +3,7 @@ Name=Ubuntu Customization Kit
 GenericName=Ubuntu Desktop CD Customizer
 Comment=Customize your Ubuntu Desktop CDs easily
 
-Exec=/usr/bin/uck-gui
+Exec=/usr/bin/uck-gui --wait-before-exit
 Terminal=true
 
 Categories=Utility;
