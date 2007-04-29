@@ -1,3 +1,13 @@
+-----------
+-- 1.4.1 --
+-----------
+
+* GUI:
+	* Fig for bug 109021 (multiple languages failure on feisty, zenity frontend)
+
+* Package:
+	* a menu icon was added to allow users to find uck easily
+
 ---------
 -- 1.4 --
 ---------
