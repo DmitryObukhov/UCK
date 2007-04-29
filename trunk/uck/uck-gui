@@ -27,6 +27,12 @@ function failure()
 	exit 1
 }
 
+function gui_failure()
+{
+	dialog_msgbox "Error" "$@"
+	failure "$@"
+}
+
 ############
 # MESSAGES #
 ############
@@ -117,15 +123,17 @@ EOF
 
 . libraries/gui.sh
 
-function gui_failure()
-{
-        dialog_msgbox "Error" "$@"
-	failure "$@"
-}
-
 if [ `id -un` = "root" ] ; then
-  gui_failure "UCK GUI should not be run as root. Please run as usual user. Prompt for password will appear when administrator privileges are required."
+	gui_failure "UCK GUI should not be run as root. Please run as usual user. Prompt for password will appear when administrator privileges are required."
 fi
+
+# parsing input parameters
+WAIT_BEFORE_EXIT=0
+for arg ; do
+	if [ $arg = "--wait-before-exit" ] ; then
+		WAIT_BEFORE_EXIT=1
+	fi
+done
 
 dialog_msgbox "Welcome" "$WELCOME_TEXT"
 
@@ -282,7 +290,7 @@ else
 	rm -rf "$BUILD_DIR"
 fi
 
-if [ $DISPLAY ] ; then
+if [ $WAIT_BEFORE_EXIT ] ; then
   echo -n "Press ENTER to close the terminal"
   read FAKE_EXIT_CHECK
 fi
