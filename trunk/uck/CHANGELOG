@@ -3,7 +3,7 @@
 -----------
 
 * GUI:
-	* Fig for bug 109021 (multiple languages failure on feisty, zenity frontend)
+	* Fix for bug 109021 (multiple languages failure on feisty, zenity frontend)
 
 * Package:
 	* a menu icon was added to allow users to find uck easily
