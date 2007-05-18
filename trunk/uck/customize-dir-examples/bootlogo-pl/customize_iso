@@ -1,4 +1,7 @@
 #!/bin/bash
+REMASTER_HOME=$1
+ISO_REMASTER_DIR="$REMASTER_HOME/remaster-iso"
+REMASTER_DIR="$REMASTER_HOME/remaster-root"
 BUILD_DIR=`mktemp -d`
 
 function failure()

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-LIVECD_ISO_LOCATION=~/tmp/remaster-new-files/livecd.iso
+REMASTER_HOME=~/tmp
+LIVECD_ISO_LOCATION=$REMASTER_HOME/remaster-new-files/livecd.iso
 
 ###################################################################################
 # UCK - Ubuntu Customization Kit                                                  #
@@ -121,7 +122,15 @@ EOF
 # EXECUTION STARTS HERE #
 #########################
 
-. libraries/gui.sh
+if [ -e libraries/gui.sh ]; then
+	SCRIPTS_DIR=`dirname "$0"`
+	LIBRARIES_DIR=$SCRIPTS_DIR/libraries
+else
+	SCRIPTS_DIR=/usr/bin
+	LIBRARIES_DIR=/usr/lib/uck/
+fi
+
+. $LIBRARIES_DIR/gui.sh
 
 if [ `id -un` = "root" ] ; then
 	gui_failure "UCK GUI should not be run as root. Please run as usual user. Prompt for password will appear when administrator privileges are required."
@@ -230,11 +239,11 @@ fi
 dialog_msgbox "Ready to build" "$PRE_START_TEXT"
 
 echo "Preparing build environment..."
-BUILD_DIR=`mktemp -d`
+BUILD_DIR=$REMASTER_HOME/customization-scripts
+mkdir -p $BUILD_DIR || exit 1
 
-SCRIPT_DIR=`dirname "$0"`
-cp -a "$SCRIPT_DIR"/customization-profiles/localized_cd/* "$BUILD_DIR"/
-cp -a libraries/gui.sh "$BUILD_DIR"/
+cp -a "$LIBRARIES_DIR"/customization-profiles/localized_cd/* "$BUILD_DIR"/
+cp -a "$LIBRARIES_DIR"/gui.sh "$BUILD_DIR"/
 
 echo "$CD_LANGS" >"$BUILD_DIR"/language_packs
 echo "$BOOT_CD_LANG" >"$BUILD_DIR"/livecd_locale
@@ -248,25 +257,10 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	xauth extract - $DISPLAY > "$BUILD_DIR"/Xcookie || failure "Cannot create Xauthentication cookie in $BUILD_DIR/Xcookie, error=$?"
 fi
 
-# SUDO_APP=`which kdesu`
-# if [ $? -ne 0 ]; then
-#   SUDO_APP=`which gksudo`
-#   if [ $? -ne 0 ]; then
-#     gui_failure "Cannot find kdesu or gksudo to run script as root."
-#   fi
-# fi
-# CONSOLE_APP=`which konsole`
-# if [ $? -ne 0 ]; then
-#   CONSOLE_APP=`which gnome-terminal`
-#   if [ $? -ne 0 ]; then
-#     gui_failure "Cannot find konsole or gnome-terminal."
-#   fi
-# fi
-
 echo "Running build process..."
 (
 export UCK_USERNAME="$USER"
-sudo bash "$SCRIPT_DIR"/remaster-live-cd "$ISO_IMAGE" "$BUILD_DIR"
+sudo bash "$SCRIPTS_DIR"/uck-remaster "$ISO_IMAGE" "$BUILD_DIR"
 RESULT=$?
 
 if [ $RESULT -ne 0 ]; then
@@ -282,13 +276,7 @@ else
 		dialog_msgbox "ISO size error" "Warning: ISO image might be too big to fit on 700MB CD-ROM"
 	fi
 fi
-) 2>&1 | tee -a build.log
-
-if [ "$BUILD_DIR" = "/" ] ; then
-	failure "Trying to remove root dir"
-else
-	rm -rf "$BUILD_DIR"
-fi
+) 2>&1 | tee -a $REMASTER_HOME/build.log
 
 if [ $WAIT_BEFORE_EXIT ] ; then
   echo -n "Press ENTER to close the terminal"

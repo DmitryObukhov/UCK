@@ -21,30 +21,7 @@
 
 ISO_IMAGE="$1"
 CUSTOMIZE_DIR="$2"
-ISO_MOUNT_DIR=~/tmp/iso-source2
-REMASTER_DIR=~/tmp/remaster-root
-ISO_REMASTER_DIR=~/tmp/remaster-iso
-INITRD_REMASTER_DIR=~/tmp/remaster-initrd
-SQUASHFS_IMAGE="$ISO_REMASTER_DIR/casper/filesystem.squashfs"
-SQUASHFS_MOUNT_DIR=~/tmp/squashfs-source
-REMASTER_CUSTOMIZE_RELATIVE_DIR="tmp/customize-dir"
-REMASTER_CUSTOMIZE_DIR="$REMASTER_DIR/$REMASTER_CUSTOMIZE_RELATIVE_DIR"
-CUSTOMIZATION_SCRIPT="$REMASTER_CUSTOMIZE_RELATIVE_DIR/customize"
-#Name of directory where packages downloaded by apt are kept across build runs
-#Allows saving bandwidth for downloading all updates
-#Important: no "/" at the end of directory name!
-APT_CACHE_SAVE_DIR=~/tmp/remaster-apt-cache
-NEW_FILES_DIR=~/tmp/remaster-new-files
-
-echo "Starting CD remastering on " `date`
-echo "Customization dir=$CUSTOMIZE_DIR"
-
-export LC_ALL=C
-
-. libraries/remaster-live-cd.sh
-
-trap unmount_all EXIT
-trap unmount_all SIGINT
+REMASTER_HOME=~/tmp
 
 if [ -z "$ISO_IMAGE" ]; then
 	usage
@@ -52,15 +29,51 @@ if [ -z "$ISO_IMAGE" ]; then
 fi
 
 if [ -z "$CUSTOMIZE_DIR" ]; then
-	usage
-	exit 1
+	CUSTOMIZE_DIR="$REMASTER_HOME/customization-scripts"
 fi
+
+##################
+# some functions #
+##################
+
+function usage()
+{
+	echo "Usage: $0 iso-file.iso [customization-scripts-dir]"
+}
+
+function check_exit_code()
+{
+	if [ "$?" -ne 0 ]; then
+		exit "$?"
+	fi
+}
+
+function check_if_user_is_root()
+{
+	if [ `id -un` != "root" ]; then
+		echo "You need root privileges"
+		exit 2
+	fi
+}
+
+########
+# main #
+########
+
+check_if_user_is_root
+
+if [ -e libraries/remaster-live-cd.sh ]; then
+	SCRIPTS_DIR=`dirname "$0"`
+else
+	SCRIPTS_DIR=/usr/bin
+fi
+
+echo "Starting CD remastering on " `date`
+echo "Customization dir=$CUSTOMIZE_DIR"
 
 CUSTOMIZE_ROOTFS="no"
 CUSTOMIZE_INITRD="no"
 CUSTOMIZE_ISO="no"
-KEEP_PREVIOUS_ISO_EXTRACTION="no"
-KEEP_PREVIOUS_REMASTER_DIR="no"
 
 if [ -e "$CUSTOMIZE_DIR/customize" ]; then
 	CUSTOMIZE_ROOTFS="yes"
@@ -74,45 +87,49 @@ if [ -e "$CUSTOMIZE_DIR/customize_iso" ]; then
 	CUSTOMIZE_ISO="yes"
 fi
 
-if [ -e "$CUSTOMIZE_DIR/keep_iso_extraction" ] ; then
-	KEEP_PREVIOUS_ISO_EXTRACTION="yes"
-fi
+$SCRIPTS_DIR/uck-remaster-clean "$REMASTER_HOME"
+check_exit_code
 
-if [ "$KEEP_PREVIOUS_ISO_EXTRACTION" = "no" ] || [ ! -e "$ISO_REMASTER_DIR" ] ; then
-	mount_iso
-	unpack_iso
-	unmount_iso
-fi
+#############
+# unpacking #
+#############
 
-export ISO_REMASTER_DIR
-
-if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
-	if [ -e "$CUSTOMIZE_DIR/keep_rootfs_extraction" ] ; then
-		KEEP_PREVIOUS_REMASTER_DIR="yes"
-	fi
-
-	if [ "$KEEP_PREVIOUS_REMASTER_DIR" = "no" ] || [ ! -e "$REMASTER_DIR" ] ; then
-		unpack_rootfs
-	fi
-	export REMASTER_DIR
+if [ "$CUSTOMIZE_ISO" = "yes" ] ; then
+	$SCRIPTS_DIR/uck-remaster-unpack-iso "$ISO_IMAGE" "$REMASTER_HOME"
+	check_exit_code
 fi
 
 if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
-	unpack_initrd
-	export INITRD_REMASTER_DIR
+	$SCRIPTS_DIR/uck-remaster-unpack-initrd "$REMASTER_HOME"
+	check_exit_code
 fi
 
-if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
-	prepare_rootfs_for_net_update
-	run_rootfs_chroot_customization
+if [ "$CUSTOMIZE_ISO" = "yes" ] && [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
+	$SCRIPTS_DIR/uck-remaster-unpack-rootfs "$REMASTER_HOME"
+	check_exit_code
 fi
+
+###############
+# customizing #
+###############
 
 if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
-	customize_initrd
+	echo "Running initrd customization script $CUSTOMIZE_DIR/customize_initrd..."
+	"$CUSTOMIZE_DIR/customize_initrd" "$REMASTER_HOME"
+	check_exit_code
+	echo "Initrd customization script finished"
+fi
+
+if [ "$CUSTOMIZE_ISO" = "yes" ] && [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
+	$SCRIPTS_DIR/uck-remaster-chroot-rootfs "/tmp/customization-scripts/customize" "$REMASTER_HOME"
+	check_exit_code
 fi
 
 if [ "$CUSTOMIZE_ISO" = "yes" ] ; then
-	customize_iso
+	echo "Running ISO customization script $CUSTOMIZE_DIR/customize_iso..."
+	"$CUSTOMIZE_DIR/customize_iso" "$REMASTER_HOME"
+	check_exit_code
+	echo "ISO customization script finished"
 fi
 
 if [ "$MANUAL_CUSTOMIZATION_PAUSE" = "yes" ] ; then
@@ -120,44 +137,29 @@ if [ "$MANUAL_CUSTOMIZATION_PAUSE" = "yes" ] ; then
 	read DUMMY
 fi
 
-if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
-	save_apt_cache
-	clean_rootfs
-fi
-
-prepare_new_files_directories
+###########
+# packing #
+###########
 
 if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
-	pack_initrd
+	$SCRIPTS_DIR/uck-remaster-pack-initrd "$REMASTER_HOME"
+	check_exit_code
 fi
 
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
-	pack_rootfs
+	$SCRIPTS_DIR/uck-remaster-pack-rootfs "$REMASTER_HOME"
+	check_exit_code
 fi
 
+$SCRIPTS_DIR/uck-remaster-pack-iso "livecd.iso" "$REMASTER_HOME"
+check_exit_code
 
-remove_remaster_initrd
-export -n INITRD_REMASTER_DIR
+#############
+# finishing #
+#############
 
-pack_isofs
-unmount_all
-#reset EXIT handler from unmount_all to none
-trap - EXIT
-
-if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
-	if [ "$KEEP_PREVIOUS_REMASTER_DIR" = "no" ] ; then
-		remove_remaster_dir
-	fi
-	export -n REMASTER_DIR
-fi
-
-if [ "$KEEP_PREVIOUS_ISO_EXTRACTION" = "no" ] ; then
-	remove_iso_remaster_dir
-fi
-
-export -n ISO_REMASTER_DIR
+$SCRIPTS_DIR/uck-remaster-clean "$REMASTER_HOME"
+check_exit_code
 
 echo "Generation completed SUCCESSFULLY, find your ISO in $NEW_FILES_DIR"
-
-
 exit 0

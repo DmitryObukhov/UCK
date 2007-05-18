@@ -1,4 +1,8 @@
 #!/bin/bash
+REMASTER_HOME=$1
+REMASTER_DIR="$REMASTER_HOME/remaster-root"
+INITRD_REMASTER_DIR="$REMASTER_HOME/remaster-initrd"
+
 echo "Using REMASTER_DIR=$REMASTER_DIR, INITRD_REMASTER_DIR=$INITRD_REMASTER_DIR"
 
 #copy bootchart initramfs script
