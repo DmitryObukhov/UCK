@@ -9,6 +9,9 @@ function failure()
 
 SCRIPT_DIR=`dirname "$0"`
 BOOT_LANG=`cat "$SCRIPT_DIR/livecd_locale"`
+REMASTER_HOME=$1
+ISO_REMASTER_DIR="$REMASTER_HOME/remaster-iso"
+REMASTER_DIR="$REMASTER_HOME/remaster-root"
 
 pushd "$BUILD_DIR" || failure "Cannot change directory to $BUILD_DIR, error=$?"
 apt-get source gfxboot-theme-ubuntu || failure "Failed to fetch gfxboot-theme-ubuntu source, check if you have deb-src line enabled for repository main in /etc/apt/sources.list, error=$?"
@@ -43,10 +46,8 @@ else
 fi
 
 #copy kernel and initrd, in case it was changed during installation
-echo "REMASTER_DIR=$REMASTER_DIR"
 VMLINUZ=`ls -1 "$REMASTER_DIR"/boot/vmlinuz* | sort | tail -n1`
 INITRD="$REMASTER_DIR"/boot/initrd.img-$(echo `basename $VMLINUZ` | cut -d'-' -f 2-)
-#INITRD=`ls -1 "$REMASTER_DIR"/boot/initrd* | sort | tail -n1`
 if [ -e "$VMLINUZ" -a -e "$INITRD" ]; then
 	echo "Updating kernel, kernel=$VMLINUZ, initrd=$INITRD"
 	cp -f "$VMLINUZ" "$ISO_REMASTER_DIR/casper/vmlinuz"

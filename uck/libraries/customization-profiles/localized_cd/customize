@@ -8,7 +8,8 @@ function failure()
 
 function prepare_install()
 {
-	apt-get update || failure "apt-get update failed, error=$?"
+	#try 2 times to avoid slow proxies failures
+	apt-get update || apt-get update || failure "apt-get update failed, error=$?"
 }
 
 function install_packages()
@@ -42,16 +43,15 @@ prepare_install || failure "Preparing installation failed, error=$?"
 echo "Installing language packs ($LIVECD_LANGS)..."
 
 PACKAGES_TO_INSTALL=""
-
 LANGPACKS_CONCATENATED=""
 
 for LANGPACK in $LIVECD_LANGS; do
 	PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL language-pack-$LANGPACK language-support-$LANGPACK"
-	
+
 	for FLAVOUR in $DESKTOP_FLAVOURS; do
 		PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL language-pack-$FLAVOUR-$LANGPACK"
 	done
-	
+
 	if [ -z "$LANGPACKS_CONCATENATED" ]; then
 		LANGPACKS_CONCATENATED="$LANGPACK"
 	else
@@ -61,16 +61,13 @@ done
 
 install_packages $PACKAGES_TO_INSTALL || failure "Installing language packs failed, error=$?"
 
-#NOTE: we first install language pack, then remove others as installing language pack might pull packages 
+#NOTE: we first install language pack, then remove others as installing language pack might pull packages
 #which were not previously present
 echo "Removing unnecessary language packages..."
 REMOVED_PACKAGES=`dpkg-query --show | cut -f1 | grep -E '^(language-pack|language-support)' | grep -v -E "[-]($LANGPACKS_CONCATENATED)\>"`
 remove_packages $REMOVED_PACKAGES || failure "Removing packages failed, error=$?"
 
 if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
-	echo "Mounting pts filesystem..."
-	mount -t devpts none /dev/pts || failure "Cannot mount pts filesystem, error=$?"
-	
 	if [ "$DESKTOP_TYPE" = "kde" ]; then
 		WINDOW_MANAGER="kwin"
 		CONSOLE_APP="konsole"
@@ -92,31 +89,31 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	else
 		failure "Unknown desktop type: $DESKTOP_TYPE"
 	fi
-	
+
 	#FIXME: move menu to separate file?
-	
+
 	while true ; do
 		CHOICE_PACKAGE_MANAGER="Run package manager"
 		CHOICE_CONSOLE="Run console application"
 		CHOICE_EXIT="Continue building"
 		CHOICE=`dialog_menu "Please choose customization action" "$CHOICE_PACKAGE_MANAGER" "$CHOICE_CONSOLE" "$CHOICE_EXIT"`
 		RESULT=$?
-		
+
 		if [ $RESULT -ne 0 ] ; then
 			failure "Script cancelled by user"
 		fi
 		#workaround for KDE bug (https://bugs.kde.org/show_bug.cgi?id=139025)
 		CHOICE=`echo "$CHOICE" | grep -v -i kwrited | tail -n1`
-		
+
 		echo "CHOICE='$CHOICE'"
-		
+
 		if [ "$CHOICE" = "$CHOICE_EXIT" ] ; then
 			break
 		elif [ "$CHOICE" = "$CHOICE_PACKAGE_MANAGER" ] ; then
 			echo "Starting package application..."
 			$PACKAGE_APP "${PACKAGE_APP_OPTIONS[@]}"
 			RESULT=$?
-			
+
 			if [ $RESULT -ne 0 ]; then
 				dialog_msgbox "Failure" "Running package application $PACKAGE_APP failed, error=$RESULT"
 			fi
@@ -124,14 +121,12 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 			echo "Starting console application..."
 			$CONSOLE_APP "${CONSOLE_APP_OPTIONS[@]}"
 			RESULT=$?
-			
+
 			if [ $RESULT -ne 0 ]; then
 				dialog_msgbox "Failure" "Running console application $CONSOLE_APP failed, error=$RESULT"
 			fi
 		fi
 	done
-	
-	umount /dev/pts
 fi
 
 echo "Done"

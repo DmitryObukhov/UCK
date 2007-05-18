@@ -1,7 +1,5 @@
-uck-gui usr/bin
-remaster-live-cd usr/bin
+uck-* usr/bin
 uck.desktop usr/share/applications
 docs/* usr/share/doc/uck/html
 customize-dir-examples/* usr/share/doc/uck/examples
 libraries/* usr/lib/uck
-customization-profiles/* usr/lib/uck/scripts/customization-profiles

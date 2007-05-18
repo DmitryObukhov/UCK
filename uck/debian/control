@@ -1,7 +1,7 @@
 Source: uck
 Section: utils
 Priority: optional
-Maintainer: Szilveszter Farkas (Phanatic) <Szilveszter.Farkas@gmail.com>
+Maintainer: Fabrizio Balliano <fabrizio.balliano@crealabs.it>
 Build-Depends: debhelper (>= 5.0.7), dpatch
 Standards-Version: 3.7.2
 
