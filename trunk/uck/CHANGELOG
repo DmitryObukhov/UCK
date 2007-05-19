@@ -1,4 +1,28 @@
 -----------
+-- 2.0.0 --
+-----------
+
+* Backend:
+	* remaster-live-cd script was renamed uck-remaster
+	* A script for every part of the remastering process was created:
+	uck-remaster-unpack-iso, uck-remaster-unpack-rootfs, uck-remaster-unpack-initrd,
+	uck-remaster-chroot-rootfs, uck-remaster-pack-rootfs, uck-remaster-pack-initrd,
+	uck-remaster-pack-iso, uck-remaster-clean
+	* Support for alternate cd remastering was added:
+		* uck-remaster-unpack-initrd and uck-remaster-pack-initrd automatically
+		detect if you're remastering a desktop or alternate cd and read/put files
+		in the right places
+		* uck-remaster-prepare-alternate script was added to allow you create the
+		directory you need to put extra packages in the alternate iso
+		* uck-remaster-finalize-alternate script was added to regenerate the packages
+		indexes and re-sign the release with your GPG key
+	* REMASTER_HOME is the new default variable every single script can receive as
+	parameter, the variable contains the directory where all part of the remaster
+	will be stored (default is ~/tmp)
+	* Log/error messages got more consinstancy
+	* Unuseful error messages were removed to gain readability of the log file
+
+-----------
 -- 1.4.1 --
 -----------
 
