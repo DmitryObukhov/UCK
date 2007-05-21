@@ -21,6 +21,7 @@
 	will be stored (default is ~/tmp)
 	* Log/error messages got more consinstancy
 	* Unuseful error messages were removed to gain readability of the log file
+	* uck-remaster-pack-iso now supports PPC, x86_64, ia64
 
 -----------
 -- 1.4.1 --
