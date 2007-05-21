@@ -373,7 +373,7 @@ function pack_iso()
 	fi
 
 	if [ "$1" = "ppc" ]; then
-		mkisofs - "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
+		mkisofs -o "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
 			-p "Ubuntu Customization Kit - http://uck.sf.net" \
 			-probe -map "$UCK_LIBRARIES_DIR/hfs.map" -chrp-boot -iso-level 2 \
 			-part -no-desktop -r --netatalk -hfs \
@@ -389,7 +389,7 @@ function pack_iso()
 			"$ISO_REMASTER_DIR"
 	elif [ "$1" = "ia64" ]; then
 		mkisofs -o "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
-		-b "boot/boot.img" -c "boot/boot.catalog"
+		-b "isolinux/isolinux.bin" -c "isolinux/boot.cat" \
 		-no-emul-boot -V "$LIVECD_ISO_DESCRIPTION" -J -r \
 		$MKISOFS_EXTRA_OPTIONS \
 		"$ISO_REMASTER_DIR"
