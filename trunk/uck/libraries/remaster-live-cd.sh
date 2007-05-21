@@ -21,7 +21,7 @@
 
 function check_if_user_is_root()
 {
-	if [ `id -un` != "root" ]; then
+	if [ $UID != 0 ]; then
 		echo "You need root privileges"
 		exit 2
 	fi
@@ -375,9 +375,9 @@ function pack_iso()
 	if [ "$1" = "ppc" ]; then
 		mkisofs - "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
 			-p "Ubuntu Customization Kit - http://uck.sf.net" \
-			-probe -map hfs.map -chrp-boot -iso-level 2 \
+			-probe -map "$UCK_LIBRARIES_DIR/hfs.map" -chrp-boot -iso-level 2 \
 			-part -no-desktop -r --netatalk -hfs \
-			-hfs-bless ""$ISO_REMASTER_DIR"/install" \
+			-hfs-bless "$ISO_REMASTER_DIR/install" \
 			-V "$LIVECD_ISO_DESCRIPTION" \
 			"$ISO_REMASTER_DIR"
 	elif [ "$1" = "x86_64" ]; then
@@ -415,6 +415,16 @@ function generate_md5_for_new_iso()
 	cd $NEW_FILES_DIR
 	md5sum $NEW_ISO_FILE_NAME > $NEW_ISO_FILE_NAME.md5
 }
+
+######################
+# some useful things #
+######################
+
+if [ -e libraries/remaster-live-cd.sh ]; then
+	UCK_LIBRARIES_DIR=./libraries
+else
+	UCK_LIBRARIES_DIR=/usr/lib/uck/
+fi
 
 export LC_ALL=C
 check_if_user_is_root
