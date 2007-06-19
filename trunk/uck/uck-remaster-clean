@@ -27,7 +27,7 @@ REMASTER_HOME="$1"
 
 function usage()
 {
-	echo "Usage: $0 iso-file.iso iso-mount-dir iso-extraction-dir"
+	echo "Usage: $0 [remaster-dir]"
 }
 
 function failure()
