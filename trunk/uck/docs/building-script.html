@@ -24,7 +24,6 @@ through installation or removal of packages or any other scriptable
 changes.</li>
 
   <li>Customization of ISO image.</li>
-
   <li>Customization of initrd image.</li>
 
 </ul>
@@ -74,10 +73,28 @@ option -sort.</li>
   <li><span style="font-style: italic;">iso_description</span>
 - Title of ISO image.</li>
 
+  <li><span style="font-style: italic;">run_manual_customizations</span>
+- Tells the system that you want to do advanced customizations within the rootfs.
+This will stop the remastering process at a certain point and raise a menu, you'll
+be able to choose if you want to open a terminal or run a package manager, all
+within the rootfs.</li>
+
   <li><span style="font-style: italic;">mkisofs_extra_options</span>
 - Extra options passed to mkisofs command. Note that these options
 cannot contain strings with quotes (") as they are passed to mkisofs
 commandline.</li>
+
+  <li><span style="font-style: italic;">keep_initrd_extraction</span>
+- If this file is present the extracted initrd won't be deleted
+after processing.</li>
+
+  <li><span style="font-style: italic;">keep_rootfs_extraction</span>
+- If this file is present the extracted rootfs won't be deleted
+after processing.</li>
+
+  <li><span style="font-style: italic;">keep_iso_extraction</span>
+- If this file is present the extracted ISO won't be deleted
+after processing.</li>
 
 </ul>
 
