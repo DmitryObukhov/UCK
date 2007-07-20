@@ -9,8 +9,6 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-include /usr/share/dpatch/dpatch.make
-
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
@@ -18,24 +16,24 @@ configure-stamp:
 
 	touch configure-stamp
 
-build: patch-stamp
+build:
 
-build-stamp: configure-stamp 
+build-stamp: configure-stamp
 	dh_testdir
 
 	touch build-stamp
 
-clean: unpatch
+clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
 
-	dh_clean 
+	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k 
+	dh_clean -k
 	dh_installdirs
 
 # Build architecture-independent files here.

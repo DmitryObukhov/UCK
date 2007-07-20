@@ -213,14 +213,13 @@ function prepare_rootfs_for_chroot()
 	mount --bind /tmp/.X11-unix "$REMASTER_DIR/tmp/.X11-unix" || failure "Cannot bind mount /tmp/.X11-unix in  $REMASTER_DIR/tmp/.X11-unix, error=$?"
 
 	if [ -e "$REMASTER_HOME/customization-scripts/Xcookie" ] ; then
-		if [ -n "$UCK_USERNAME" ]; then
-			echo "Creating user directory..."
-			chroot "$REMASTER_DIR" mkdir -p "/home/$UCK_USERNAME" || failure "Cannot create user directory, error=$?"
-		fi
+		echo "Creating user directory..."
+		UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
+		chroot "$REMASTER_DIR" mkdir -p "$UCK_USER_HOME_DIR" || failure "Cannot create user directory, error=$?"
 
 		echo "Copying X authorization file to chroot filesystem..."
-		cat "$CUSTOMIZE_DIR/Xcookie" | chroot "$REMASTER_DIR" xauth -f /root/.Xauthority merge - || failure "Failed to merge X authorization file, error=$?"
-		cat "$CUSTOMIZE_DIR/Xcookie" | chroot "$REMASTER_DIR" xauth merge - || failure "Failed to merge X authorization file in user directory, error=$?"
+		cat "$REMASTER_HOME/customization-scripts/Xcookie" | chroot "$REMASTER_DIR" xauth -f /root/.Xauthority merge - || failure "Failed to merge X authorization file, error=$?"
+		cat "$REMASTER_HOME/customization-scripts/Xcookie" | chroot "$REMASTER_DIR" xauth merge - || failure "Failed to merge X authorization file in user directory, error=$?"
 	fi
 }
 
@@ -250,7 +249,8 @@ function clean_rootfs_after_chroot()
 	chroot "$REMASTER_DIR" mv /root.saved /root
 
 	echo "Removing /home/username directory, if created..."
-	chroot "$REMASTER_DIR" rm -rf "/home/$UCK_USERNAME" # 2>/dev/null
+	UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
+	chroot "$REMASTER_DIR" rm -rf "$UCK_USER_HOME_DIR" # 2>/dev/null
 
 	echo "Restoring resolv.conf..."
 	rm -f "$REMASTER_DIR/etc/resolv.conf" || failure "Failed to remove resolv.conf, error=$?"
