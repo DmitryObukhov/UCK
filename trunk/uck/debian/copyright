@@ -1,10 +1,5 @@
-This is uck, packaged by Szilveszter Farkas (Phanatic) <Szilveszter.Farkas@gmail.com>
-on Sun,  6 Aug 2006 12:06:53 +0200.
-
-The original source can always be found at:
-	http://sourceforge.net/projects/uck/
-
 UCK - Ubuntu Customization Kit
+http://uck.sourceforge.net
 Copyright (C) 2006  UCK Team
 
 License:
@@ -25,3 +20,12 @@ License:
 
 On Debian systems, the complete text of the GNU General
 Public License can be found in `/usr/share/common-licenses/GPL'.
+
+----------------------------------------------------------------
+
+UCK logo was designed by Thorsten Wilms
+http://thorwil.wordpress.com/
+
+and is released under
+Creative Commons Attribution-NoDerivs 3.0
+http://creativecommons.org/licenses/by-nd/3.0/
