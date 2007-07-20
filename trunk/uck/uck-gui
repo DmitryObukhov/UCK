@@ -278,7 +278,7 @@ else
 fi
 ) 2>&1 | tee -a $REMASTER_HOME/build.log
 
-if [ $WAIT_BEFORE_EXIT ] ; then
+if [ $WAIT_BEFORE_EXIT = 1 ] ; then
   echo -n "Press ENTER to close the terminal"
   read FAKE_EXIT_CHECK
 fi
