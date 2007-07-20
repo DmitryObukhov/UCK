@@ -3,3 +3,4 @@ uck.desktop usr/share/applications
 docs/* usr/share/doc/uck/html
 customize-dir-examples/* usr/share/doc/uck/examples
 libraries/* usr/lib/uck
+logo/uck-48.png usr/share/uck
