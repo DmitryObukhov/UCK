@@ -50,6 +50,7 @@ fi
 
 . libraries/remaster-live-cd.sh 2>/dev/null || . /usr/lib/uck/remaster-live-cd.sh 2>/dev/null || failure "libraries not found"
 
+echo "Removing win32 files..."
 remove_directory "$REMASTER_HOME/remaster-iso/autorun.inf"
 remove_directory "$REMASTER_HOME/remaster-iso/bin"
 remove_directory "$REMASTER_HOME/remaster-iso/disctree"
