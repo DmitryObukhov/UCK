@@ -225,17 +225,6 @@ if [ $RESULT -ne 0 ] ; then
 	failure "Script cancelled by user"
 fi
 
-if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
-	dialog_msgbox "Running manual customization notes" "$RUN_CUSTOMIZATIONS_TEXT"
-
-	DESKTOP_TYPE=`dialog_menu "Please choose desktop environment which you want to use for customization" kde gnome`
-
-	RESULT=$?
-	if [ $RESULT -ne 0 ] ; then
-		failure "Script cancelled by user"
-	fi
-fi
-
 dialog_msgbox "Ready to build" "$PRE_START_TEXT"
 
 echo "Preparing build environment..."
@@ -250,7 +239,6 @@ echo "$BOOT_CD_LANG" >"$BUILD_DIR"/livecd_locale
 echo "$DESKTOP_TYPES" >"$BUILD_DIR"/desktop_types
 echo "$ISO_DESCRIPTION" >"$BUILD_DIR"/iso_description
 echo "$RUN_MANUAL_CUSTOMIZATIONS" >"$BUILD_DIR"/run_manual_customizations
-echo "$DESKTOP_TYPE" >"$BUILD_DIR"/desktop_type
 
 if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	echo "Creating X authentication cookie..."
