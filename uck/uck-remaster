@@ -167,5 +167,5 @@ check_exit_code
 $SCRIPTS_DIR/uck-remaster-clean "$REMASTER_HOME"
 check_exit_code
 
-echo "Generation completed SUCCESSFULLY, find your ISO in $NEW_FILES_DIR"
+echo "Generation completed SUCCESSFULLY, find your ISO in $REMASTER_HOME/remaster-new-files"
 exit 0
