@@ -29,6 +29,7 @@
 	* uck-remaster-pack-iso now supports PPC, x86_64, ia64
 	* Package manager and console applications run inside the livecd are now
 	autodetected
+	* uck-remaster-remove-win32-files script was added
 
 
 -----------
