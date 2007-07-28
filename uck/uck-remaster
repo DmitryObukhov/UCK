@@ -74,6 +74,7 @@ echo "Customization dir=$CUSTOMIZE_DIR"
 CUSTOMIZE_ROOTFS="no"
 CUSTOMIZE_INITRD="no"
 CUSTOMIZE_ISO="no"
+REMOVE_WIN32_FILES=`cat "$CUSTOMIZE_DIR/remove_win32_files"`
 
 if [ -e "$CUSTOMIZE_DIR/customize" ]; then
 	CUSTOMIZE_ROOTFS="yes"
@@ -112,6 +113,11 @@ fi
 ###############
 # customizing #
 ###############
+
+if [ "$REMOVE_WIN32_FILES" = "yes" ]; then
+	"$SCRIPTS_DIR/uck-remaster-remove-win32-files" "$REMASTER_HOME"
+	check_exit_code
+fi
 
 if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
 	echo "Running initrd customization script $CUSTOMIZE_DIR/customize_initrd..."

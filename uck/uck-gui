@@ -211,7 +211,7 @@ while true; do
 
 	DESCRIPTION_LEN=`echo "$ISO_DESCRIPTION" | wc -c`
 
-	if [ "$DESCRIPTION_LEN"  -gt 32  ]; then
+	if [ "$DESCRIPTION_LEN" -gt 32 ]; then
 		dialog_msgbox "Wrong ISO description" "Description can only have 32 characters, while yours has $DESCRIPTION_LEN characters"
 		continue
 	fi
@@ -219,9 +219,12 @@ while true; do
 done
 
 RUN_MANUAL_CUSTOMIZATIONS=`dialog_menu "Do you want to customize CD manually during build (using package utilities, console, etc.)?" yes no`
+if [ $? -ne 0 ] ; then
+	failure "Script cancelled by user"
+fi
 
-RESULT=$?
-if [ $RESULT -ne 0 ] ; then
+REMOVE_WIN32_FILES=`dialog_menu "Do you want to delete all win32 related files from the CD?" yes no`
+if [ $? -ne 0 ] ; then
 	failure "Script cancelled by user"
 fi
 
@@ -239,6 +242,7 @@ echo "$BOOT_CD_LANG" >"$BUILD_DIR"/livecd_locale
 echo "$DESKTOP_TYPES" >"$BUILD_DIR"/desktop_types
 echo "$ISO_DESCRIPTION" >"$BUILD_DIR"/iso_description
 echo "$RUN_MANUAL_CUSTOMIZATIONS" >"$BUILD_DIR"/run_manual_customizations
+echo "$REMOVE_WIN32_FILES" >"$BUILD_DIR"/remove_win32_files
 
 if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	echo "Creating X authentication cookie..."
