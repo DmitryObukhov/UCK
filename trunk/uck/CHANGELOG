@@ -2,6 +2,10 @@
 -- 2.0.0 --
 -----------
 
+* GUI:
+	* The question about which desktop environment will be used to manually
+	customize the ISO was removed, this is now autodetected by the backend
+
 * Backend:
 	* remaster-live-cd script was renamed uck-remaster
 	* A script for every part of the remastering process was created:
@@ -22,6 +26,9 @@
 	* Log/error messages got more consinstancy
 	* Unuseful error messages were removed to gain readability of the log file
 	* uck-remaster-pack-iso now supports PPC, x86_64, ia64
+	* Package manager and console applications run inside the livecd are now
+	autodetected
+
 
 -----------
 -- 1.4.1 --

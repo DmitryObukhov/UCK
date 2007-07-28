@@ -68,29 +68,27 @@ REMOVED_PACKAGES=`dpkg-query --show | cut -f1 | grep -E '^(language-pack|languag
 remove_packages $REMOVED_PACKAGES || failure "Removing packages failed, error=$?"
 
 if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
-	if [ "$DESKTOP_TYPE" = "kde" ]; then
-		WINDOW_MANAGER="kwin"
-		CONSOLE_APP="konsole"
-		CONSOLE_APP_OPTIONS=(--caption "UCK customization console")
-		PACKAGE_APP=`which adept`
-		if [ $? -ne 0 ]; then
-			PACKAGE_APP=`which adept_manager`
-			if [ $? -ne 0 ]; then
-				failure "Cannot find neither adept not adept_manager"
-			fi
-		fi
-		PACKAGE_APP_OPTIONS=(--nofork --caption "UCK Package Manager")
-	elif [ "$DESKTOP_TYPE" = "gnome" ]; then
-		WINDOW_MANAGER="metacity"
-		CONSOLE_APP="gnome-terminal"
-		CONSOLE_APP_OPTIONS=(-t "UCK customization console")
-		PACKAGE_APP="synaptic"
-		PACKAGE_APP_OPTIONS=(-t "UCK Package manager")
-	else
-		failure "Unknown desktop type: $DESKTOP_TYPE"
+	WINDOW_MANAGER=`which kwin`
+	if [ "$WINDOW_MANAGER" = "" ]; then
+		WINDOW_MANAGER=`which metacity`
 	fi
 
-	#FIXME: move menu to separate file?
+	CONSOLE_APP=`which konsole`
+	CONSOLE_APP_OPTIONS=(--caption "UCK customization console")
+	if [ "$CONSOLE_APP" = "" ]; then
+		CONSOLE_APP=`which gnome-terminal`
+		CONSOLE_APP_OPTIONS=(-t "UCK customization console")
+	fi
+
+	PACKAGE_APP=`which adept`
+	PACKAGE_APP_OPTIONS=(--caption "UCK Package Manager")
+	if [ "$PACKAGE_APP" = "" ]; then
+		PACKAGE_APP=`which adept_manager`
+	fi
+	if [ "$PACKAGE_APP" = "" ]; then
+		PACKAGE_APP=`which synaptic`
+		PACKAGE_APP_OPTIONS=(-t "UCK Package manager")
+	fi
 
 	while true ; do
 		CHOICE_PACKAGE_MANAGER="Run package manager"
