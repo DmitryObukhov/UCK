@@ -5,6 +5,7 @@
 * GUI:
 	* The question about which desktop environment will be used to manually
 	customize the ISO was removed, this is now autodetected by the backend
+	* Fix for bug 116018 (--nofork option for adept)
 
 * Backend:
 	* remaster-live-cd script was renamed uck-remaster
