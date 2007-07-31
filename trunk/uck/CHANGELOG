@@ -7,6 +7,8 @@
 	customize the ISO was removed, this is now autodetected by the backend
 	* Fix for bug 116018 (--nofork option for adept)
 	* A question about removing win32 files was added
+	* "others" option was added to the desktop choice to allow a better
+	usage with Ubuntu derivatives
 
 * Backend:
 	* remaster-live-cd script was renamed uck-remaster
@@ -31,6 +33,7 @@
 	* Package manager and console applications run inside the livecd are now
 	autodetected
 	* uck-remaster-remove-win32-files script was added
+	* Support for Xubuntu/XFCE was enhanced
 
 
 -----------
