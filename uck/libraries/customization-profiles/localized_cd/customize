@@ -34,9 +34,6 @@ if [ -z "$LIVECD_LANGS" ]; then
 fi
 
 DESKTOP_FLAVOURS=`cat "$SCRIPT_DIR/desktop_types"`
-if [ -z "$DESKTOP_FLAVOURS" ]; then
-	failure "Live CD desktop type not set, please put desktop codes (for example: kde, gnome) into $SCRIPT_DIR/desktop_types"
-fi
 
 prepare_install || failure "Preparing installation failed, error=$?"
 
@@ -48,9 +45,11 @@ LANGPACKS_CONCATENATED=""
 for LANGPACK in $LIVECD_LANGS; do
 	PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL language-pack-$LANGPACK language-support-$LANGPACK"
 
-	for FLAVOUR in $DESKTOP_FLAVOURS; do
-		PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL language-pack-$FLAVOUR-$LANGPACK"
-	done
+	if [ "$DESKTOP_FLAVOURS" ]; then
+		for FLAVOUR in $DESKTOP_FLAVOURS; do
+			PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL language-pack-$FLAVOUR-$LANGPACK"
+		done
+	fi
 
 	if [ -z "$LANGPACKS_CONCATENATED" ]; then
 		LANGPACKS_CONCATENATED="$LANGPACK"
@@ -72,11 +71,18 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	if [ "$WINDOW_MANAGER" = "" ]; then
 		WINDOW_MANAGER=`which metacity`
 	fi
+	if [ "$WINDOW_MANAGER" = "" ]; then
+		WINDOW_MANAGER=`which xfwm4`
+	fi
 
 	CONSOLE_APP=`which konsole`
 	CONSOLE_APP_OPTIONS=(--caption "UCK customization console")
 	if [ "$CONSOLE_APP" = "" ]; then
 		CONSOLE_APP=`which gnome-terminal`
+		CONSOLE_APP_OPTIONS=(-t "UCK customization console")
+	fi
+	if [ "$CONSOLE_APP" = "" ]; then
+		CONSOLE_APP=`which xfce4-terminal`
 		CONSOLE_APP_OPTIONS=(-t "UCK customization console")
 	fi
 

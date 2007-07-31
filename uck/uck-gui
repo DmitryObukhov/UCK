@@ -170,7 +170,10 @@ if [ $RESULT -ne 0 ] ; then
 	failure "Script cancelled by user"
 fi
 
-DESKTOP_TYPES=`dialog_multi_choice "Please choose desktop environments which will be present on customized CD (you can choose more than one) " kde gnome`
+DESKTOP_TYPES=`dialog_multi_choice "Please choose desktop environments which will be present on customized CD (you can choose more than one) " kde gnome others`
+if [ "$DESKTOP_TYPES" = "others" ]; then
+	DESKTOP_TYPES=""
+fi
 
 RESULT=$?
 if [ $RESULT -ne 0 ] ; then
