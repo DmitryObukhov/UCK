@@ -1,9 +1,7 @@
 uck-* usr/bin
 uck.desktop usr/share/applications
 docs/* usr/share/doc/uck/html
-CHANGELOG usr/share/doc/uck
-COPYING usr/share/doc/uck
 customize-dir-examples/* usr/share/doc/uck/examples
 libraries/* usr/lib/uck
 logo/uck-48.png usr/share/uck
-logo/README usr/share/uck/REAME_LOGO
+logo/README_LOGO usr/share/uck
