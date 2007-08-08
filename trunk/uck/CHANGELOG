@@ -35,6 +35,10 @@
 	* uck-remaster-remove-win32-files script was added
 	* Support for Xubuntu/XFCE was enhanced
 
+Package:
+	* gfxboot-theme-ubuntu dependency was dropped, available languages list
+	was imported under uck
+
 
 -----------
 -- 1.4.1 --

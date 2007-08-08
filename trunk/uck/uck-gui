@@ -146,7 +146,6 @@ done
 
 dialog_msgbox "Welcome" "$WELCOME_TEXT"
 
-LANGLIST_FILE='/usr/share/gfxboot/themes/Ubuntu/langlist'
 AVAILABLE_LANGUAGE_PACKS=`apt-cache pkgnames language-support | cut -d'-' -f3 | sort`
 CD_LANGS=`dialog_multi_choice "Please choose language packs to install (you can choose more than one)" $AVAILABLE_LANGUAGE_PACKS`
 RESULT=$?
@@ -155,15 +154,9 @@ if [ $RESULT -ne 0 ] ; then
 	failure "Script cancelled by user"
 fi
 
-if [ ! -r $LANGLIST_FILE ]; then
-	LANGLIST_FILE='/usr/share/gfxboot-theme-ubuntu/langlist'
-	if [ ! -r $LANGLIST_FILE ]; then
-		failure "Cannot read file languages list file, please check that you have package gfxboot-theme-ubuntu installed"
-	fi
-fi
-
+LANGLIST_FILE="$LIBRARIES_DIR/langlist"
 AVAILABLE_BOOT_LANGS=$(cat $LANGLIST_FILE)
-BOOT_CD_LANG=`dialog_menu "Please choose language which will be used at boot of live CD" $AVAILABLE_BOOT_LANGS`
+BOOT_CD_LANG=`dialog_menu "Please choose language which will be used at boot of live CD\n(some might not be supported by the specific Ubuntu release you're customizing)" $AVAILABLE_BOOT_LANGS`
 RESULT=$?
 
 if [ $RESULT -ne 0 ] ; then
