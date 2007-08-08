@@ -34,6 +34,9 @@
 	autodetected
 	* uck-remaster-remove-win32-files script was added
 	* Support for Xubuntu/XFCE was enhanced
+	* Bug #53721 was fixed, now gfxboot-theme-ubuntu is downloaded from inside
+	the chrooted environment avoiding possible incompatibilities between the host
+	system and the remastered system
 
 Package:
 	* gfxboot-theme-ubuntu dependency was dropped, available languages list
