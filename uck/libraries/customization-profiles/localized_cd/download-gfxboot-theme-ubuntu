@@ -1,0 +1,3 @@
+#/bin/bash
+
+cd /tmp && apt-get source -d gfxboot-theme-ubuntu && tar xfz *.tar.gz
