@@ -227,8 +227,9 @@ fi
 dialog_msgbox "Ready to build" "$PRE_START_TEXT"
 
 echo "Preparing build environment..."
+mkdir "$REMASTER_HOME" || gui_failure "Unable to create $REMASTER_HOME directory"
 BUILD_DIR=$REMASTER_HOME/customization-scripts
-mkdir -p $BUILD_DIR || exit 1
+mkdir $BUILD_DIR || gui_failure "Unable to create $BUILD_DIR directory"
 
 cp -a "$LIBRARIES_DIR"/customization-profiles/localized_cd/* "$BUILD_DIR"/
 cp -a "$LIBRARIES_DIR"/gui.sh "$BUILD_DIR"/
