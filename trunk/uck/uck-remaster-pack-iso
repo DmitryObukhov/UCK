@@ -82,6 +82,7 @@ NEW_FILES_DIR="$REMASTER_HOME/remaster-new-files"
 INITRD_REMASTER_DIR="$REMASTER_HOME/remaster-initrd"
 ISO_REMASTER_DIR="$REMASTER_HOME/remaster-iso"
 REMASTER_DIR="$REMASTER_HOME/remaster-root"
+CUSTOMIZE_DIR="$REMASTER_HOME/customization-scripts"
 
 if [ ! -e "$ISO_REMASTER_DIR" ]; then
 	failure "ISO remastering directory does not exists"
