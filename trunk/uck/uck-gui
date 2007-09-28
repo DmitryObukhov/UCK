@@ -195,7 +195,7 @@ while true; do
 		continue
 	fi
 
-	if [ "`isoinfo -p -i \"$ISO_IMAGE\" | grep CASPER | wc -l`" = "0" ] ; then
+	if [ "`isoinfo -p -i \"$ISO_IMAGE\" | grep -i CASPER | wc -l`" = "0" ] ; then
 		dialog_msgbox "Wrong file" "File $ISO_IMAGE is not an Ubuntu DESKTOP EDITION ISO image, alternate CDs can be remastered using backend scripts."
 		continue
 	fi
