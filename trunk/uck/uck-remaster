@@ -23,15 +23,6 @@ ISO_IMAGE="$1"
 CUSTOMIZE_DIR="$2"
 REMASTER_HOME=~/tmp
 
-if [ -z "$ISO_IMAGE" ]; then
-	usage
-	exit 1
-fi
-
-if [ -z "$CUSTOMIZE_DIR" ]; then
-	CUSTOMIZE_DIR="$REMASTER_HOME/customization-scripts"
-fi
-
 ##################
 # some functions #
 ##################
@@ -55,6 +46,19 @@ function check_if_user_is_root()
 		exit 2
 	fi
 }
+
+#########################
+# input parameter check #
+#########################
+
+if [ -z "$ISO_IMAGE" ]; then
+	usage
+	exit 1
+fi
+
+if [ -z "$CUSTOMIZE_DIR" ]; then
+	CUSTOMIZE_DIR="$REMASTER_HOME/customization-scripts"
+fi
 
 ########
 # main #
