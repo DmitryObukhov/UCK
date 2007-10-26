@@ -38,10 +38,13 @@
 	the chrooted environment avoiding possible incompatibilities between the host
 	system and the remastered system
 	* Gutsy images are now recognized
+	* uck-remaster-pack-rootfs has the -c (--clean-desktop-manifest) option
+	(default is OFF) allowing you to delete "live only" packages from the system
+	once that is will be installed on hard disk
 
 Package:
 	* gfxboot-theme-ubuntu dependency was dropped, available languages list
-	was imported under uck
+	was imported under uck (languages list is updated to gutsy)
 
 
 -----------

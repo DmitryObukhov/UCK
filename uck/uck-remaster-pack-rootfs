@@ -2,7 +2,7 @@
 
 ###################################################################################
 # UCK - Ubuntu Customization Kit                                                  #
-# Copyright (C) 2006  UCK Team                                                    #
+# Copyright (C) 2006-2007 UCK Team                                                #
 #                                                                                 #
 # This program is free software; you can redistribute it and/or                   #
 # modify it under the terms of the GNU General Public License                     #
@@ -19,15 +19,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. #
 ###################################################################################
 
-REMASTER_HOME="$1"
-
 #############################
 # general purpose functions #
 #############################
 
 function usage()
 {
-	echo "Usage: $0 [remaster-dir]"
+	echo "Usage: $0 [remaster-dir] [-c|--clean-desktop-manifest]"
 }
 
 function failure()
@@ -40,6 +38,24 @@ function failure()
 # input parameter check #
 #########################
 
+CLEAN_DESKTOP_MANIFEST=0
+
+INPUT_PARAMS=`getopt -u -o c -l clean-desktop-manifest -n "$0" -- "$@"`
+
+if [ $? != 0 ] ; then
+	exit 1
+fi
+
+set -- $INPUT_PARAMS
+for i
+do
+  case "$i" in
+        -c|--clean-desktop-manifest) shift;CLEAN_DESKTOP_MANIFEST=1;;
+        --) shift;;
+  esac
+done
+
+REMASTER_HOME="$1"
 if [ -z "$REMASTER_HOME" ]; then
 	REMASTER_HOME=~/tmp
 fi
