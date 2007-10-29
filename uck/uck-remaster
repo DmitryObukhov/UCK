@@ -79,6 +79,7 @@ CUSTOMIZE_ROOTFS="no"
 CUSTOMIZE_INITRD="no"
 CUSTOMIZE_ISO="no"
 REMOVE_WIN32_FILES=`cat "$CUSTOMIZE_DIR/remove_win32_files"`
+CLEAN_DESKTOP_MANIFEST="no"
 
 if [ -e "$CUSTOMIZE_DIR/customize" ]; then
 	CUSTOMIZE_ROOTFS="yes"
@@ -90,6 +91,10 @@ fi
 
 if [ -e "$CUSTOMIZE_DIR/customize_iso" ]; then
 	CUSTOMIZE_ISO="yes"
+fi
+
+if [ -e "$CUSTOMIZE_DIR/clean_desktop_manifest" ]; then
+	CLEAN_DESKTOP_MANIFEST="yes"
 fi
 
 $SCRIPTS_DIR/uck-remaster-clean "$REMASTER_HOME"
@@ -157,7 +162,11 @@ if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
 fi
 
 if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
-	$SCRIPTS_DIR/uck-remaster-pack-rootfs "$REMASTER_HOME"
+	if [ "$CLEAN_DESKTOP_MANIFEST" = "yes" ]; then
+		$SCRIPTS_DIR/uck-remaster-pack-rootfs -c "$REMASTER_HOME"
+	else
+		$SCRIPTS_DIR/uck-remaster-pack-rootfs "$REMASTER_HOME"
+	fi
 	check_exit_code
 fi
 

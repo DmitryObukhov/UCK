@@ -247,6 +247,7 @@ echo "$DESKTOP_TYPES" >"$BUILD_DIR"/desktop_types
 echo "$ISO_DESCRIPTION" >"$BUILD_DIR"/iso_description
 echo "$RUN_MANUAL_CUSTOMIZATIONS" >"$BUILD_DIR"/run_manual_customizations
 echo "$REMOVE_WIN32_FILES" >"$BUILD_DIR"/remove_win32_files
+echo "yes" >"$BUILD_DIR"/clean_desktop_manifest
 
 if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	echo "Creating X authentication cookie..."
