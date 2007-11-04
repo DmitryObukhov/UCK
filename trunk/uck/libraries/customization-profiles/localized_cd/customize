@@ -104,7 +104,9 @@ for LANGPACK in $LIVECD_LANGS; do
 
 	if [ "$DESKTOP_FLAVOURS" ]; then
 		for FLAVOUR in $DESKTOP_FLAVOURS; do
-			PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL language-pack-$FLAVOUR-$LANGPACK"
+			if [ $FLAVOUR == "gnome" ] || [ $FLAVOUR == "kde" ]; then
+				PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL language-pack-$FLAVOUR-$LANGPACK"
+			fi
 		done
 	fi
 
