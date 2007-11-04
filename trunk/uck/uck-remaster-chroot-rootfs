@@ -60,4 +60,6 @@ REMASTER_DIR="$REMASTER_HOME/remaster-root"
 
 prepare_rootfs_for_chroot
 chroot_rootfs
+CHROOT_EXIT_CODE=$?
 clean_rootfs_after_chroot
+exit $CHROOT_EXIT_CODE
