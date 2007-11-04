@@ -34,8 +34,9 @@ function usage()
 
 function check_exit_code()
 {
-	if [ "$?" -ne 0 ]; then
-		exit "$?"
+	RESULT=$?
+	if [ "$RESULT" -ne 0 ]; then
+		exit "$RESULT"
 	fi
 }
 
