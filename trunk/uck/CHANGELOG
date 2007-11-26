@@ -2,6 +2,14 @@
 -- 2.0.1 --
 -----------
 
+* Backend:
+	* uck-remaster-prepare-alternate now outputs a more complete message about
+	what you can do after calling the script
+
+-----------
+-- 2.0.1 --
+-----------
+
 * GUI:
 	* version number shown in uck-gui was fixed
 
