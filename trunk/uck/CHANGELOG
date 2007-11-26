@@ -1,4 +1,15 @@
 -----------
+-- 2.0.1 --
+-----------
+
+* GUI:
+	* version number shown in uck-gui was fixed
+
+* Backend:
+	* when unpacking an "alternate" ISO now we don't try to parse the filesystem manifest
+	because it doesn't exist
+
+-----------
 -- 2.0.0 --
 -----------
 
