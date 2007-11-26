@@ -97,7 +97,7 @@ wget -c http://archive.ubuntu.com/ubuntu/indices/override.$RELEASE_CODENAME.{ext
 
 cd $REMASTER_ALT_TMP/keyring
 apt-get source ubuntu-keyring
-cd ubuntu-keyring-2005.01.12.1/keyrings
+cd ubuntu-keyring-*/keyrings
 gpg --import < ubuntu-archive-keyring.gpg
 PACKAGE_SIGN=`gpg --list-keys $KEY_ID | grep uid | sed 's/uid *//'`
 gpg --export FBB75451 437D05B5 $KEY_ID > ubuntu-archive-keyring.gpg

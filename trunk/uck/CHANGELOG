@@ -8,6 +8,10 @@
 * Backend:
 	* when unpacking an "alternate" ISO now we don't try to parse the filesystem manifest
 	because it doesn't exist
+	* uck-remaster-finalize-alternate now can handle new releases of ubuntu-keyring package
+	
+* Package:
+	* fakeroot dependency was added
 
 -----------
 -- 2.0.0 --
