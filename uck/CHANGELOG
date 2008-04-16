@@ -1,4 +1,11 @@
 -----------
+-- 2.0.2 --
+-----------
+
+* Backend:
+	* uck-remaster-remove-win32-files was adapted for hardy
+
+-----------
 -- 2.0.1 --
 -----------
 
