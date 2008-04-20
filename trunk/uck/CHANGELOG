@@ -2,8 +2,11 @@
 -- 2.0.2 --
 -----------
 
+* GUI:
+	* languages list extraction was adapted to hardy
+
 * Backend:
-	* uck-remaster-remove-win32-files was adapted for hardy
+	* uck-remaster-remove-win32-files was adapted to hardy
 
 -----------
 -- 2.0.1 --

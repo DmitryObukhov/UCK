@@ -39,7 +39,7 @@ function gui_failure()
 ############
 
 WELCOME_TEXT=`cat <<EOF
-Welcome to Ubuntu Customization Kit 2.0.1.
+Welcome to Ubuntu Customization Kit 2.0.2.
 
 This tool allows creating Ubuntu live CD in your language, with
 all language packs necessary preinstalled on CD.
@@ -146,7 +146,7 @@ done
 
 dialog_msgbox "Welcome" "$WELCOME_TEXT"
 
-AVAILABLE_LANGUAGE_PACKS=`apt-cache pkgnames language-support | cut -d'-' -f3 | sort`
+AVAILABLE_LANGUAGE_PACKS=`apt-cache pkgnames language-support | egrep '^language-support-.{2,3}$' | cut -d'-' -f3 | sort`
 CD_LANGS=`dialog_multi_choice "Please choose language packs to install\n(you can choose more than one)" $AVAILABLE_LANGUAGE_PACKS`
 RESULT=$?
 
