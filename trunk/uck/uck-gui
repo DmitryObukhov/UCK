@@ -46,11 +46,11 @@ It also changes boot screen to appear in chosen language.
 Requirements:
 1. about 5 GB of free disk space in $HOME/tmp
 2. Internet access for fetching language packs.
-3. Enabled apt-source line "deb-src http://archive.ubuntu.com/ubuntu/ dapper main" - necessary for bootlogo building.
+3. Enabled apt-source line "deb-src http://archive.ubuntu.com/ubuntu/ hardy main" - necessary for bootlogo building.
 
 Homepage: http://uck.sourceforge.net
 Authors: http://uck.sourceforge.net/team
-License: GPL v2
+License: GPL v3
 EOF
 `
 RUN_CUSTOMIZATIONS_TEXT=`cat <<EOF
