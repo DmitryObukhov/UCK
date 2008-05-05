@@ -37,7 +37,7 @@ function gui_failure()
 ############
 
 WELCOME_TEXT=`cat <<EOF
-Welcome to Ubuntu Customization Kit 2.0.2.
+Welcome to Ubuntu Customization Kit 2.0.3.
 
 This tool allows creating Ubuntu live CD in your language, with
 all language packs necessary preinstalled on CD.
