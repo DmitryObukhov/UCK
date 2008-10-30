@@ -55,11 +55,13 @@ fi
 
 #copy kernel and initrd, in case it was changed during installation
 VMLINUZ=`ls -1 "$REMASTER_DIR"/boot/vmlinuz* | sort | tail -n1`
-INITRD="$REMASTER_DIR"/boot/initrd.img-$(echo `basename $VMLINUZ` | cut -d'-' -f 2-)
-if [ -e "$VMLINUZ" -a -e "$INITRD" ]; then
-	echo "Updating kernel, kernel=$VMLINUZ, initrd=$INITRD"
-	cp -f "$VMLINUZ" "$ISO_REMASTER_DIR/casper/vmlinuz"
-	cp -f "$INITRD" "$ISO_REMASTER_DIR/casper/initrd.gz"
-else
-	echo "Not updating kernel as initrd not present"
+if [ "$VMLINUZ" != "" ]; then
+	INITRD="$REMASTER_DIR"/boot/initrd.img-$(echo `basename $VMLINUZ` | cut -d'-' -f 2-)
+	if [ -e "$VMLINUZ" -a -e "$INITRD" ]; then
+		echo "Updating kernel, kernel=$VMLINUZ, initrd=$INITRD"
+		cp -f "$VMLINUZ" "$ISO_REMASTER_DIR/casper/vmlinuz"
+		cp -f "$INITRD" "$ISO_REMASTER_DIR/casper/initrd.gz"
+	else
+		echo "Not updating kernel as initrd not present"
+	fi
 fi

@@ -1,4 +1,13 @@
 -----------
+-- 2.0.4 --
+-----------
+
+* Backend:
+	* initrd detection was updated to intrepid
+	* ISO mime type detection was updated to intrepid
+	* langlist was updated to intrepid
+
+-----------
 -- 2.0.3 --
 -----------
 
