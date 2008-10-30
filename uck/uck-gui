@@ -188,7 +188,7 @@ while true; do
 		continue
 	fi
 
-	if [ "`file --brief --mime \"$ISO_IMAGE\"`" != "application/x-iso9660" -a "`file --brief --mime \"$ISO_IMAGE\"`" !=  "application/x-iso9660-image" ] ; then
+	if [ "`file --brief --mime \"$ISO_IMAGE\" | grep \"application/x-iso9660\" | wc -l`" = "0" ] ; then
 		dialog_msgbox "Wrong file" "File $ISO_IMAGE does not seem to be a valid ISO9660 image"
 		continue
 	fi
