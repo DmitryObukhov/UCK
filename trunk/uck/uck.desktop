@@ -8,10 +8,7 @@ Icon=/usr/share/uck/uck-48.png
 Exec=/usr/bin/uck-gui --wait-before-exit
 Terminal=true
 
-Categories=Application;System;
-Encoding=UTF-8
-MimeType=
-Path=
+Categories=System;
 StartupNotify=true
 Type=Application
 Version=1.0
