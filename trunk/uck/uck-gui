@@ -36,8 +36,14 @@ function gui_failure()
 # MESSAGES #
 ############
 
+if [ -e VERSION ]; then
+	VERSION=`cat VERSION`
+else
+	VERSION=`cat /usr/lib/uck/VERSION`
+fi
+
 WELCOME_TEXT=`cat <<EOF
-Welcome to Ubuntu Customization Kit!
+Welcome to Ubuntu Customization Kit $VERSION!
 
 This tool allows creating Ubuntu live CD in your language, with
 all language packs necessary preinstalled on CD.
@@ -46,7 +52,7 @@ It also changes boot screen to appear in chosen language.
 Requirements:
 1. about 5 GB of free disk space in $HOME/tmp
 2. Internet access for fetching language packs.
-3. Enabled apt-source line "deb-src http://archive.ubuntu.com/ubuntu/ hardy main" - necessary for bootlogo building.
+3. Enabled apt-source line "deb-src http://archive.ubuntu.com/ubuntu/ intrepid main" - necessary for bootlogo building.
 
 Homepage: http://uck.sourceforge.net
 Authors: http://uck.sourceforge.net/team

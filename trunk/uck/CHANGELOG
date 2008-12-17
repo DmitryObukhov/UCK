@@ -1,4 +1,20 @@
 -----------
+-- 2.0.5 --
+-----------
+
+* GUI:
+	* UCK version number fix
+	
+* Backend:
+	* uck-remaster script now outputs UCK version
+	  for a better debugging
+	* minor fix to download-gfxboot-theme-ubuntu
+	  (thanks to Alessio Treglia)
+
+* Package:
+	* minor fixes to uck.desktop (thanks to Alessio Treglia)
+
+-----------
 -- 2.0.4 --
 -----------
 

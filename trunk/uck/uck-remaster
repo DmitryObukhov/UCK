@@ -67,10 +67,13 @@ check_if_user_is_root
 
 if [ -e libraries/remaster-live-cd.sh ]; then
 	SCRIPTS_DIR=`dirname "$0"`
+	VERSION=`VERSION`
 else
 	SCRIPTS_DIR=/usr/bin
+	VERSION=`cat /usr/lib/uck/VERSION`
 fi
 
+echo "Ubuntu Customization Kit $VERSION"
 echo "Starting CD remastering on " `date`
 echo "Customization dir=$CUSTOMIZE_DIR"
 
