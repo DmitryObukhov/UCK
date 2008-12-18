@@ -240,6 +240,7 @@ if [ ! -e "$REMASTER_HOME" ]; then
 	mkdir "$REMASTER_HOME" || gui_failure "Unable to create $REMASTER_HOME directory"
 fi
 BUILD_DIR=$REMASTER_HOME/customization-scripts
+rm -rf "$BUILD_DIR" || gui_failure "Unable to remove previous build directory ($BUILD_DIR)"
 mkdir $BUILD_DIR || gui_failure "Unable to create $BUILD_DIR directory"
 
 cp -a "$LIBRARIES_DIR"/customization-profiles/localized_cd/* "$BUILD_DIR"/
