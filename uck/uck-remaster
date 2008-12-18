@@ -67,7 +67,7 @@ check_if_user_is_root
 
 if [ -e libraries/remaster-live-cd.sh ]; then
 	SCRIPTS_DIR=`dirname "$0"`
-	VERSION=`VERSION`
+	VERSION=`cat VERSION`
 else
 	SCRIPTS_DIR=/usr/bin
 	VERSION=`cat /usr/lib/uck/VERSION`
