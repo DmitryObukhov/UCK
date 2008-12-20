@@ -1,4 +1,14 @@
 -----------
+-- 2.0.6 --
+-----------
+
+* GUI:
+	* a message about zenity was fixed (thanks to Cesare Tirabassi)
+
+* Package:
+	* some dependencies were added
+
+-----------
 -- 2.0.5 --
 -----------
 

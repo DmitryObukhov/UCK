@@ -51,7 +51,7 @@ function find_dialog()
 	fi
 
 	if [ -z $DIALOG ]; then
-		failure "You need kdialog, Xdialog or dialog application to run this script, please install it using 'apt-get install packagename' where packagename is 'kdebase-bin' for kdialog, 'xdialog' for dialog, 'dialog' for dialog. If you are using text-mode, you need to install dialog."
+		failure "You need kdialog, Xdialog, dialog or zenity application to run this script, please install it using 'apt-get install packagename' where packagename is 'kdebase-bin' for kdialog, 'xdialog' for dialog, 'dialog' for dialog. If you are using text-mode, you need to install dialog."
 	fi
 }
 
