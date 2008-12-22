@@ -6,7 +6,9 @@
 	* a message about zenity was fixed (thanks to Cesare Tirabassi)
 
 * Package:
-	* some dependencies were added
+	* some dependencies were added (thanks to norsetto and Alessio Treglia)
+	* copyright notes were added in some files
+	  (thanks to norsetto and Alessio Treglia)
 
 -----------
 -- 2.0.5 --
