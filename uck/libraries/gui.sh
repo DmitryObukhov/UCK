@@ -149,7 +149,7 @@ function dialog_choose_file()
 		if [ "$DIALOG_TYPE" = "kdialog" ] ; then
 			$DIALOG --title "$TITLE" --getopenfilename "`pwd`/"
 		else
-			$DIALOG --stdout --title "$TITLE" --fselect "`pwd`/" 20 80
+			$DIALOG --stdout --title "$TITLE" --fselect "`pwd`/" 10 70
 		fi
 	fi
 }
