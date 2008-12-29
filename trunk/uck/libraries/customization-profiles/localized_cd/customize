@@ -144,11 +144,9 @@ REMOVED_PACKAGES=`dpkg-query --show | cut -f1 | grep -E '^(language-pack|languag
 remove_packages $REMOVED_PACKAGES || failure "Removing packages failed, error=$?"
 
 if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
-	if [ -x /usr/bin/dbus-uuidgen ]; then
-		#Create DBUS uuid so that KDE4 apps work.
-		echo "Creating DBUS uuid"
-		/usr/bin/dbus-uuidgen --ensure
-	fi
+	#Create DBUS uuid so that KDE4 apps work.
+	echo "Creating DBUS uuid"
+	dbus-uuidgen --ensure
 	while true ; do
 		CHOICE_PACKAGE_MANAGER="Run package manager"
 		CHOICE_CONSOLE="Run console application"
