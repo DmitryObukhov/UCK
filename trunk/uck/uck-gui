@@ -27,6 +27,11 @@ function failure()
 	exit 1
 }
 
+function failure_user()
+{
+	failure "Script was cancelled by the user"
+}
+
 function gui_failure()
 {
 	dialog_msgbox "Error" "$@"
@@ -46,20 +51,21 @@ fi
 WELCOME_TEXT=`cat <<EOF
 Welcome to Ubuntu Customization Kit $VERSION!
 
-This tool allows creating Ubuntu live CD in your language, with
-all language packs necessary preinstalled on CD.
-It also changes boot screen to appear in chosen language.
+This tool lets you create Ubuntu live CDs in your language,
+with all the necessary language packs preinstalled.
+It also changes the boot screen to appear in your chosen language.
 
 Requirements:
 1. about 5 GB of free disk space in $HOME/tmp
-2. Internet access for fetching language packs.
-3. Enabled apt-source line "deb-src http://archive.ubuntu.com/ubuntu/ intrepid main" - necessary for bootlogo building.
+2. Internet access for fetching language packs
+3. apt-source line "deb-src http://archive.ubuntu.com/ubuntu/ intrepid main" enabled (necessary for bootlogo building)
 
 Homepage: http://uck.sourceforge.net
 Authors: http://uck.sourceforge.net/team
 License: GPL v3
 EOF
 `
+
 RUN_CUSTOMIZATIONS_TEXT=`cat <<EOF
 You will be provided with menu to choose from customization actions when build reaches proper place.
 
@@ -89,37 +95,40 @@ EOF
 `
 
 PRE_START_TEXT=`cat <<EOF
-All necessary information has been gathered.
-Building will start now.
+All the necessary information has been gathered.
+Building will now start.
 
-Note: You will have to provide your password to gain administrative privileges using sudo (necessary to mount ISO files).
+Note: You will have to provide your password on the command-line
 
-Your live CD will be created as
-$LIVECD_ISO_LOCATION
+Your live CD will be created as:
 
-Please fasten your seatbelts and enjoy the ride.
+	$LIVECD_ISO_LOCATION
+
+Please fasten your seatbelts and enjoy the ride!
 EOF
 `
 
 BUILD_SUCCESS_TEXT=`cat <<EOF
-Building have been finished successfully.
+Building was successful!
 
-You can find your live CD in
-$LIVECD_ISO_LOCATION
+You can find your live CD in:
 
-To test it, you can run (qemu package must be installed):
-qemu -cdrom $LIVECD_ISO_LOCATION -boot d -m 256
+	$LIVECD_ISO_LOCATION
 
+If you have installed the \"qemu\" package, you can test the image by doing:
+
+	qemu -cdrom $LIVECD_ISO_LOCATION -boot d -m 256
 EOF
 `
 
 BUILD_FAILURE_TEXT=`cat <<EOF
 Building failed.
 
-Please examine file build.log which has been created in directory where you run the script.
+Please look at $REMASTER_HOME/build.log to see what went wrong.
 
-If you still cannot find the problem, please send post a support request at:
-https://launchpad.net/products/uck/+addticket
+If you cannot find the problem, please send a support request at:
+
+	https://launchpad.net/products/uck/+addticket
 EOF
 `
 
@@ -138,7 +147,7 @@ fi
 . $LIBRARIES_DIR/gui.sh
 
 if [ `id -un` = "root" ] ; then
-	gui_failure "UCK GUI should not be run as root. Please run as usual user. Prompt for password will appear when administrator privileges are required."
+	gui_failure "UCK GUI should not be run as root, please run again as a normal user. You will be asked for your password when administrator privileges are required."
 fi
 
 # parsing input parameters
@@ -152,41 +161,41 @@ done
 dialog_msgbox "Welcome" "$WELCOME_TEXT"
 
 AVAILABLE_LANGUAGE_PACKS=`apt-cache pkgnames language-support | egrep '^language-support-.{2,3}$' | cut -d'-' -f3 | sort`
-CD_LANGS=`dialog_multi_choice "Please choose language packs to install\n(you can choose more than one)" $AVAILABLE_LANGUAGE_PACKS`
+CD_LANGS=`dialog_multi_choice $'Please choose language packs to install\n(you can choose more than one)' $AVAILABLE_LANGUAGE_PACKS`
 RESULT=$?
 
 if [ $RESULT -ne 0 ] ; then
-	failure "Script cancelled by user"
+	failure_user
 fi
 
 LANGLIST_FILE="$LIBRARIES_DIR/langlist"
 AVAILABLE_BOOT_LANGS=$(cat $LANGLIST_FILE)
-BOOT_CD_LANG=`dialog_menu "Please choose language which will be used at boot of live CD\n(some might not be supported by the specific Ubuntu release you're customizing)" $AVAILABLE_BOOT_LANGS`
+BOOT_CD_LANG=`dialog_menu $'Please choose language which will be used at boot of live CD\n(some might not be supported by the specific Ubuntu release you\'re customizing)' $AVAILABLE_BOOT_LANGS`
 RESULT=$?
 
 if [ $RESULT -ne 0 ] ; then
-	failure "Script cancelled by user"
+	failure_user
 fi
 
-DESKTOP_TYPES=`dialog_multi_choice "Please choose desktop environments which will be present on customized CD\n(you can choose more than one) " kde gnome others`
+DESKTOP_TYPES=`dialog_multi_choice $'Please choose desktop environments which will be present on customized CD\n(you can choose more than one)' kde gnome others`
 if [ "$DESKTOP_TYPES" = "others" ]; then
 	DESKTOP_TYPES=""
 fi
 
 RESULT=$?
 if [ $RESULT -ne 0 ] ; then
-	failure "Script cancelled by user"
+	failure_user
 fi
 
 while true; do
-	ISO_IMAGE=`dialog_choose_file "Please choose ISO image which will be used as base for customized live CD."`
+	ISO_IMAGE=`dialog_choose_file "Please choose an ISO image to be used as the basis for your live CD."`
 
 	if [ -z "$ISO_IMAGE" ] ; then
-		failure "Script cancelled by user"
+		failure_user
 	fi
 
 	if [ ! -r "$ISO_IMAGE" ] ; then
-		dialog_msgbox "Not existing file" "File $ISO_IMAGE does not exist"
+		dialog_msgbox "Non-existent file" "File $ISO_IMAGE does not exist"
 		continue
 	fi
 
@@ -196,42 +205,42 @@ while true; do
 	fi
 
 	if [ "`file --brief --mime \"$ISO_IMAGE\" | grep \"application/x-iso9660\" | wc -l`" = "0" ] ; then
-		dialog_msgbox "Wrong file" "File $ISO_IMAGE does not seem to be a valid ISO9660 image"
+		dialog_msgbox "Not an ISO image" "File $ISO_IMAGE does not seem to be a valid ISO9660 image"
 		continue
 	fi
 
 	if [ "`isoinfo -p -i \"$ISO_IMAGE\" | grep -i CASPER | wc -l`" = "0" ] ; then
-		dialog_msgbox "Wrong file" "File $ISO_IMAGE is not an Ubuntu DESKTOP EDITION ISO image, alternate CDs can be remastered using backend scripts."
+		dialog_msgbox "Not an Ubuntu Desktop ISO image" "File $ISO_IMAGE is not an Ubuntu Desktop Edition ISO image, alternate CDs can be remastered using backend scripts."
 		continue
 	fi
 	break
 done
 
 while true; do
-	ISO_DESCRIPTION=`dialog_line_input "Please enter name for CD (you can leave it blank, 32 chars max)" "Customized Ubuntu live CD" `
+	ISO_DESCRIPTION=`dialog_line_input "Please enter the name for your CD (you can leave it blank, 32 chars max)" "Customized Ubuntu live CD" `
 	RESULT=$?
 
 	if [ $RESULT -ne 0 ] ; then
-		failure "Script cancelled by user"
+		failure_user
 	fi
 
 	DESCRIPTION_LEN=`echo "$ISO_DESCRIPTION" | wc -c`
 
 	if [ "$DESCRIPTION_LEN" -gt 32 ]; then
-		dialog_msgbox "Wrong ISO description" "Description can only have 32 characters, while yours has $DESCRIPTION_LEN characters"
+		dialog_msgbox "ISO description too long" "The description must not be longer than 32 characters (yours is $DESCRIPTION_LEN characters)"
 		continue
 	fi
 	break
 done
 
-RUN_MANUAL_CUSTOMIZATIONS=`dialog_menu "Do you want to customize CD manually during build (using package utilities, console, etc.)?" yes no`
+RUN_MANUAL_CUSTOMIZATIONS=`dialog_menu "Do you want to customize the CD manually during building (using package utilities, console, etc.)?" yes no`
 if [ $? -ne 0 ] ; then
-	failure "Script cancelled by user"
+	failure_user
 fi
 
-REMOVE_WIN32_FILES=`dialog_menu "Do you want to delete all win32 related files from the CD?" yes no`
+REMOVE_WIN32_FILES=`dialog_menu $'Do you want to delete all windows-related files from the CD?\nThese are files that will appear when you use the CD under Windows (wubi, autorun.inf, etc.)' yes no`
 if [ $? -ne 0 ] ; then
-	failure "Script cancelled by user"
+	failure_user
 fi
 
 dialog_msgbox "Ready to build" "$PRE_START_TEXT"
@@ -276,7 +285,7 @@ else
 	ISO_SIZE=`stat --format='%s' "$LIVECD_ISO_LOCATION"`
 
 	if [ $ISO_SIZE -ge $MAX_CD_700MB_SIZE ] ; then
-		dialog_msgbox "ISO size error" "Warning: ISO image might be too big to fit on 700MB CD-ROM"
+		dialog_msgbox "ISO too big" "Warning: ISO image might be too big to fit on 700MB CD-ROM"
 	fi
 fi
 ) 2>&1 | tee -a $REMASTER_HOME/build.log
