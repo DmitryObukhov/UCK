@@ -5,6 +5,7 @@
 * GUI:
 	* a message about zenity was fixed (thanks to Cesare Tirabassi)
 	* a bug with dialog file chooser was fixed (thanks to norsetto)
+	* some info messages were rewritten (thanks to Andrew Sayers)
 
 * Package:
 	* some dependencies were added (thanks to norsetto and Alessio Treglia)
