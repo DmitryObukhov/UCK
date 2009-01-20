@@ -4,5 +4,5 @@ docs/* usr/share/doc/uck/html
 customize-dir-examples/* usr/share/doc/uck/examples
 libraries/* usr/lib/uck
 VERSION usr/lib/uck
-logo/uck-48.png usr/share/uck
+uck.png usr/share/pixmaps
 logo/README_LOGO usr/share/uck
