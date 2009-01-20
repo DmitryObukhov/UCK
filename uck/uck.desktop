@@ -3,9 +3,9 @@ Name=Ubuntu Customization Kit
 GenericName=Ubuntu Desktop CD Customizer
 Comment=Customize your Ubuntu Desktop CDs easily
 
-Icon=/usr/share/uck/uck-48.png
+Icon=uck.png
 
-Exec=/usr/bin/uck-gui --wait-before-exit
+Exec=uck-gui --wait-before-exit
 Terminal=true
 
 Categories=System;

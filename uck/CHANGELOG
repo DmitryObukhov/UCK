@@ -1,4 +1,13 @@
 -----------
+-- 2.0.7 --
+-----------
+
+* Package:
+	* HTML docs were moved from docs dir to docs/html
+	* absolute paths were removed from uck.desktop file
+	* uck-48.png logo was moved from /usr/share/uck to /usr/share/pixmaps/uck.png
+
+-----------
 -- 2.0.6 --
 -----------
 
