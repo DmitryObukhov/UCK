@@ -1,0 +1,6 @@
+uck-* usr/share/uck
+uck.desktop usr/share/applications
+customize-dir-examples/* usr/share/doc/uck/examples
+libraries/* usr/lib/uck
+VERSION usr/lib/uck
+uck.png usr/share/pixmaps

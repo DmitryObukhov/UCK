@@ -1,0 +1,6 @@
+uck (2.0.7-0ubuntu1) jaunty; urgency=low
+
+  * Initial release (LP: #267355).
+  * Remove the debian/ dir from upstream tarball.
+
+ -- Alessio Treglia <quadrispro@ubuntu.com>  Tue, 20 Jan 2009 16:44:30 +0100

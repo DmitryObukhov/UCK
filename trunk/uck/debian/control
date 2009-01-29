@@ -1,0 +1,26 @@
+Source: uck
+Section: utils
+Priority: optional
+Maintainer: Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>
+XSBC-Original-Maintainer: Alessio Treglia <quadrispro@ubuntu.com>
+Build-Depends: debhelper (>= 6)
+Standards-Version: 3.8.0
+Homepage: http://uck.sourceforge.net/
+
+Package: uck
+Architecture: all
+Depends: bash (>= 3.0), gfxboot, dialog | xdialog | zenity | kdebase-bin,
+ genisoimage, squashfs-tools (>= 2.0), dpkg-dev, fakeroot, build-essential,
+ file, mktemp (>= 1.5), xauth, gnupg
+Description: Tool to customize official Ubuntu Live CDs
+ UCK is a tool that helps you customizing official Ubuntu Live CDs (including
+ Kubuntu/Xubuntu and Edubuntu) to your needs. You can add any package to the
+ live system like, for example, language packs, applications, etc.
+ .
+ Features:
+  * Create bootable LiveCD with predefined languages based upon an original
+    Ubuntu/Kubuntu live CD using graphical wizard.
+  * Build live CD with special features using scripts. It is possible to
+    customize the root filesystem (for example install/remove packages), ISO
+    contents (add/remove docs, change names) and initrd (add modules to boot,
+    change boot sequence).
