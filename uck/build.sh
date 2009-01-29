@@ -13,6 +13,17 @@ cd ..
 mv uck uck-$VERSION
 cd uck-$VERSION
 
+# checking if version number has been updated everywhere
+if [ "`grep "$VERSION" debian/uck-gui.1 | wc -l`" -eq "0" ]; then
+	echo "ERROR: you've to update version numer in debian/uck-gui.1"
+	exit
+fi
+
+if [ "`grep "$VERSION" debian/changelog | wc -l`" -eq "0" ]; then
+	echo "ERROR: you've to update version numer in debian/changelog"
+	exit
+fi
+
 # cleaning
 rm -rf `find -name .svn`
 rm -rf logo
