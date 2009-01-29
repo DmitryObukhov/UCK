@@ -1,8 +1,0 @@
-uck-* usr/bin
-uck.desktop usr/share/applications
-docs/* usr/share/doc/uck/html
-customize-dir-examples/* usr/share/doc/uck/examples
-libraries/* usr/lib/uck
-VERSION usr/lib/uck
-uck.png usr/share/pixmaps
-logo/README_LOGO usr/share/uck
