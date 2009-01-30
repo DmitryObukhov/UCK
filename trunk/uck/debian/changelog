@@ -1,6 +1,5 @@
-uck (2.0.8-0ubuntu1) intrepid; urgency=low
+uck (2.0.7-0ubuntu2) intrepid; urgency=low
 
-  * New upstream release.
   * No need to remove the debian/ dir from upstream tarball.
   * uck-* binaries moved from /usr/share/uck to /usr/bin
 
