@@ -9,7 +9,6 @@ get-orig-source:
 	cd $(DEBIAN_DIR)/.. && uscan --force-download
 	tar xf ../uck_$(UPSTREAM_VERSION).tar.gz
 	rm ../uck_$(UPSTREAM_VERSION).tar.gz
-	rm -fr uck-$(UPSTREAM_VERSION)/debian
 	tar cf ../uck_$(UPSTREAM_VERSION).orig.tar \
 	uck-$(UPSTREAM_VERSION)
 	gzip -9fn ../uck_$(UPSTREAM_VERSION).orig.tar
@@ -47,7 +46,6 @@ binary-indep: build install
 	dh_installdocs
 	dh_installmenu debian/menu
 	dh_installman $(CURDIR)/debian/uck-gui.1
-	dh_link usr/share/uck/uck-gui usr/bin/uck-gui
 	dh_compress
 	dh_fixperms
 	dh_installdeb
