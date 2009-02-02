@@ -45,7 +45,7 @@ binary-indep: build install
 	chmod 755 $(CURDIR)/debian/uck/usr/lib/uck/customization-profiles/localized_cd/download-gfxboot-theme-ubuntu
 	dh_installdocs
 	dh_installmenu debian/menu
-	dh_installman $(CURDIR)/debian/uck-gui.1
+	dh_installman $(CURDIR)/docs/man/*
 	dh_compress
 	dh_fixperms
 	dh_installdeb
