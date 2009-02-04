@@ -37,7 +37,8 @@ dpkg-buildpackage
 # generating source package
 rm -rf debian
 cd ..
-tar zcfp uck_$VERSION.tar.gz uck-$VERSION
+tar cfp uck_$VERSION.tar uck-$VERSION
+gzip -9 uck_$VERSION.tar
 
 # just a note
 echo
