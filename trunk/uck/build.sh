@@ -15,7 +15,7 @@ cd uck-$VERSION
 
 # checking if version number has been updated everywhere
 MAN_FILES=`ls docs/man/*.1 | wc -l`
-MAN_FILES_WITH_VERSION=`grep $VERSION" docs/man/*.1 | wc -l`
+MAN_FILES_WITH_VERSION=`grep "$VERSION" docs/man/*.1 | wc -l`
 if [ $MAN_FILES -ne $MAN_FILES_WITH_VERSION ]; then
 	echo "ERROR: you've to update version numer in all man pages"
 	exit
