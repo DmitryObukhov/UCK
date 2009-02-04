@@ -14,10 +14,12 @@ mv uck uck-$VERSION
 cd uck-$VERSION
 
 # checking if version number has been updated everywhere
-#if [ "`grep "$VERSION" debian/uck-gui.1 | wc -l`" -eq "0" ]; then
-#	echo "ERROR: you've to update version numer in debian/uck-gui.1"
-#	exit
-#fi
+MAN_FILES=`ls docs/man/*.1 | wc -l`
+MAN_FILES_WITH_VERSION=`grep $VERSION" docs/man/*.1 | wc -l`
+if [ $MAN_FILES -ne $MAN_FILES_WITH_VERSION ]; then
+	echo "ERROR: you've to update version numer in all man pages"
+	exit
+fi
 
 if [ "`grep "$VERSION" debian/changelog | wc -l`" -eq "0" ]; then
 	echo "ERROR: you've to update version numer in debian/changelog"
