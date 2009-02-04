@@ -1,4 +1,13 @@
 -----------
+-- 2.0.8 --
+-----------
+
+* Package:
+	* every uck-* binary file now has a man page (docs/man)
+	* no need to remove the debian/ dir from upstream tarball
+	* uck-* binaries moved from /usr/share/uck to /usr/bin
+
+-----------
 -- 2.0.7 --
 -----------
 
