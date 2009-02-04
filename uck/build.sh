@@ -17,12 +17,12 @@ cd uck-$VERSION
 MAN_FILES=`ls docs/man/*.1 | wc -l`
 MAN_FILES_WITH_VERSION=`grep "$VERSION" docs/man/*.1 | wc -l`
 if [ $MAN_FILES -ne $MAN_FILES_WITH_VERSION ]; then
-	echo "ERROR: you've to update version numer in all man pages"
+	echo "ERROR: you've to update version number in all man pages"
 	exit
 fi
 
 if [ "`grep "$VERSION" debian/changelog | wc -l`" -eq "0" ]; then
-	echo "ERROR: you've to update version numer in debian/changelog"
+	echo "ERROR: you've to update version number in debian/changelog"
 	exit
 fi
 
