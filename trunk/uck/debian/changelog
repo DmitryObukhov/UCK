@@ -5,7 +5,7 @@ uck (2.0.8-0ubuntu1) jaunty; urgency=low
   * No need to remove the debian/ dir from upstream tarball
   * uck-* binaries moved from /usr/share/uck to /usr/bin
 
- -- Fabrizio Balliano <fabrizio@fabrizio-laptop>  Wed, 04 Feb 2009 13:36:34 +0100
+ -- Fabrizio Balliano <fabrizio.balliano@crealabs.it>  Wed, 04 Feb 2009 13:36:34 +0100
 
 uck (2.0.7-0ubuntu1) jaunty; urgency=low
 
