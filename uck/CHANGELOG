@@ -18,6 +18,8 @@
 	* If you don't choose a default boot language UCK does not pass a
 	  DEFAULT_LANG variable when rebuilding gfxboot, this won't modify
 	  gfxboot default
+	* No warning are thrown if "remove_win32_files" file is not present 
+	  in the remastering scripts directory
 
 -----------
 -- 2.0.8 --

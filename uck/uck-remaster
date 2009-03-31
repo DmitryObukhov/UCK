@@ -81,8 +81,12 @@ echo "Customization dir=$CUSTOMIZE_DIR"
 CUSTOMIZE_ROOTFS="no"
 CUSTOMIZE_INITRD="no"
 CUSTOMIZE_ISO="no"
-REMOVE_WIN32_FILES=`cat "$CUSTOMIZE_DIR/remove_win32_files"`
+REMOVE_WIN32_FILES="no"
 CLEAN_DESKTOP_MANIFEST="no"
+
+if [ -e "$CUSTOMIZE_DIR/remove_win32_files" ]; then
+	REMOVE_WIN32_FILES=`cat "$CUSTOMIZE_DIR/remove_win32_files"`
+fi
 
 if [ -e "$CUSTOMIZE_DIR/customize" ]; then
 	CUSTOMIZE_ROOTFS="yes"
