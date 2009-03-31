@@ -48,6 +48,8 @@ else
 	VERSION=`cat /usr/lib/uck/VERSION`
 fi
 
+DISTRIB_CODENAME=`cat /etc/lsb-release | grep DISTRIB_CODENAME | cut -d '=' -f 2`
+
 WELCOME_TEXT=`cat <<EOF
 Welcome to Ubuntu Customization Kit $VERSION!
 
@@ -58,7 +60,7 @@ It also changes the boot screen to appear in your chosen language.
 Requirements:
 1. about 5 GB of free disk space in $HOME/tmp
 2. Internet access for fetching language packs
-3. apt-source line "deb-src http://archive.ubuntu.com/ubuntu/ intrepid main" enabled (necessary for bootlogo building)
+3. apt-source line "deb-src http://archive.ubuntu.com/ubuntu/ $DISTRIB_CODENAME main" enabled (necessary for bootlogo building)
 
 Homepage: http://uck.sourceforge.net
 Authors: http://uck.sourceforge.net/team
@@ -84,7 +86,7 @@ Note 1: package application will be run after language packs are installed accor
 Note 2: upgrading kernel package updates kernel used to run live CD (latest one available will be used). You can remove earlier version using package application, just like any other package.
 
 Note 3: if you upgrade packages, add first (manually in package manager) repository:
-deb http://archive.ubuntu.com/ubuntu/ dapper-updates main restricted
+deb http://archive.ubuntu.com/ubuntu/ $DISTRIB_CODENAME-updates main restricted
 as it will be available after installation and will cause immediate updates.
 
 Note 4: sources.list changes are not propagated to installed system.
@@ -177,9 +179,13 @@ if [ $RESULT -ne 0 ] ; then
 	failure_user
 fi
 
-DESKTOP_TYPES=`dialog_multi_choice $'Please choose desktop environments which will be present on customized CD\n(you can choose more than one)' kde gnome others`
-if [ "$DESKTOP_TYPES" = "others" ]; then
+if [ -z $CD_LANGS ] ; then
 	DESKTOP_TYPES=""
+else
+	DESKTOP_TYPES=`dialog_multi_choice $'Please choose desktop environments which will be present on customized CD\n(you can choose more than one)' kde gnome others`
+	if [ "$DESKTOP_TYPES" = "others" ]; then
+		DESKTOP_TYPES=""
+	fi
 fi
 
 RESULT=$?

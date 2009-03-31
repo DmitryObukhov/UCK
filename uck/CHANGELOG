@@ -1,4 +1,25 @@
 -----------
+-- 2.0.9 --
+-----------
+
+* GUI:
+	* If you don't select a language pack to install, you're not asked
+	  to choose what desktop manager is installed in the ISO
+	* Some messages referring to currently installed distro codename
+	  were made dynamic
+
+* Backend:
+	* No error is thrown if no language packs are going to be installed
+	* No language packs are removed from the rootfs if you don't provide
+	  at least a language pack to install (otherwise you'll have an ISO
+	  with no languages at all)
+	* No language selection are removed from gfxboot if you don't choose
+	  at least a language pack to install
+	* If you don't choose a default boot language UCK does not pass a
+	  DEFAULT_LANG variable when rebuilding gfxboot, this won't modify
+	  gfxboot default
+
+-----------
 -- 2.0.8 --
 -----------
 
