@@ -26,6 +26,15 @@ function failure()
 	exit 1
 }
 
+function get_latest_kernel()
+{
+	set -- $(ls "$REMASTER_DIR"/boot/vmlinuz* | sed -e "s@$REMASTER_DIR/boot/@@" |\
+		tr --  '-.' '\t' |\
+		sort --key=2 --key=3 --key=4  --key=5 --numeric-sort | \
+		tail -n1 )
+	[ "$1" = "vmlinuz" ] && echo "$REMASTER_DIR/boot/$1-$2.$3.$4-$5-$6"
+}
+
 SCRIPT_DIR=`dirname "$0"`
 BOOT_LANG=`cat "$SCRIPT_DIR/livecd_locale"`
 REMASTER_HOME=$1
@@ -73,7 +82,7 @@ else
 fi
 
 #copy kernel and initrd, in case it was changed during installation
-VMLINUZ=`ls -1 "$REMASTER_DIR"/boot/vmlinuz* | sort | tail -n1`
+VMLINUZ=$(get_latest_kernel)
 if [ "$VMLINUZ" != "" ]; then
 	INITRD="$REMASTER_DIR"/boot/initrd.img-$(echo `basename $VMLINUZ` | cut -d'-' -f 2-)
 	if [ -e "$VMLINUZ" -a -e "$INITRD" ]; then

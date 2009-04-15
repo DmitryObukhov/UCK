@@ -20,6 +20,8 @@
 	  gfxboot default
 	* No warning are thrown if "remove_win32_files" file is not present 
 	  in the remastering scripts directory
+	* a bug with the kernel image selection was solved (now the latest
+	  is always selected automatically) (thanks to Dion Stempfley)
 
 -----------
 -- 2.0.8 --
