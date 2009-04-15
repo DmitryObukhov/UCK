@@ -42,17 +42,8 @@ ISO_REMASTER_DIR="$REMASTER_HOME/remaster-iso"
 REMASTER_DIR="$REMASTER_HOME/remaster-root"
 
 pushd "$BUILD_DIR" || failure "Cannot change directory to $BUILD_DIR, error=$?"
-if [ -e "$REMASTER_DIR"  ]; then
-	cp -f /etc/resolv.conf "$REMASTER_DIR/etc/resolv.conf" || failure "Failed to copy resolv.conf to image directory, error=$?"
-	cp -a "$SCRIPT_DIR/download-gfxboot-theme-ubuntu" "$REMASTER_DIR/tmp"
-	chroot "$REMASTER_DIR" /tmp/download-gfxboot-theme-ubuntu || failure "Failed to fetch gfxboot-theme-ubuntu source, check if you have deb-src line enabled for repository main in /etc/apt/sources.list, error=$?"
-	mv "$REMASTER_DIR/tmp/gfxboot-theme-ubuntu" "$BUILD_DIR"
-	chroot "$REMASTER_DIR" rm /etc/resolv.conf /tmp/download-gfxboot-theme-ubuntu /tmp/gfxboot*
-else
-	apt-get source gfxboot-theme-ubuntu || failure "Failed to fetch gfxboot-theme-ubuntu source, check if you have deb-src line enabled for repository main in /etc/apt/sources.list, error=$?"
-fi
-
-cd gfxboot-theme-ubuntu*/
+bzr get http://bazaar.launchpad.net/~ubuntu-core-dev/gfxboot-theme-ubuntu/mainline gfxboot-theme-ubuntu || failure "Failed to fetch gfxboot-theme-ubuntu source, error=$?"
+cd gfxboot-theme-ubuntu
 
 LIVECD_LANGS=`cat "$SCRIPT_DIR/language_packs"`
 LANGPACKS_CONCATENATED=""
