@@ -22,6 +22,8 @@
 	  in the remastering scripts directory
 	* a bug with the kernel image selection was solved (now the latest
 	  is always selected automatically) (thanks to Dion Stempfley)
+	* the way we retrive gfxboot-theme-ubuntu was rewritten using bazaar
+	  (the official ubuntu development tool)
 
 -----------
 -- 2.0.8 --
