@@ -328,6 +328,7 @@ function remove_iso_remaster_dir()
 function remove_remaster_dir()
 {
 	if [ -e "$REMASTER_DIR" ] ; then
+		unmount_pseudofilesystems
 		echo "Removing remastering root dir..."
 		remove_directory "$REMASTER_DIR"
 	fi
