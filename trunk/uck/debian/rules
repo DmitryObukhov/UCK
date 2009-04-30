@@ -42,7 +42,6 @@ binary-indep: build install
 	dh_installchangelogs CHANGELOG
 	dh_install
 	chmod 644 $(CURDIR)/debian/uck/usr/lib/uck/hfs.map
-	chmod 755 $(CURDIR)/debian/uck/usr/lib/uck/customization-profiles/localized_cd/download-gfxboot-theme-ubuntu
 	dh_installdocs
 	dh_installmenu debian/menu
 	dh_installman $(CURDIR)/docs/man/*
