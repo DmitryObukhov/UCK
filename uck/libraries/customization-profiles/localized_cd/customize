@@ -92,7 +92,12 @@ function run_console()
 		RESULT=$?
 	
 		if [ $RESULT -ne 0 ]; then
-			dialog_msgbox "Failure" "Running console application $CONSOLE_APP failed, error=$RESULT"
+			echo "Running console application $CONSOLE_APP failed, trying the fallback xterm"
+			xterm -title "UCK customization console" -e /bin/bash
+			RESULT=$?
+			if [ $RESULT -ne 0 ]; then
+				dialog_msgbox "Failure" "Running console application $CONSOLE_APP failed, error=$RESULT"
+			fi
 		fi
 	fi
 }

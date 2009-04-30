@@ -7,6 +7,8 @@
 	  to choose what desktop manager is installed in the ISO
 	* Some messages referring to currently installed distro codename
 	  were made dynamic
+	* If an error happens calling running console application UCK
+	  tries to run the fallback xterm
 
 * Backend:
 	* No error is thrown if no language packs are going to be installed
