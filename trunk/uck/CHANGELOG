@@ -28,6 +28,9 @@
 	  (the official ubuntu development tool)
 	* /var/run was added to the pseudo filesystem that are mounted in
 	  the chroot environment
+	* all previously mounted pseudo filesystems are now unmounted
+	  before starting the remastering process if a previous
+	  remaster-root directory exists
 
 -----------
 -- 2.0.8 --
