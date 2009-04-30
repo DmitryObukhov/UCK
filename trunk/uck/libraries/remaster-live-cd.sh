@@ -38,7 +38,7 @@ function unmount_directory()
 function unmount_pseudofilesystems()
 {
 	if [ -n "$REMASTER_DIR" ]; then
-		for i in "$REMASTER_DIR/tmp/.X11-unix" "$REMASTER_DIR"/lib/modules/*/volatile "$REMASTER_DIR"/proc "$REMASTER_DIR"/sys "$REMASTER_DIR"/dev/pts; do
+		for i in "$REMASTER_DIR/tmp/.X11-unix" "$REMASTER_DIR"/lib/modules/*/volatile "$REMASTER_DIR"/proc "$REMASTER_DIR"/sys "$REMASTER_DIR"/dev/pts "$REMASTER_DIR"/var/run; do
 			unmount_directory "$i"
 		done
 	fi
@@ -193,6 +193,7 @@ function prepare_rootfs_for_chroot()
 	mount -t proc proc "$REMASTER_DIR/proc" || echo "Failed to mount $REMASTER_DIR/proc, error=$?"
 	mount -t sysfs sysfs "$REMASTER_DIR/sys" || echo "Failed to mount $REMASTER_DIR/sys, error=$?"
 	mount -t devpts none "$REMASTER_DIR/dev/pts" || failure "Failed to mount $REMASTER_DIR/dev/pts, error=$?"
+	mount -o bind /var/run "$REMASTER_DIR/var/run"
 
 	#create backup of root directory
 	chroot "$REMASTER_DIR" cp -a /root /root.saved || failure "Failed to create backup of /root directory, error=$?"

@@ -24,6 +24,8 @@
 	  is always selected automatically) (thanks to Dion Stempfley)
 	* the way we retrive gfxboot-theme-ubuntu was rewritten using bazaar
 	  (the official ubuntu development tool)
+	* /var/run was added to the pseudo filesystem that are mounted in
+	  the chroot environment
 
 -----------
 -- 2.0.8 --
