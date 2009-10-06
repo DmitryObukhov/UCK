@@ -211,8 +211,10 @@ while true; do
 	fi
 
 	if [ "`file --brief --mime \"$ISO_IMAGE\" | grep \"application/x-iso9660\" | wc -l`" = "0" ] ; then
-		dialog_msgbox "Not an ISO image" "File $ISO_IMAGE does not seem to be a valid ISO9660 image"
-		continue
+		dialog_question "Not an ISO image" "File $ISO_IMAGE does not seem to be a valid ISO9660 image, do you want to continue with this file?"
+		if [ $? -ne 0 ] ; then
+			continue
+		fi
 	fi
 
 	if [ "`isoinfo -p -i \"$ISO_IMAGE\" | grep -i CASPER | wc -l`" = "0" ] ; then
