@@ -217,6 +217,7 @@ function prepare_rootfs_for_chroot()
 	echo "Mounting X11 sockets directory to allow access from customization environment..."
 	mkdir -p "$REMASTER_DIR/tmp/.X11-unix" || failure "Cannot create mount directory $REMASTER_DIR/tmp/.X11-unix, error=$?"
 	mount --bind /tmp/.X11-unix "$REMASTER_DIR/tmp/.X11-unix" || failure "Cannot bind mount /tmp/.X11-unix in  $REMASTER_DIR/tmp/.X11-unix, error=$?"
+	chroot "$REMASTER_DIR" dbus-uuidgen --ensure 1>/dev/null 2>&1
 
 	if [ -e "$REMASTER_HOME/customization-scripts/Xcookie" ] ; then
 		echo "Creating user directory..."
@@ -256,7 +257,7 @@ function clean_rootfs_after_chroot()
 
 	echo "Removing /home/username directory, if created..."
 	UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
-	chroot "$REMASTER_DIR" rm -rf "$UCK_USER_HOME_DIR" # 2>/dev/null
+	chroot "$REMASTER_DIR" rm -rf "$UCK_USER_HOME_DIR" /var/lib/dbus/machine-id # 2>/dev/null
 
 	echo "Restoring resolv.conf..."
 	rm -f "$REMASTER_DIR/etc/resolv.conf" || failure "Failed to remove resolv.conf, error=$?"
