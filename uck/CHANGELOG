@@ -7,7 +7,8 @@
 	* languages list was updated to karmic
 	
 * Backend:	
-	* dbus-uuidgen support was added if available
+	* dbus-uuidgen support was moved to uck-remaster-chroot-rootfs
+	* a bug with xauth files was solved
 
 -----------
 -- 2.0.9 --
