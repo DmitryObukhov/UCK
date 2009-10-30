@@ -5,6 +5,9 @@
 * GUI:
 	* a workaroud for right ISO format detection was added (#271677)
 	* languages list was updated to karmic
+	
+* Backend:	
+	* dbus-uuidgen support was added if available
 
 -----------
 -- 2.0.9 --
