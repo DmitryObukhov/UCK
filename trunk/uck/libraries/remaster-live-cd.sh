@@ -217,13 +217,15 @@ function prepare_rootfs_for_chroot()
 	echo "Mounting X11 sockets directory to allow access from customization environment..."
 	mkdir -p "$REMASTER_DIR/tmp/.X11-unix" || failure "Cannot create mount directory $REMASTER_DIR/tmp/.X11-unix, error=$?"
 	mount --bind /tmp/.X11-unix "$REMASTER_DIR/tmp/.X11-unix" || failure "Cannot bind mount /tmp/.X11-unix in  $REMASTER_DIR/tmp/.X11-unix, error=$?"
+	echo "Creating DBUS uuid"
 	chroot "$REMASTER_DIR" dbus-uuidgen --ensure 1>/dev/null 2>&1
 
 	if [ -e "$REMASTER_HOME/customization-scripts/Xcookie" ] ; then
 		echo "Creating user directory..."
 		UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
-		chroot "$REMASTER_DIR" mkdir -p "$UCK_USER_HOME_DIR" || failure "Cannot create user directory, error=$?"
-
+		if [ `echo $UCK_USER_HOME_DIR | cut -d '/' -f2` == 'home' ] ; then
+			chroot "$REMASTER_DIR" mkdir -p "$UCK_USER_HOME_DIR" >/dev/null 2>&1
+		fi
 		echo "Copying X authorization file to chroot filesystem..."
 		cat "$REMASTER_HOME/customization-scripts/Xcookie" | chroot "$REMASTER_DIR" xauth -f /root/.Xauthority merge - || failure "Failed to merge X authorization file, error=$?"
 		cat "$REMASTER_HOME/customization-scripts/Xcookie" | chroot "$REMASTER_DIR" xauth merge - || failure "Failed to merge X authorization file in user directory, error=$?"
@@ -257,7 +259,10 @@ function clean_rootfs_after_chroot()
 
 	echo "Removing /home/username directory, if created..."
 	UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
-	chroot "$REMASTER_DIR" rm -rf "$UCK_USER_HOME_DIR" /var/lib/dbus/machine-id # 2>/dev/null
+	if [ `echo $UCK_USER_HOME_DIR | cut -d '/' -f2` == 'home' ] ; then
+		chroot "$REMASTER_DIR" rm -rf "$UCK_USER_HOME_DIR" || failure "Cannot create user directory, error=$?"
+	fi
+	chroot "$REMASTER_DIR" rm -rf /var/lib/dbus/machine-id # 2>/dev/null
 
 	echo "Restoring resolv.conf..."
 	rm -f "$REMASTER_DIR/etc/resolv.conf" || failure "Failed to remove resolv.conf, error=$?"
