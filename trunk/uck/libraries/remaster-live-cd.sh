@@ -38,9 +38,12 @@ function unmount_directory()
 function unmount_pseudofilesystems()
 {
 	if [ -n "$REMASTER_DIR" ]; then
-		for i in "$REMASTER_DIR/tmp/.X11-unix" "$REMASTER_DIR"/lib/modules/*/volatile "$REMASTER_DIR"/proc "$REMASTER_DIR"/sys "$REMASTER_DIR"/dev/pts "$REMASTER_DIR"/var/run; do
-			unmount_directory "$i"
-		done
+		unmount_directory "$REMASTER_DIR/tmp"
+		unmount_directory "$REMASTER_DIR/lib/modules/*/volatile"
+		unmount_directory "$REMASTER_DIR/proc"
+		unmount_directory "$REMASTER_DIR/sys"
+		unmount_directory "$REMASTER_DIR/dev/pts"
+		unmount_directory "$REMASTER_DIR/var/run"
 	fi
 }
 
@@ -194,6 +197,7 @@ function prepare_rootfs_for_chroot()
 	mount -t sysfs sysfs "$REMASTER_DIR/sys" || echo "Failed to mount $REMASTER_DIR/sys, error=$?"
 	mount -t devpts none "$REMASTER_DIR/dev/pts" || failure "Failed to mount $REMASTER_DIR/dev/pts, error=$?"
 	mount -o bind /var/run "$REMASTER_DIR/var/run"
+	mount -o bind /tmp "$REMASTER_DIR/tmp"
 
 	#create backup of root directory
 	chroot "$REMASTER_DIR" cp -a /root /root.saved || failure "Failed to create backup of /root directory, error=$?"
@@ -214,9 +218,6 @@ function prepare_rootfs_for_chroot()
 		cp -a "$REMASTER_DIR/var/cache/apt/" "$REMASTER_DIR/var/cache/apt.original" || failure "Cannot copy $REMASTER_DIR/var/cache/apt/ to $REMASTER_DIR/var/cache/apt.original, error=$?"
 	fi
 
-	echo "Mounting X11 sockets directory to allow access from customization environment..."
-	mkdir -p "$REMASTER_DIR/tmp/.X11-unix" || failure "Cannot create mount directory $REMASTER_DIR/tmp/.X11-unix, error=$?"
-	mount --bind /tmp/.X11-unix "$REMASTER_DIR/tmp/.X11-unix" || failure "Cannot bind mount /tmp/.X11-unix in  $REMASTER_DIR/tmp/.X11-unix, error=$?"
 	echo "Creating DBUS uuid"
 	chroot "$REMASTER_DIR" dbus-uuidgen --ensure 1>/dev/null 2>&1
 
