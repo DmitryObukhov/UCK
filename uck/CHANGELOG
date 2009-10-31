@@ -9,6 +9,7 @@
 * Backend:	
 	* dbus-uuidgen support was moved to uck-remaster-chroot-rootfs
 	* a bug with xauth files was solved
+	* now we bind the whole /tmp inside the remaster-root
 
 -----------
 -- 2.0.9 --
