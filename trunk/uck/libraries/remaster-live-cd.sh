@@ -221,14 +221,14 @@ function prepare_rootfs_for_chroot()
 	chroot "$REMASTER_DIR" dbus-uuidgen --ensure 1>/dev/null 2>&1
 
 	if [ -e "$REMASTER_HOME/customization-scripts/Xcookie" ] ; then
-		echo "Creating user directory..."
 		UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
 		if [ `echo $UCK_USER_HOME_DIR | cut -d '/' -f2` == 'home' ] ; then
+			echo "Creating user directory..."
 			chroot "$REMASTER_DIR" mkdir -p "$UCK_USER_HOME_DIR" >/dev/null 2>&1
+			echo "Copying X authorization file to chroot filesystem..."
+			cat "$REMASTER_HOME/customization-scripts/Xcookie" | chroot "$REMASTER_DIR" xauth -f /root/.Xauthority merge - || failure "Failed to merge X authorization file, error=$?"
+			cat "$REMASTER_HOME/customization-scripts/Xcookie" | chroot "$REMASTER_DIR" xauth merge - || failure "Failed to merge X authorization file in user directory, error=$?"
 		fi
-		echo "Copying X authorization file to chroot filesystem..."
-		cat "$REMASTER_HOME/customization-scripts/Xcookie" | chroot "$REMASTER_DIR" xauth -f /root/.Xauthority merge - || failure "Failed to merge X authorization file, error=$?"
-		cat "$REMASTER_HOME/customization-scripts/Xcookie" | chroot "$REMASTER_DIR" xauth merge - || failure "Failed to merge X authorization file in user directory, error=$?"
 	fi
 }
 
