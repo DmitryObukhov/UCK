@@ -2,7 +2,7 @@
 
 ###################################################################################
 # UCK - Ubuntu Customization Kit                                                  #
-# Copyright (C) 2006-2009 UCK Team                                                #
+# Copyright (C) 2006-2010 UCK Team                                                #
 #                                                                                 #
 # UCK is free software: you can redistribute it and/or modify                     #
 # it under the terms of the GNU General Public License as published by            #
@@ -93,15 +93,20 @@ function unpack_initrd()
 	echo "Unpacking initrd image..."
 	pushd "$INITRD_REMASTER_DIR" || failure "Failed to change directory to $INITRD_REMASTER_DIR, error=$?"
 
-	if [ -e "$ISO_REMASTER_DIR/casper/initrd.gz" ]; then
+	if [ -e "$ISO_REMASTER_DIR/casper/initrd.lz" ]; then
+		INITRD_FILE="$ISO_REMASTER_DIR/casper/initrd.lz"
+		INITRD_PACK=lzma
+	elif [ -e "$ISO_REMASTER_DIR/casper/initrd.gz" ]; then
 		INITRD_FILE="$ISO_REMASTER_DIR/casper/initrd.gz"
+		INITRD_PACK=gzip
 	elif [ -e "$ISO_REMASTER_DIR/install/initrd.gz" ]; then
 		INITRD_FILE="$ISO_REMASTER_DIR/install/initrd.gz"
+		INITRD_PACK=gzip
 	else
-		failure "Can't find initrd.gz file"
+		failure "Can't find initrd.gz nor initrd.lz file"
 	fi
 
-	cat "$INITRD_FILE" | gzip -d | cpio -i
+	cat "$INITRD_FILE" | $INITRD_PACK -d | cpio -i
 	RESULT=$?
 	if [ $RESULT -ne 0 ]; then
 		failure "Failed to unpack $INITRD_FILE to $INITRD_REMASTER_DIR, error=$RESULT"
@@ -118,23 +123,29 @@ function pack_initrd()
 
 	echo "Packing initrd image..."
 	pushd "$INITRD_REMASTER_DIR" || failure "Failed to change directory to $INITRD_REMASTER_DIR, error=$?"
-	find | cpio -H newc -o | gzip >"$REMASTER_HOME/initrd.gz"
+
+	if [ -e "$ISO_REMASTER_DIR/casper/initrd.lz" ]; then
+		INITRD_FILE="$ISO_REMASTER_DIR/casper/initrd.lz"
+		INITRD_PACK=lzma
+	elif [ -e "$ISO_REMASTER_DIR/casper/initrd.gz" ]; then
+		INITRD_FILE="$ISO_REMASTER_DIR/casper/initrd.gz"
+		INITRD_PACK=gzip
+	elif [ -e "$ISO_REMASTER_DIR/install/initrd.gz" ]; then
+		INITRD_FILE="$ISO_REMASTER_DIR/install/initrd.gz"
+		INITRD_PACK=gzip
+	else
+		failure "Can't find where to copy the initrd.packed file"
+	fi
+
+	find | cpio -H newc -o | $INITRD_PACK >"$REMASTER_HOME/initrd.packed"
 	RESULT=$?
 	if [ $RESULT -ne 0 ]; then
-		rm "$REMASTER_HOME/initrd.gz"
-		failure "Failed to compress initird image $INITRD_REMASTER_DIR to $REMASTER_HOME/initrd.gz, error=$RESULT"
+		rm "$REMASTER_HOME/initrd.packed"
+		failure "Failed to compress initird image $INITRD_REMASTER_DIR to $REMASTER_HOME/initrd.packed, error=$RESULT"
 	fi
 	popd
 
-	if [ -e "$ISO_REMASTER_DIR/casper" ]; then
-		INITRD_FILE="$ISO_REMASTER_DIR/casper/initrd.gz"
-	elif [ -e "$ISO_REMASTER_DIR/install" ]; then
-		INITRD_FILE="$ISO_REMASTER_DIR/install/initrd.gz"
-	else
-		failure "Can't find where to copy the initrd.gz file"
-	fi
-
-	mv "$REMASTER_HOME/initrd.gz" "$INITRD_FILE" || failure "Failed to move $NEW_FILES_DIR/initrd.gz to $INITRD_FILE, error=$?"
+	mv "$REMASTER_HOME/initrd.packed" "$INITRD_FILE" || failure "Failed to move $REMASTER_HOME/initrd.packed to $INITRD_FILE, error=$?"
 }
 
 function mount_iso()
