@@ -4,6 +4,11 @@
 
 * Backend:
 	* .lz initrd support was added (thanks to Wolf Geldmacher)
+	* new isolinux configuration format is now supported
+	  (thanks to Wolf Geldmacher)
+	* if a local copy of gfxboot-theme-ubuntu is found inside ~/tmp
+	  it won't be downloaded from bzr, allowing better customizations
+	  (thanks to Wolf Geldmacher)
 
 ------------
 -- 2.0.10 --
