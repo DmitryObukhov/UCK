@@ -2,6 +2,9 @@
 -- 2.0.11 --
 ------------
 
+* Backend:
+	* .lz initrd support was added (thanks to Wolf Geldmacher)
+
 ------------
 -- 2.0.10 --
 ------------
