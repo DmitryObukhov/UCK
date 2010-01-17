@@ -13,6 +13,8 @@
 	* if a local copy of gfxboot-theme-ubuntu is found inside ~/tmp
 	  it won't be downloaded from bzr, allowing better customizations
 	  (thanks to Wolf Geldmacher)
+	* gfxboot-theme-ubuntu source download routine was completely rewritten
+	  using wget instead of bzr
 
 ------------
 -- 2.0.10 --

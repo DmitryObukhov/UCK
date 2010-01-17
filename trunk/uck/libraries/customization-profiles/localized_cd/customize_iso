@@ -38,7 +38,7 @@
 #
 # NOTES:
 #    Execution of the procedure may require Internet access to download
-#    the source of the latest version gfxboot-theme-ubuntu via bzr.
+#    the source of the latest version gfxboot-theme-ubuntu.
 #
 #    If a local copy of gfxboot-theme-ubuntu is available in the remaster
 #    home, it will be used instead of a (possibly updated) download.
@@ -76,8 +76,13 @@ then
 else
 	pushd "$BUILD_DIR" >/dev/null ||
 		failure "Cannot change directory to $BUILD_DIR"
-	bzr get http://bazaar.launchpad.net/~ubuntu-core-dev/gfxboot-theme-ubuntu/mainline gfxboot-theme-ubuntu ||
-		failure "Failed to fetch gfxboot-theme-ubuntu source"
+	DISTRO_CODENAME=`cd "$ISO_REMASTER_DIR"/dists && find . -maxdepth 1 -type d | grep '/' | cut -d '/' -f2` ||
+		failure "Unable to identify Ubuntu distro codename"
+	GFXBOOT_THEME_UBUNTU_SOURCE_PACKAGE=`wget -q -O - http://packages.ubuntu.com/$DISTRO_CODENAME/gfxboot-theme-ubuntu | grep ".tar.gz" | cut -d '"' -f2`
+	wget $GFXBOOT_THEME_UBUNTU_SOURCE_PACKAGE ||
+		failure "Unable to download gfxboot-theme-ubuntu source package from $GFXBOOT_THEME_UBUNTU_SOURCE_PACKAGE"
+	tar xfz *.tar.gz ||
+		failure "Unable to extract gfxboot-theme-ubuntu source package"
 fi
 
 # Build the gfx boot theme
