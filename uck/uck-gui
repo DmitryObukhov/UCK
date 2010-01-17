@@ -48,8 +48,6 @@ else
 	VERSION=`cat /usr/lib/uck/VERSION`
 fi
 
-DISTRIB_CODENAME=`cat /etc/lsb-release | grep DISTRIB_CODENAME | cut -d '=' -f 2`
-
 WELCOME_TEXT=`cat <<EOF
 Welcome to Ubuntu Customization Kit $VERSION!
 
@@ -60,7 +58,6 @@ It also changes the boot screen to appear in your chosen language.
 Requirements:
 1. about 5 GB of free disk space in $HOME/tmp
 2. Internet access for fetching language packs
-3. apt-source line "deb-src http://archive.ubuntu.com/ubuntu/ $DISTRIB_CODENAME main" enabled (necessary for bootlogo building)
 
 Homepage: http://uck.sourceforge.net
 Authors: http://uck.sourceforge.net/team
@@ -85,13 +82,9 @@ Note 1: package application will be run after language packs are installed accor
 
 Note 2: upgrading kernel package updates kernel used to run live CD (latest one available will be used). You can remove earlier version using package application, just like any other package.
 
-Note 3: if you upgrade packages, add first (manually in package manager) repository:
-deb http://archive.ubuntu.com/ubuntu/ $DISTRIB_CODENAME-updates main restricted
-as it will be available after installation and will cause immediate updates.
+Note 3: sources.list changes are not propagated to installed system.
 
-Note 4: sources.list changes are not propagated to installed system.
-
-Note 5: Simple upgrading system increases CD size, as some other updates might increase size.
+Note 4: Simple upgrading system increases CD size, as some other updates might increase size.
 You will probably have to remove something from image to make it fit on CD.
 EOF
 `
@@ -208,13 +201,6 @@ while true; do
 	if [ ! -r "$ISO_IMAGE" ] ; then
 		dialog_msgbox "Unreadable file" "File $ISO_IMAGE cannot be read, do you have permissions for this file?"
 		continue
-	fi
-
-	if [ "`file --brief --mime \"$ISO_IMAGE\" | grep \"application/x-iso9660\" | wc -l`" = "0" ] ; then
-		dialog_question "Not an ISO image" "File $ISO_IMAGE does not seem to be a valid ISO9660 image, do you want to continue with this file?"
-		if [ $? -ne 0 ] ; then
-			continue
-		fi
 	fi
 
 	if [ "`isoinfo -p -i \"$ISO_IMAGE\" | grep -i CASPER | wc -l`" = "0" ] ; then
