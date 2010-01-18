@@ -5,6 +5,8 @@
 * GUI:
 	* ISO mime type check was removed because new Ubuntu ISOs
 	  have "x-iso9660" mime type
+	* a bug with cd language selection was solved
+	  (thanks to Wolf Geldmacher)
 	
 * Backend:
 	* .lz initrd support was added (thanks to Wolf Geldmacher)
