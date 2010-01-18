@@ -11,7 +11,7 @@ Package: uck
 Architecture: all
 Depends: bash (>= 3.0), gfxboot, dialog | xdialog | zenity | kdebase-bin,
  genisoimage, squashfs-tools (>= 2.0), dpkg-dev, fakeroot, build-essential,
- file, mktemp (>= 1.5), xauth, gnupg, bzr
+ file, mktemp (>= 1.5), xauth, gnupg, wget, lzma
 Description: Tool to customize official Ubuntu Live CDs
  UCK is a tool that helps you customizing official Ubuntu Live CDs (including
  Kubuntu/Xubuntu and Edubuntu) to your needs. You can add any package to the
