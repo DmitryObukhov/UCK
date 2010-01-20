@@ -1,4 +1,11 @@
 ------------
+-- 2.0.12 --
+------------
+
+* Backend:
+	* a workaround for the chrooted gnome-terminal was implemented
+
+------------
 -- 2.0.11 --
 ------------
 
