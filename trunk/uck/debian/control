@@ -20,6 +20,8 @@ Depends: bash (>= 3.0),
  mktemp (>= 1.5),
  xauth,
  gnupg,
+ wget,
+ lzma,
  ${misc:Depends}
 Description: Tool to customize official Ubuntu Live CDs
  UCK is a tool that helps you customizing official Ubuntu Live CDs (including
