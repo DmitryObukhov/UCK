@@ -1,57 +1,8 @@
 #!/usr/bin/make -f
 
-# Path to the debian directory
-DEBIAN_DIR := $(shell echo ${MAKEFILE_LIST} |awk '{print $$1}' |xargs dirname)
-UPSTREAM_VERSION ?=$(shell uscan --dehs | \
-sed -n 's/.*<upstream-version>\(.*\)<\/upstream-version>.*/\1/p')
+%:
+	dh $@
 
-get-orig-source:
-	cd $(DEBIAN_DIR)/.. && uscan --force-download
-	tar xf ../uck_$(UPSTREAM_VERSION).tar.gz
-	rm ../uck_$(UPSTREAM_VERSION).tar.gz
-	tar cf ../uck_$(UPSTREAM_VERSION).orig.tar \
-	uck-$(UPSTREAM_VERSION)
-	gzip -9fn ../uck_$(UPSTREAM_VERSION).orig.tar
-	rm -fr uck-$(UPSTREAM_VERSION)
-
-configure: configure-stamp
-configure-stamp:
-	dh_testdir
-	touch configure-stamp
-
-build: build-stamp
-build-stamp: configure-stamp
-	dh_testdir
-	touch build-stamp
-
-clean:
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp configure-stamp
-	dh_clean
-
-install: build
-	dh_testdir
-	dh_testroot
-	dh_clean -k
-	dh_installdirs
-
-binary-indep: build install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs CHANGELOG
+override_dh_install:
 	dh_install
 	chmod 644 $(CURDIR)/debian/uck/usr/lib/uck/hfs.map
-	dh_installdocs
-	dh_installmenu debian/menu
-	dh_installman $(CURDIR)/docs/man/*
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary-arch: build install
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure
