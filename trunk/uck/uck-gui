@@ -173,12 +173,22 @@ if [ $RESULT -ne 0 ] ; then
 	failure_user
 fi
 
-BOOT_CD_LANG=`dialog_menu $'Please choose which language will be selected by default at boot of live CD' $BOOT_CD_LANGS`
-RESULT=$?
-
-if [ $RESULT -ne 0 ] ; then
-	failure_user
+if [ "$BOOT_CD_LANGS" == "" ]; then
+	BOOT_CD_LANGS=$AVAILABLE_BOOT_LANGS
 fi
+
+while true; do
+	BOOT_CD_LANG=`dialog_menu $'Please choose which language will be selected by default at boot of live CD' $BOOT_CD_LANGS`
+	RESULT=$?
+	
+	if [ $RESULT -ne 0 ] ; then
+		failure_user
+	fi
+	
+	if [ "$BOOT_CD_LANG" != "" ]; then
+		break
+	fi
+done
 
 if [ -z "$CD_LANGS" ] ; then
 	DESKTOP_TYPES=""
