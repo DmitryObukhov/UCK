@@ -1,0 +1,39 @@
+Description: Fix upstream's manpage to make lintian happy.
+Author: Alessio Treglia <quadrispro@ubuntu.com>
+---
+ docs/man/uck-remaster-pack-iso.1    |    6 +++---
+ docs/man/uck-remaster-pack-rootfs.1 |    4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+--- uck-2.0.10.orig/docs/man/uck-remaster-pack-iso.1
++++ uck-2.0.10/docs/man/uck-remaster-pack-iso.1
+@@ -9,11 +9,11 @@
+ packing script
+ .SH "SYNOPSIS"
+ .IX Header "SYNOPSIS"
+-uck-remaster-pack-iso [iso-file-name.iso] [remaster-dir] [-g|--generate-md5]
+-[-a|--arch=x86,x86_64,ia64,ppc]
++uck\-remaster\-pack\-iso [iso\-file\-name.iso] [remaster\-dir] [\-g|\-\-generate-md5]
++[\-a|\-\-arch=x86,x86_64,ia64,ppc]
+ .SH "DESCRIPTION"
+ .IX Header "DESCRIPTION"
+-\&\fBuck-remaster-pack-iso generates the new ISO image file compressing the
++\&\fBuck-remaster-pack-iso\fR generates the new ISO image file compressing the
+ extracted one.
+ .SH "AUTHOR"
+ .IX Header "AUTHOR"
+--- uck-2.0.10.orig/docs/man/uck-remaster-pack-rootfs.1
++++ uck-2.0.10/docs/man/uck-remaster-pack-rootfs.1
+@@ -9,10 +9,10 @@
+ packing script
+ .SH "SYNOPSIS"
+ .IX Header "SYNOPSIS"
+-uck-remaster-pack-rootfs [remaster-dir] [-c|--clean-desktop-manifest]
++uck\-remaster\-pack\-rootfs [remaster\-dir] [\-c|\-\-clean\-desktop\-manifest]
+ .SH "DESCRIPTION"
+ .IX Header "DESCRIPTION"
+-\&\fBuck-remaster-pack-rootfs generates the new rootfs image file compressing
++\&\fBuck-remaster-pack-rootfs\fR generates the new rootfs image file compressing
+ the extracted one.
+ .SH "AUTHOR"
+ .IX Header "AUTHOR"
