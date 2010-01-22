@@ -10,6 +10,7 @@
 	  gfxbook locales.
 	* the default gfxboot language can be chosen only between the
 	  gfxboot available languages (easier selection).
+	* default gfxboot language selection was made mandatory
 	
 * Backend:
 	* a workaround for the chrooted gnome-terminal was implemented
