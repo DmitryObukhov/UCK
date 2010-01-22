@@ -166,7 +166,14 @@ fi
 
 LANGLIST_FILE="$LIBRARIES_DIR/langlist"
 AVAILABLE_BOOT_LANGS=$(cat $LANGLIST_FILE)
-BOOT_CD_LANG=`dialog_menu $'Please choose language which will be used at boot of live CD\n(some might not be supported by the specific Ubuntu release you\'re customizing)' $AVAILABLE_BOOT_LANGS`
+BOOT_CD_LANGS=`dialog_multi_choice $'Please choose which languages will be available at boot of live CD\n(some might not be supported by the specific Ubuntu release you\'re customizing)' $AVAILABLE_BOOT_LANGS`
+RESULT=$?
+
+if [ $RESULT -ne 0 ] ; then
+	failure_user
+fi
+
+BOOT_CD_LANG=`dialog_menu $'Please choose which language will be selected by default at boot of live CD' $BOOT_CD_LANGS`
 RESULT=$?
 
 if [ $RESULT -ne 0 ] ; then
@@ -252,6 +259,7 @@ cp -a "$LIBRARIES_DIR"/customization-profiles/localized_cd/* "$BUILD_DIR"/
 cp -a "$LIBRARIES_DIR"/gui.sh "$BUILD_DIR"/
 
 echo "$CD_LANGS" >"$BUILD_DIR"/language_packs
+echo "$BOOT_CD_LANGS" >"$BUILD_DIR"/livecd_locales
 echo "$BOOT_CD_LANG" >"$BUILD_DIR"/livecd_locale
 echo "$DESKTOP_TYPES" >"$BUILD_DIR"/desktop_types
 echo "$ISO_DESCRIPTION" >"$BUILD_DIR"/iso_description
