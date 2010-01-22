@@ -22,7 +22,7 @@
 #    customize_iso -- customize iso image outside of root FS
 #
 # SYNOPSIS:
-#    customize_iso [remaster_home]
+#    customize_iso [remaster_home] [customization_scripts_dir]
 #
 # DESCRIPTION:
 #    This procedure performs additional customization that needs to
@@ -45,6 +45,7 @@
 
 SCRIPT_DIR=`dirname "$0"`
 REMASTER_HOME=${1:-~/tmp}
+SCRIPT_DIR=${2-~/tmp/customization-scripts}
 ISO_REMASTER_DIR="$REMASTER_HOME/remaster-iso"
 REMASTER_DIR="$REMASTER_HOME/remaster-root"
 BOOT_LANG=`cat "$SCRIPT_DIR/livecd_locale"`
@@ -103,12 +104,8 @@ for langpack in `cat "$SCRIPT_DIR/language_packs"`; do
 	fi
 done
 
-# Rewrite langlist ...
-ls *.tr | sed 's/\.tr$//' |
-	# ... to contain all languages available
-	#cat >langlist
-	# ... to contain all languages for which there are language packs on CD
-	grep -E "^($LANGPACKS)\>(_.*)?" >langlist
+# Rewrite langlist
+cat "$SCRIPT_DIR/livecd_locales" >langlist
 popd >/dev/null
 
 # Copy to isolinux in image directory

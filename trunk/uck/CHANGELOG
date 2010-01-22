@@ -4,6 +4,12 @@
 
 * GUI:
 	* splash notes were updated
+	* a new configuration screen was added to allow selecting which
+	  languages will be available on the livecd boot splash (gfxboot).
+	  This was necessary because the language packs codes do not match
+	  gfxbook locales.
+	* the default gfxboot language can be chosen only between the
+	  gfxboot available languages (easier selection).
 	
 * Backend:
 	* a workaround for the chrooted gnome-terminal was implemented
