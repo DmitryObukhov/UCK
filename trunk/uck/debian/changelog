@@ -2,7 +2,7 @@ uck (2.0.12-0ubuntu1) karmic lucid; urgency=low
 
   * New upstream release
 
- -- Fabrizio Balliano <fabrizio.balliano@crealabs.it>  Fri, 22 Gen 2010 13:36:34 +0100
+ -- Fabrizio Balliano <fabrizio.balliano@crealabs.it>  Fri, 22 Jan 2010 13:36:34 +0100
 
 uck (2.0.11-0ubuntu1) karmic; urgency=low
 
@@ -11,7 +11,7 @@ uck (2.0.11-0ubuntu1) karmic; urgency=low
   * wget dependancy was added
   * lzma dependancy was added
 
- -- Fabrizio Balliano <fabrizio.balliano@crealabs.it>  Mon, 18 Gen 2010 13:36:34 +0100
+ -- Fabrizio Balliano <fabrizio.balliano@crealabs.it>  Mon, 18 Jan 2010 13:36:34 +0100
 
 uck (2.0.10-0ubuntu1) jaunty; urgency=low
 
