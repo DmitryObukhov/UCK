@@ -57,7 +57,8 @@ It also changes the boot screen to appear in your chosen language.
 
 Requirements:
 1. about 5 GB of free disk space in $HOME/tmp
-2. Internet access for fetching language packs
+   (on local machine and mounted with "dev,suid,exec" options)
+2. Internet access
 
 Homepage: http://uck.sourceforge.net
 Authors: http://uck.sourceforge.net/team
