@@ -416,6 +416,7 @@ function pack_iso()
 			-hfs-bless "$ISO_REMASTER_DIR/install" \
 			-x "$ISO_REMASTER_DIR"/casper/manifest.diff \
 			-V "$LIVECD_ISO_DESCRIPTION" \
+			-joliet-long \
 			$MKISOFS_EXTRA_OPTIONS \
 			"$ISO_REMASTER_DIR"
 	elif [ "$1" = "x86_64" ]; then
@@ -424,6 +425,7 @@ function pack_iso()
 			-p "Ubuntu Customization Kit - http://uck.sf.net" \
 			-no-emul-boot -V "$LIVECD_ISO_DESCRIPTION" -r -J -l \
 			-x "$ISO_REMASTER_DIR"/casper/manifest.diff \
+			-joliet-long \
 			$MKISOFS_EXTRA_OPTIONS \
 			"$ISO_REMASTER_DIR"
 	elif [ "$1" = "ia64" ]; then
@@ -431,6 +433,7 @@ function pack_iso()
 		-b "isolinux/isolinux.bin" -c "isolinux/boot.cat" \
 		-no-emul-boot -V "$LIVECD_ISO_DESCRIPTION" -J -r \
 		-x "$ISO_REMASTER_DIR"/casper/manifest.diff \
+		-joliet-long \
 		$MKISOFS_EXTRA_OPTIONS \
 		"$ISO_REMASTER_DIR"
 	else
@@ -440,6 +443,7 @@ function pack_iso()
 			-no-emul-boot -boot-load-size 4 -boot-info-table \
 			-V "$LIVECD_ISO_DESCRIPTION" -cache-inodes -r -J -l \
 			-x "$ISO_REMASTER_DIR"/casper/manifest.diff \
+			-joliet-long \
 			$MKISOFS_EXTRA_OPTIONS \
 			"$ISO_REMASTER_DIR"
 	fi

@@ -1,4 +1,11 @@
 ------------
+-- 2.0.13 --
+------------
+
+* Backend:
+	* joliet-long option was added to mkisofs
+
+------------
 -- 2.0.12 --
 ------------
 
