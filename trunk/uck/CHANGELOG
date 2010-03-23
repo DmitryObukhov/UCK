@@ -11,6 +11,16 @@
 	  to the new path (thanks to Wolf Geldmacher).
     * uck-remaster-pack-iso md5sum now throws a fatal error
       (thanks to Wolf Geldmacher).
+    * uck-remaster-chroot-rootfs arguments (cmd, remaster-home) have been
+      swapped (now it is "remaster-home" "cmd"). This aligns the command with
+        (a) almost all of the other uck-remaster commands that take remaster-home 
+            as first argument
+        (b) aligns the command with the chroot built-in shell command
+	    (c) allows to pass additional arguments to the command executed in
+	        the chroot environment
+	  (thanks to Wolf Geldmacher).
+    * uck-remaster reflects swap of $1<>$2 for uck-remaster-chroot-rootfs
+      (thanks to Wolf Geldmacher).
 
 ------------
 -- 2.0.12 --
