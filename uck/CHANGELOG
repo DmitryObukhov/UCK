@@ -21,6 +21,8 @@
 	  (thanks to Wolf Geldmacher).
     * uck-remaster reflects swap of $1<>$2 for uck-remaster-chroot-rootfs
       (thanks to Wolf Geldmacher).
+    * uck-remaster-clean-all was added (thanks to Wolf Geldmacher)
+    * some man files were updated
 
 ------------
 -- 2.0.12 --
