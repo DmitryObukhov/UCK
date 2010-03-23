@@ -2,7 +2,7 @@
 
 ###################################################################################
 # UCK - Ubuntu Customization Kit                                                  #
-# Copyright (C) 2006-2010 UCK Team                                                #
+# Copyright (C) 2006-2009 UCK Team                                                #
 #                                                                                 #
 # UCK is free software: you can redistribute it and/or modify                     #
 # it under the terms of the GNU General Public License as published by            #
@@ -143,7 +143,7 @@ if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
 fi
 
 if [ "$CUSTOMIZE_ISO" = "yes" ] && [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
-	$SCRIPTS_DIR/uck-remaster-chroot-rootfs "/tmp/customization-scripts/customize" "$REMASTER_HOME"
+	$SCRIPTS_DIR/uck-remaster-chroot-rootfs "$REMASTER_HOME" "/tmp/customization-scripts/customize"
 	check_exit_code
 fi
 
