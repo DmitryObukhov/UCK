@@ -9,11 +9,15 @@
 helper script
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-uck-remaster-chroot-rootfs [what-to-execute] [remaster-dir]
+uck-remaster-chroot-rootfs [remaster-home] [what-to-execute]
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
-\&\fBuck-remaster-chroot-rootfs executes the script passed as the first param
-(/bin/bash if empty) inside the rootfs chrooted environment.
+\&\fBuck-remaster-chroot-rootfs executes "what-to-execute" in a chroot environment
+that is equivalent to the remastered system's root.
+
+If "what-to-execute" is not specified, /bin/bash is assumed; if
+"remaster-home" is not specified, ~/tmp is assumed. Special care
+is taken to preserve quoting in this argument.
 .SH "AUTHOR"
 .IX Header "AUTHOR"
 \fBUbuntu Customization Kit\fR has been written by Fabrizio Balliano \
