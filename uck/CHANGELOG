@@ -4,6 +4,13 @@
 
 * Backend:
 	* joliet-long option was added to mkisofs
+	* uck-remaster-pack-iso support for live-cd description was added
+	  and can contain spaces (thanks to Wolf Geldmacher).
+	* uck-remaster-pack-iso ISO file argument can now be a path name, too.
+	  The ISO is still generated in remaster-new-files but will be moved
+	  to the new path (thanks to Wolf Geldmacher).
+    * uck-remaster-pack-iso md5sum now throws a fatal error
+      (thanks to Wolf Geldmacher).
 
 ------------
 -- 2.0.12 --
