@@ -26,24 +26,96 @@ function check_if_user_is_root()
 	fi
 }
 
+# The mountpoint utility is buggy as it does not correctly account for bind
+# mounts. This makes unmounting of REMASTER_DIR/tmp fail if /tmp is not
+# mounted.
+function mountpoint()
+{
+	case "$1" in
+	-q) shift;; 	# ignore -q option
+	esac
+
+	# /proc/mounts uses octal escapes for non-printable chars.
+	# This code uses "echo -e" to expand them for comparison.
+	mpoints=`cat /proc/mounts | awk '{ print $2 }'`
+	echo -e "$mpoints" | grep "^$1$" >/dev/null
+}
+
+# Mount - make sure target exists
+function mount_directory()
+{
+	if [ ! -d "$2" ]; then
+		mkdir -p "$2" ||
+			failure "Cannot create $2"
+	fi
+	echo "Mounting $1"
+	mount --bind "$1" "$2" ||
+		failure "Cannot bind mount $1 to $2"
+}
+
+# Unmount - but only if mounted
 function unmount_directory()
 {
-	DIR_TO_UNMOUNT="$1"
-	if mountpoint -q "$DIR_TO_UNMOUNT"; then
-		echo "Unmounting directory $DIR_TO_UNMOUNT..."
-		umount -l "$DIR_TO_UNMOUNT" || failure "Cannot unmount directory $DIR_TO_UNMOUNT, error=$?"
+	if mountpoint -q "$1"; then
+		echo "Unmounting $1..."
+		umount -l "$1" || failure "Cannot unmount $1"
 	fi
 }
 
+# Create/Mount all filesystems for chroot environment
+function mount_pseudofilesystems()
+{
+	if [ ! -e "$REMASTER_DIR" ]; then
+		failure "Remastering root directory does not exists"
+	fi
+
+	# Create the directories we are about to mount in the root_fs tree
+	#	- Create an empty apt cache
+	if [ ! -d "$REMASTER_HOME/remaster-apt-cache/archives/partial" ]; then
+		echo "Creating apt cache..."
+		mkdir -p "$REMASTER_HOME/remaster-apt-cache/archives/partial" ||
+			failure "Cannot create apt cache"
+	fi
+	#	- Create an empty home directory for root
+	if [ ! -d "$REMASTER_HOME/remaster-root-home" ]; then
+		echo "Creating root home..."
+		mkdir -p "$REMASTER_HOME/remaster-root-home" ||	
+			failure "Cannot create root home"
+	fi
+
+	mount_directory /proc "$REMASTER_DIR/proc"
+	mount_directory /sys "$REMASTER_DIR/sys"
+	mount_directory /dev/pts "$REMASTER_DIR/dev/pts"
+	mount_directory /var/run "$REMASTER_DIR/var/run"
+	mount_directory /tmp "$REMASTER_DIR/tmp"
+	mount_directory "$REMASTER_HOME/remaster-root-home" "$REMASTER_DIR/root"
+	mount_directory "$REMASTER_HOME/remaster-apt-cache" "$REMASTER_DIR/var/cache/apt"
+
+	# Mount customization scripts, iff any
+	if [ -e "$REMASTER_HOME/customization-scripts" ]; then
+		if [ ! -d "$REMASTER_DIR/tmp/customization-scripts" ]; then
+			mkdir "$REMASTER_DIR/tmp/customization-scripts" ||
+				failure "Cannot create $REMASTER_DIR/tmp/customization-scripts"
+		fi
+		mount_directory "$REMASTER_HOME/customization-scripts" \
+			"$REMASTER_DIR/tmp/customization-scripts"
+	fi
+
+}
+
+# Unmount all filesystems mounted in chroot environment
 function unmount_pseudofilesystems()
 {
 	if [ -n "$REMASTER_DIR" ]; then
-		unmount_directory "$REMASTER_DIR/tmp"
 		unmount_directory "$REMASTER_DIR/lib/modules/*/volatile"
-		unmount_directory "$REMASTER_DIR/proc"
-		unmount_directory "$REMASTER_DIR/sys"
-		unmount_directory "$REMASTER_DIR/dev/pts"
+		unmount_directory "$REMASTER_DIR/tmp/customization-scripts"
+		unmount_directory "$REMASTER_DIR/var/cache/apt"
+		unmount_directory "$REMASTER_DIR/root"
+		unmount_directory "$REMASTER_DIR/tmp"
 		unmount_directory "$REMASTER_DIR/var/run"
+		unmount_directory "$REMASTER_DIR/dev/pts"
+		unmount_directory "$REMASTER_DIR/sys"
+		unmount_directory "$REMASTER_DIR/proc"
 	fi
 }
 
@@ -187,51 +259,37 @@ function unmount_squashfs()
 {
 	if [ -e "$SQUASHFS_MOUNT_DIR" ] ; then
 		echo "Unmounting SquashFS image..."
-		umount "$SQUASHFS_MOUNT_DIR" || echo "Failed to unmount SquashFS mount directory $SQUASHFS_MOUNT_DIR, error=$?"
-		rmdir "$SQUASHFS_MOUNT_DIR" || echo "Failed to remove SquashFS mount directory $SQUASHFS_MOUNT_DIR, error=$?"
+		umount "$SQUASHFS_MOUNT_DIR" ||
+			echo "Failed to unmount $SQUASHFS_MOUNT_DIR, error=$?"
+		rmdir "$SQUASHFS_MOUNT_DIR" ||
+			echo "Failed to remove directory $SQUASHFS_MOUNT_DIR, error=$?"
 	fi
 }
 
 function unpack_rootfs()
 {
 	echo "Unpacking SquashFS image..."
-	cp -a "$SQUASHFS_MOUNT_DIR" "$REMASTER_DIR" || failure "Cannot copy files from $SQUASHFS_MOUNT_DIR to $REMASTER_DIR, error=$?"
+	cp -a "$SQUASHFS_MOUNT_DIR" "$REMASTER_DIR" ||
+		failure "Cannot copy files from $SQUASHFS_MOUNT_DIR to $REMASTER_DIR, error=$?"
 }
 
+#
+# REMASTER_DIR -- root_fs tree
+# REMASTER_HOME -- project directory
+#
 function prepare_rootfs_for_chroot()
 {
-	if [ ! -e "$REMASTER_DIR" ]; then
-		failure "Remastering root directory does not exists"
-	fi
-
-	mount -t proc proc "$REMASTER_DIR/proc" || echo "Failed to mount $REMASTER_DIR/proc, error=$?"
-	mount -t sysfs sysfs "$REMASTER_DIR/sys" || echo "Failed to mount $REMASTER_DIR/sys, error=$?"
-	mount -t devpts none "$REMASTER_DIR/dev/pts" || failure "Failed to mount $REMASTER_DIR/dev/pts, error=$?"
-	mount -o bind /var/run "$REMASTER_DIR/var/run"
-	mount -o bind /tmp "$REMASTER_DIR/tmp"
-
-	#create backup of root directory
-	chroot "$REMASTER_DIR" cp -a /root /root.saved || failure "Failed to create backup of /root directory, error=$?"
-
-	if [ -e $REMASTER_HOME/customization-scripts ]; then
-		echo "Copying customization scripts..."
-		cp -a "$REMASTER_HOME/customization-scripts" "$REMASTER_DIR/tmp" || failure "Cannot copy files from $CUSTOMIZE_DIR to $REMASTER_CUSTOMIZE_DIR, error=$?"
-	fi
+	mount_pseudofilesystems
 
 	echo "Copying resolv.conf..."
-	cp -f /etc/resolv.conf "$REMASTER_DIR/etc/resolv.conf" || failure "Failed to copy resolv.conf to image directory, error=$?"
+	cp -f /etc/resolv.conf "$REMASTER_DIR/etc/resolv.conf" ||
+		failure "Failed to copy resolv.conf, error=$?"
 
-	echo "Copying local apt cache, if available"
-	if [ -e "$APT_CACHE_SAVE_DIR" ]; then
-		mv "$REMASTER_DIR/var/cache/apt/" "$REMASTER_DIR/var/cache/apt.original" || failure "Cannot move $REMASTER_DIR/var/cache/apt/ to $REMASTER_DIR/var/cache/apt.original, error=$?"
-		mv "$APT_CACHE_SAVE_DIR" "$REMASTER_DIR/var/cache/apt" || failure "Cannot copy apt cache dir $APT_CACHE_SAVE_DIR to $REMASTER_DIR/var/cache/apt/, error=$?"
-	else
-		cp -a "$REMASTER_DIR/var/cache/apt/" "$REMASTER_DIR/var/cache/apt.original" || failure "Cannot copy $REMASTER_DIR/var/cache/apt/ to $REMASTER_DIR/var/cache/apt.original, error=$?"
-	fi
-
-	echo "Creating DBUS uuid"
+	echo "Creating DBUS uuid..."
 	chroot "$REMASTER_DIR" dbus-uuidgen --ensure 1>/dev/null 2>&1
 
+	# The next is not needed by uckFlow (uses gksudo), but left in here for
+	# backwards compatibility
 	if [ -e "$REMASTER_HOME/customization-scripts/Xcookie" ] ; then
 		UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
 		if [ `echo $UCK_USER_HOME_DIR | cut -d '/' -f2` == 'home' ] ; then
@@ -244,57 +302,35 @@ function prepare_rootfs_for_chroot()
 	fi
 }
 
-function chroot_rootfs()
-{
-	chroot "$REMASTER_DIR" "$WHAT_TO_EXTECUTE"
-}
-
 function clean_rootfs_after_chroot()
 {
-	unmount_pseudofilesystems
-	save_apt_cache
-
-	echo "Cleaning up apt"
-	chroot "$REMASTER_DIR" apt-get clean || failure "Failed to run apt-get clean, error=$?"
-
-	echo "Removing customize dir..."
-	#Run in chroot to be on safe side
-	chroot "$REMASTER_DIR" rm -rf "$REMASTER_CUSTOMIZE_RELATIVE_DIR" || failure "Cannot remove customize dir $REMASTER_CUSTOMIZE_RELATIVE_DIR, error=$?"
-
-	echo "Cleaning up temporary directories..."
-	#Run in chroot to be on safe side
-	chroot "$REMASTER_DIR" rm -rf '/tmp/*' '/tmp/.*' '/var/tmp/*' '/var/tmp/.*' #2>/dev/null
-
-	echo "Restoring /root directory..."
-	chroot "$REMASTER_DIR" rm -rf /root || failure "Cannot remove /root directory, error=$?"
-	chroot "$REMASTER_DIR" mv /root.saved /root
-
-	echo "Removing /home/username directory, if created..."
+	# Not used by uckFlow, but left for backward compatibility:
 	UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
 	if [ `echo $UCK_USER_HOME_DIR | cut -d '/' -f2` == 'home' ] ; then
-		chroot "$REMASTER_DIR" rm -rf "$UCK_USER_HOME_DIR" || failure "Cannot create user directory, error=$?"
+		echo "Removing /home/username directory..."
+		chroot "$REMASTER_DIR" rm -rf "$UCK_USER_HOME_DIR"
 	fi
-	chroot "$REMASTER_DIR" rm -rf /var/lib/dbus/machine-id # 2>/dev/null
 
-	echo "Restoring resolv.conf..."
-	rm -f "$REMASTER_DIR/etc/resolv.conf" || failure "Failed to remove resolv.conf, error=$?"
-}
+	echo "Removing generated machine uuid..."
+	chroot "$REMASTER_DIR" rm -f /var/lib/dbus/machine-id
 
-function save_apt_cache()
-{
-	echo "Saving apt cache"
-	if [ -e "$APT_CACHE_SAVE_DIR" ]; then
-		mv -f "$APT_CACHE_SAVE_DIR" "$APT_CACHE_SAVE_DIR.old" || failure "Cannot save old apt-cache $APT_CACHE_SAVE_DIR to $APT_CACHE_SAVE_DIR.old, error=$?"
-	fi
-	mv "$REMASTER_DIR/var/cache/apt/" "$APT_CACHE_SAVE_DIR" || failure "Cannot move current apt-cache $REMASTER_DIR/var/cache/apt/ to $APT_CACHE_SAVE_DIR, error=$?"
-	mv "$REMASTER_DIR/var/cache/apt.original" "$REMASTER_DIR/var/cache/apt" || failure "Cannot restore original apt-cache $REMASTER_DIR/var/cache/apt.original to $REMASTER_DIR/var/cache/apt, error=$?"
+	echo "Removing generated resolv.conf..."
+	chroot "$REMASTER_DIR" rm -f /etc/resolv.conf
+
+	unmount_pseudofilesystems
+
+	# Need a shell to perform wildcard expansion in chroot environment!
+	#	No need to clean /tmp - was a bind mount.
+	echo "Cleaning up temporary directories..."
+	chroot "$REMASTER_DIR" sh -c "rm -rf /var/tmp/* /var/tmp/.??*"
 }
 
 function prepare_new_files_directories()
 {
 	echo "Preparing directory for new files"
 	if [ -e "$NEW_FILES_DIR" ]; then
-		remove_directory "$NEW_FILES_DIR" || failure "Failed to remove directory $NEW_FILES_DIR"
+		remove_directory "$NEW_FILES_DIR" ||
+			failure "Failed to remove directory $NEW_FILES_DIR"
 	fi
 	mkdir -p "$NEW_FILES_DIR"
 }
@@ -339,7 +375,8 @@ function remove_iso_remaster_dir()
 {
 	if [ -e "$ISO_REMASTER_DIR" ] ; then
 		echo "Removing ISO remastering dir..."
-		remove_directory "$ISO_REMASTER_DIR" || failure "Failed to remove directory $ISO_REMASTER_DIR, error=$?"
+		remove_directory "$ISO_REMASTER_DIR" ||
+			failure "Failed to remove directory $ISO_REMASTER_DIR, error=$?"
 	fi
 }
 
@@ -360,12 +397,18 @@ function remove_remaster_initrd()
 	fi
 }
 
+# update_iso_locale has an optional argument - the language of the live CD
 function update_iso_locale()
 {
 	echo "Updating locale"
 
 	if [ -e "$CUSTOMIZE_DIR/livecd_locale" ]; then
 		LIVECD_LOCALE=`cat "$CUSTOMIZE_DIR/livecd_locale"`
+	elif [ -n "$1" ]; then
+		LIVECD_LOCALE="$1"
+	fi
+
+	if [ -n "$LIVECD_LOCALE" ]; then
 		cat "$ISO_REMASTER_DIR/isolinux/isolinux.cfg" | sed "s#\<append\>#append debian-installer/locale=$LIVECD_LOCALE#g" >"$NEW_FILES_DIR/isolinux.cfg"
 		RESULT=$?
 		if [ $RESULT -ne 0 ]; then
@@ -376,6 +419,8 @@ function update_iso_locale()
 	fi
 }
 
+# pack_iso has one mandatory argument (the architecture of the ISO)
+# and an optional second argument - the live ISO description
 function pack_iso()
 {
 	if [ ! -e "$ISO_REMASTER_DIR" ]; then
@@ -395,10 +440,12 @@ function pack_iso()
 
 	echo "Packing ISO image..."
 
-	LIVECD_ISO_DESCRIPTION="Remastered Ubuntu LiveCD"
-
 	if [ -e "$CUSTOMIZE_DIR/iso_description" ] ; then
 		LIVECD_ISO_DESCRIPTION=`cat "$CUSTOMIZE_DIR/iso_description"`
+	elif [ -n "$2" ]; then
+		LIVECD_ISO_DESCRIPTION="$2"
+	else
+		LIVECD_ISO_DESCRIPTION="Remastered Ubuntu LiveCD"
 	fi
 
 	echo "ISO description set to: $LIVECD_ISO_DESCRIPTION"

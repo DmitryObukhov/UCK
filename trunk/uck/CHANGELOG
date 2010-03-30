@@ -23,6 +23,9 @@
       (thanks to Wolf Geldmacher).
     * uck-remaster-clean-all was added (thanks to Wolf Geldmacher)
     * some man files were updated
+    * remaster-live-cd.sh was partially rewritten to handle mountpoints in a
+      better way, removing the unused (now) chroot_rootfs function and some
+      minor things (thanks to Wolf Geldmacher)
 
 ------------
 -- 2.0.12 --
