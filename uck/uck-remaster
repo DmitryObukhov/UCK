@@ -56,7 +56,9 @@ if [ -z "$ISO_IMAGE" ]; then
 	exit 1
 fi
 
+COPY_CUSTOMIZE_DIR="yes"
 if [ -z "$CUSTOMIZE_DIR" ]; then
+	COPY_CUSTOMIZE_DIR="no"
 	CUSTOMIZE_DIR="$REMASTER_HOME/customization-scripts"
 fi
 
@@ -83,6 +85,11 @@ CUSTOMIZE_INITRD="no"
 CUSTOMIZE_ISO="no"
 REMOVE_WIN32_FILES="no"
 CLEAN_DESKTOP_MANIFEST="no"
+
+if [ "$COPY_CUSTOMIZE_DIR" = "yes" ] && [ -e "$REMASTER_HOME/customization-scripts" ]; then
+	echo "\"customization-scripts\" directory already exists inside $REMASTER_HOME, remove it and run uck-remaster again"
+	exit 2
+fi
 
 if [ -e "$CUSTOMIZE_DIR/remove_win32_files" ]; then
 	REMOVE_WIN32_FILES=`cat "$CUSTOMIZE_DIR/remove_win32_files"`
@@ -135,14 +142,19 @@ if [ "$REMOVE_WIN32_FILES" = "yes" ]; then
 	check_exit_code
 fi
 
-if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
+if [ "$CUSTOMIZE_INITRD" = "yes" ]; then
 	echo "Running initrd customization script $CUSTOMIZE_DIR/customize_initrd..."
 	"$CUSTOMIZE_DIR/customize_initrd" "$REMASTER_HOME"
 	check_exit_code
 	echo "Initrd customization script finished"
 fi
 
-if [ "$CUSTOMIZE_ISO" = "yes" ] && [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
+if [ "$CUSTOMIZE_ISO" = "yes" ] && [ "$CUSTOMIZE_ROOTFS" = "yes" ]; then
+	if [ "$COPY_CUSTOMIZE_DIR" = "yes" ]; then
+		cp -a "$CUSTOMIZE_DIR" "$REMASTER_HOME/customization-scripts"
+		check_exit_code
+	fi
+	
 	$SCRIPTS_DIR/uck-remaster-chroot-rootfs "$REMASTER_HOME" "/tmp/customization-scripts/customize"
 	check_exit_code
 fi
@@ -183,6 +195,14 @@ check_exit_code
 #############
 # finishing #
 #############
+
+if [ "$COPY_CUSTOMIZE_DIR" = "yes" ]; then
+	# since we copied the customization-scripts dir from outside
+	# can can safely remove it to leave the REMASTER_HOME as it was
+	# at the beginning of the process
+	rm -rf "$REMASTER_HOME/customization-scripts"
+	check_exit_code
+fi
 
 $SCRIPTS_DIR/uck-remaster-clean "$REMASTER_HOME"
 check_exit_code
