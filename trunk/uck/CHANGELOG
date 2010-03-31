@@ -26,6 +26,8 @@
     * remaster-live-cd.sh was partially rewritten to handle mountpoints in a
       better way, removing the unused (now) chroot_rootfs function and some
       minor things (thanks to Wolf Geldmacher)
+    * a bug with uck-remaster handling external customization-scripts dir
+      was solved (#547260)
 
 ------------
 -- 2.0.12 --
