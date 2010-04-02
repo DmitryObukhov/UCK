@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# $Id: Singleton.py,v 2.1 2010-02-22 09:19:00 wjg Exp $
+# $Id$
 #
 # NAME:
 #	Singleton -- Singleton base class

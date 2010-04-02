@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: customize_test,v 2.1 2010-02-22 09:19:06 wjg Exp $
+# $Id$
 #
 # NAME:
 #	customize_test -- test / export customized ISO file

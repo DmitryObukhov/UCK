@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# $Id: killtree,v 2.2 2010-02-28 20:30:02 wjg Exp $
+# $Id$
 #
 # NAME:
 #	killtree -- kill a whole tree of processes

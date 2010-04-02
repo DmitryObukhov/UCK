@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf_8 -*-
 #
-# $Id: setup.py,v 2.7 2010-04-02 05:48:56 wjg Exp $
+# $Id$
 #
 # NAME:
 #	setup.py -- uck-flow distribution script

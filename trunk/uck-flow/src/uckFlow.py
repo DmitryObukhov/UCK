@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# $Id: uckFlow.py,v 2.10 2010-03-03 10:30:20 wjg Exp $
+# $Id$
 #
 # NAME:
 #	uckFlow.py -- main logic of the uckFlow tool

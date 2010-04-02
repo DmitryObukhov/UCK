@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# $Id: customize_initrd,v 2.1 2010-02-22 09:19:04 wjg Exp $
+# $Id$
 #
 # NAME:
 #	customize_initrd -- customize the initial RAM disk
