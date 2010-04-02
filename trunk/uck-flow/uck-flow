@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# $Id: uck-flow,v 2.1 2010-04-02 05:48:56 wjg Exp $
+#
+# NAME:
+#	uck-flow -- run the UCK flow tool
+#
+# SYNOPSIS:
+#	uck-flow [project]
+#
+# DESCRIPTION:
+#	uck-flow is a tool that allows for restartable graphical customization
+#	of Ubuntu distributions. It closely interacts with UCK (the Ubuntu
+#	Customization Kit).
+#
+# AUTHOR:
+#	Wolf Geldmacher, wolf <at> womaro.ch, http.//www.womaro.ch
+#
+# COPYRIGHT:
+#	Copyright © 2010, The UCK Team
+#
+# LICENSE:
+#	uck-flow is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	uck-flow is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with uck-flow.  If not, see <http://www.gnu.org/licenses/>.
+
+import sys
+import pygtk
+pygtk.require("2.0")
+import gtk
+from UckFlow.uckFlow import UckFlow
+
+# message localization support
+APP = "uckFlow"
+DIR = "locale"
+import locale
+import gettext
+locale.setlocale(locale.LC_ALL, '')
+gettext.bindtextdomain(APP, DIR)
+gettext.textdomain(APP)
+_ = gettext.gettext
+
+# The main program
+if __name__ == "__main__":
+	if len(sys.argv) > 1:
+		anUckFlow = UckFlow(sys.argv[1])
+	else:
+		anUckFlow = UckFlow()
+	try:
+		gtk.main()
+	except KeyboardInterrupt:
+		print _("+++Program terminated by keyboard interrupt")
+		anUckFlow.quit()

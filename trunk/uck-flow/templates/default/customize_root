@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# $Id: customize_root,v 2.1 2010-02-22 09:19:02 wjg Exp $
+#
+# NAME:
+#	customize_root -- customize the root file system
+#
+# SYNOPSIS:
+#	customize_root
+#
+# DESCRIPTION:
+#	This script runs as root in the environment of the future root file
+#	system (chrooted to the unpacked root file system), therefore some
+#	special rules apply:
+#
+#	- The only data shared between your current system and the future
+#	  root file system is the customization-script directory that gets
+#	  copied into /tmp of the target root file system (but is *not*
+#	  copied back!).
+#
+# COPYRIGHT:
+#	Copyright © 2010, The UCK Team
+#
+# LICENSE:
+#	uckFlow is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	uckFlow is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with uckFlow.  If not, see <http://www.gnu.org/licenses/>.
+
+# Print an error message an exit
+failure() { echo "$0: $@" >&2; exit 1; }
+
+# Source environment. Special case customize_root: found in /tmp!
+if [ -f "/tmp/customization-scripts/project.uck" ]; then
+	. "/tmp/customization-scripts/project.uck"
+	UCK_PROJECT_DIR=/tmp
+else
+	failure "Cannot create UCK environment!"
+fi
+
+# Can access all of the variables set in project config now:
+PROJECT_DIR="$UCK_PROJECT_DIR"
+SCRIPT_DIR="$UCK_PROJECT_DIR/customization-scripts"
+
+# Default implementation of customize_root does nothing
+true
+
+# That's all folks!
+exit 0

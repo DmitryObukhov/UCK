@@ -1,0 +1,5 @@
+## Ubuntu 9.10 Swiss Remix
+## Visit http://www.teamubuntu.ch (Projects)
+deb http://ppa.launchpad.net/ubuntu-swiss-remix/ppa/ubuntu karmic main
+deb-src http://ppa.launchpad.net/ubuntu-swiss-remix/ppa/ubuntu karmic main
+

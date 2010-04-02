@@ -1,0 +1,603 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-02 15:14+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: uckFlow:62
+msgid "+++Program terminated by keyboard interrupt"
+msgstr ""
+
+#: src/uckExecutor.py:143
+#, python-format
+msgid "+++ Started: %s"
+msgstr ""
+
+#: src/uckExecutor.py:183
+#, python-format
+msgid "+++ Ended with status %d: %s"
+msgstr ""
+
+#: src/uckFlow.py:262
+msgid "No project"
+msgstr ""
+
+#: src/uckFlow.py:535 src/uckFlow.py:671
+#, python-format
+msgid "Opened project %s"
+msgstr ""
+
+#: src/uckFlow.py:566
+msgid "Select project to create"
+msgstr ""
+
+#: src/uckFlow.py:596
+#, python-format
+msgid "Cannot create directory %s!"
+msgstr ""
+
+#: src/uckFlow.py:599
+#, python-format
+msgid "Cannot copy files to %s!"
+msgstr ""
+
+#: src/uckFlow.py:605
+#, python-format
+msgid "New project %s"
+msgstr ""
+
+#: src/uckFlow.py:617
+msgid "Select template to use"
+msgstr ""
+
+#: src/uckFlow.py:638
+msgid "Select project to open/create"
+msgstr ""
+
+#: src/uckFlow.py:683
+msgid "UCK TEMPLATE:"
+msgstr ""
+
+#: src/uckFlow.py:697
+msgid "UCK PROJECT:"
+msgstr ""
+
+#: src/uckFlow.py:733
+msgid "Stopping..."
+msgstr ""
+
+#: src/uckFlow.py:745
+msgid "Running..."
+msgstr ""
+
+#: src/uckFlow.py:763
+#, python-format
+msgid "Customization failed with error %s"
+msgstr ""
+
+#: src/uckFlow.py:798
+msgid "Updated project"
+msgstr ""
+
+#: src/uckFlow.py:820
+#, python-format
+msgid "+++ Switching logfile to %s"
+msgstr ""
+
+#: src/uckFlow.py:825
+#, python-format
+msgid "+++ Logfile %s opened at %s"
+msgstr ""
+
+#: src/uckParamsEditor.py:78
+msgid "Value"
+msgstr ""
+
+#: src/uckParamsEditor.py:86
+msgid "Comment"
+msgstr ""
+
+#: src/uckProject.py:388
+#, python-format
+msgid "Warning: Cannot override builtin %s"
+msgstr ""
+
+#: uckFlow.glade.h:1
+msgid " "
+msgstr ""
+
+#: uckFlow.glade.h:2
+msgid "/usr/bin/gedit"
+msgstr ""
+
+#: uckFlow.glade.h:3
+msgid "<b>Name</b>"
+msgstr ""
+
+#: uckFlow.glade.h:4
+msgid ""
+"Activate to run re-pack\n"
+"ISO file step."
+msgstr ""
+
+#: uckFlow.glade.h:6
+msgid ""
+"Activate to run the\n"
+"cleanup step."
+msgstr ""
+
+#: uckFlow.glade.h:8
+msgid ""
+"Activate to run the\n"
+"prepare ISO step."
+msgstr ""
+
+#: uckFlow.glade.h:10
+msgid ""
+"Activate to run the\n"
+"unpack INITRD step."
+msgstr ""
+
+#: uckFlow.glade.h:12
+msgid ""
+"Activate to run the\n"
+"unpack ISO step."
+msgstr ""
+
+#: uckFlow.glade.h:14
+msgid ""
+"Activate to run the INITRD\n"
+"customization script."
+msgstr ""
+
+#: uckFlow.glade.h:16
+msgid ""
+"Activate to run the ISO\n"
+"customization script."
+msgstr ""
+
+#: uckFlow.glade.h:18
+msgid ""
+"Activate to run the re-pack\n"
+"INITRD step."
+msgstr ""
+
+#: uckFlow.glade.h:20
+msgid ""
+"Activate to run the re-pack\n"
+"root file system step."
+msgstr ""
+
+#: uckFlow.glade.h:22
+msgid ""
+"Activate to run the root file\n"
+"system customization script."
+msgstr ""
+
+#: uckFlow.glade.h:24
+msgid ""
+"Activate to run the unpack\n"
+"root file system step."
+msgstr ""
+
+#: uckFlow.glade.h:26
+msgid ""
+"Activate to run your test\n"
+"and delivery script."
+msgstr ""
+
+#: uckFlow.glade.h:28
+msgid ""
+"By pressing the Edit button on the left you can edit the environment for "
+"customization of an Ubuntu Live CD ISO image. You can define settings like: "
+"location of the original Ubuntu ISO image to customize, location for the "
+"data directories used during customization, name of the final customized ISO "
+"image and more."
+msgstr ""
+
+#: uckFlow.glade.h:29
+msgid "Cleanup"
+msgstr ""
+
+#: uckFlow.glade.h:30
+msgid "Cleanup the project directory."
+msgstr ""
+
+#: uckFlow.glade.h:31
+msgid "Click the button to edit the project environment."
+msgstr ""
+
+#: uckFlow.glade.h:32
+msgid ""
+"Create a new project\n"
+"using the default template."
+msgstr ""
+
+#: uckFlow.glade.h:34
+msgid ""
+"Create a new project from\n"
+"a list of project templates."
+msgstr ""
+
+#: uckFlow.glade.h:36
+msgid "Customize INITRD"
+msgstr ""
+
+#: uckFlow.glade.h:37
+msgid "Customize ISO Image"
+msgstr ""
+
+#: uckFlow.glade.h:38
+msgid "Customize Root Filesystem"
+msgstr ""
+
+#: uckFlow.glade.h:39
+msgid ""
+"Customizing the list of languages or keyboards that should be available at "
+"boot time or preconfiguring the Ubuntu installer to automagically install a "
+"localized version of Ubuntu is done in this step. "
+msgstr ""
+
+#: uckFlow.glade.h:40
+msgid "Edit"
+msgstr ""
+
+#: uckFlow.glade.h:41
+msgid "Follow Log"
+msgstr ""
+
+#: uckFlow.glade.h:42
+msgid "Generate you new ISO after customization."
+msgstr ""
+
+#: uckFlow.glade.h:43
+msgid ""
+"Here you can define initial steps, like ripping a CD image or copying an ISO "
+"image from a central repository, that should be performed before the "
+"customization process really starts."
+msgstr ""
+
+#: uckFlow.glade.h:44
+msgid ""
+"If you need to modify something that is run very early in the boot process "
+"of the live CD, before your customized root image is loaded, you will have "
+"to modify the initial ram disk (aka INITRD).\n"
+"As for the root file system, the INITRD is stored in a highly compressed "
+"read-only form on the Live CD and needs to be unpacked at least once.\n"
+"Note that you will have to repeat this step (and the next two as well) "
+"whenever you upgrade/customize the kernel, as the kernel and its initial ram "
+"disk must match perfectly.\n"
+"If you do not need to change anything on the INITRD (i.e. you do not perform "
+"the next step) you do not need to unpack it, ever."
+msgstr ""
+
+#: uckFlow.glade.h:48
+msgid ""
+"In this step you can customize the root file system according to your needs: "
+"you can add packges or remove packages, you can add additional languages, "
+"you can update the system to contain all the latest and greatest patches and "
+"more. You can even start a terminal and run most of the applications in your "
+"customized system."
+msgstr ""
+
+#: uckFlow.glade.h:49
+msgid "Information on your current project"
+msgstr ""
+
+#: uckFlow.glade.h:50
+msgid "New Parameter"
+msgstr ""
+
+#: uckFlow.glade.h:51
+msgid "New from _Template"
+msgstr ""
+
+#: uckFlow.glade.h:52
+msgid ""
+"Once you are satisfied with your customizations you need to pack the root "
+"file system again into the compressed and unchangeable format that is "
+"understood by the Live CD.\n"
+"You need to repeat this step whenever you have changed something in the "
+"\"Customize Root Filesystem\" step to make your changes available on your "
+"customized Live CD.\n"
+"This step may take a long time, as squeezing the file system is a time "
+"consuming operation."
+msgstr ""
+
+#: uckFlow.glade.h:55
+msgid ""
+"Once you have created a project, enable this action to unpack the ISO image "
+"into its constituents. You need to do this at least once for every image you "
+"want to customize."
+msgstr ""
+
+#: uckFlow.glade.h:56
+msgid ""
+"Once you have created you customized Live CD, you may want to test it to "
+"make sure everything works as intended.\n"
+"Performing this action also allows you to export the ISO image generated in "
+"the previous step to some test machine or to your production facility."
+msgstr ""
+
+#: uckFlow.glade.h:58
+msgid "Open an existing project."
+msgstr ""
+
+#: uckFlow.glade.h:59
+msgid "Pack INITRD"
+msgstr ""
+
+#: uckFlow.glade.h:60
+msgid "Pack ISO File"
+msgstr ""
+
+#: uckFlow.glade.h:61
+msgid "Pack Root Filesystem"
+msgstr ""
+
+#: uckFlow.glade.h:62
+msgid "Prepare ISO File"
+msgstr ""
+
+#: uckFlow.glade.h:63
+msgid ""
+"Press this button to edit the\n"
+"INITRD customization script."
+msgstr ""
+
+#: uckFlow.glade.h:65
+msgid ""
+"Press this button to edit the\n"
+"ISO customization script."
+msgstr ""
+
+#: uckFlow.glade.h:67
+msgid ""
+"Press this button to edit the\n"
+"test and delivery script."
+msgstr ""
+
+#: uckFlow.glade.h:69
+msgid "Press this button to edit the preparation steps."
+msgstr ""
+
+#: uckFlow.glade.h:70
+msgid "Press this button to edit the project environment."
+msgstr ""
+
+#: uckFlow.glade.h:71
+msgid ""
+"Press this button to edit the root\n"
+"file system customization script."
+msgstr ""
+
+#: uckFlow.glade.h:73
+msgid ""
+"Project: *** This is where the project name is displayed ***\n"
+"*** This is where the short project description is displayed ***"
+msgstr ""
+
+#: uckFlow.glade.h:75
+msgid "Quit the uckFlow tool."
+msgstr ""
+
+#: uckFlow.glade.h:76
+msgid "Re-pack the initial RAM disk after boot-time customization."
+msgstr ""
+
+#: uckFlow.glade.h:77
+msgid "Re-pack the root file system after customization."
+msgstr ""
+
+#: uckFlow.glade.h:78
+msgid "Ready..."
+msgstr ""
+
+#: uckFlow.glade.h:79
+msgid "Run / Edit additional steps to customize you ISO image."
+msgstr ""
+
+#: uckFlow.glade.h:80
+msgid "Run / Edit boot-time customization."
+msgstr ""
+
+#: uckFlow.glade.h:81
+msgid "Run / Edit steps to prepare the ISO for customization."
+msgstr ""
+
+#: uckFlow.glade.h:82
+msgid "Run / Edit the root file system customization."
+msgstr ""
+
+#: uckFlow.glade.h:83
+msgid "Run / Edit your test and delivery procedure."
+msgstr ""
+
+#: uckFlow.glade.h:84
+msgid "Shell"
+msgstr ""
+
+#: uckFlow.glade.h:85
+msgid ""
+"Show project logfile\n"
+"in another window."
+msgstr ""
+
+#: uckFlow.glade.h:87
+msgid ""
+"Some things can only be customized outside of the root file system. For "
+"instance if you choose to update your kernel the new kernel and its "
+"associated initial ram disk (usually called INITRD) needs to be transferred "
+"to the outside of the packed root file system so it can be run at boot "
+"time.\n"
+"You may also want to put some additional data on your Live CD that should be "
+"accessible without having to boot the Ubuntu Live CD - this is the place to "
+"do it."
+msgstr ""
+
+#: uckFlow.glade.h:89
+msgid ""
+"Start / Stop processing of the actions\n"
+"activated below."
+msgstr ""
+
+#: uckFlow.glade.h:91
+msgid "Status"
+msgstr ""
+
+#: uckFlow.glade.h:92
+msgid "Status last time this action was performed"
+msgstr ""
+
+#: uckFlow.glade.h:93
+msgid "Test / Deliver"
+msgstr ""
+
+#: uckFlow.glade.h:94
+msgid ""
+"The UCK_EDITOR variable defines the (absolute path name to) the (graphical) "
+"editor that should be invoked to edit all customization scripts."
+msgstr ""
+
+#: uckFlow.glade.h:95
+msgid ""
+"The Ubuntu Customization Kit.\n"
+"    http://uck.sourcforge.net"
+msgstr ""
+
+#: uckFlow.glade.h:97
+msgid ""
+"This action extracts the Ubuntu root file system that is stored in highly "
+"compressed and unchangeable format within the ISO image and stores it as a "
+"modifiable directory tree ready to be customized by the subsequent step.\n"
+"You only need to do this once for every root file system you want to modify "
+"and you will need plenty of space (currently at least 4GB) for the data."
+msgstr ""
+
+#: uckFlow.glade.h:99
+msgid ""
+"This is the final step that collects all the customization you have done and "
+"creates an ISO image of your customized Ubuntu Live CD, ready to be burned "
+"and distributed."
+msgstr ""
+
+#: uckFlow.glade.h:100
+msgid ""
+"This step repacks the initial ram disk and stores it back on your customized "
+"Live CD.\n"
+"Only needed if you have a customized INITRD."
+msgstr ""
+
+#: uckFlow.glade.h:102
+msgid ""
+"UCK is free software: you can redistribute it and/or modify it under the "
+"terms of the\n"
+"GNU General Public License as published by the Free Software Foundation, "
+"either\n"
+"version 3 of the License, or (at your option) any later version.\n"
+"\n"
+"UCK is distributed in the hope that it will be useful, but WITHOUT ANY "
+"WARRANTY;\n"
+"without even the implied warranty of MERCHANTABILITY or FITNESS FOR A\n"
+"PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along "
+"with\n"
+"UCK.  If not, see <http://www.gnu.org/licenses/>.  \n"
+msgstr ""
+
+#: uckFlow.glade.h:113
+msgid "UCK_EDITOR"
+msgstr ""
+
+#: uckFlow.glade.h:114
+msgid "UckFlow - The Ubuntu Customization Kit Flow Tool"
+msgstr ""
+
+#: uckFlow.glade.h:115
+msgid "Unpack INITRD"
+msgstr ""
+
+#: uckFlow.glade.h:116
+msgid "Unpack ISO File"
+msgstr ""
+
+#: uckFlow.glade.h:117
+msgid "Unpack Root Filesystem"
+msgstr ""
+
+#: uckFlow.glade.h:118
+msgid "Unpack the initial RAM disk for boot-time customization."
+msgstr ""
+
+#: uckFlow.glade.h:119
+msgid "Unpack the root file system to perform customization."
+msgstr ""
+
+#: uckFlow.glade.h:120
+msgid "Unpack the source ISO to perform customization."
+msgstr ""
+
+#: uckFlow.glade.h:121
+msgid ""
+"When you are satisfied with your customized Live CD and you no longer need "
+"the expanded versions of your CD, you can select this action which will "
+"remove all temporary data. You will be left with the original CD image and "
+"the customization scripts you created or modifed for your needs."
+msgstr ""
+
+#: uckFlow.glade.h:122
+msgid "_About"
+msgstr ""
+
+#: uckFlow.glade.h:123
+msgid "_Help"
+msgstr ""
+
+#: uckFlow.glade.h:124
+msgid "_New"
+msgstr ""
+
+#: uckFlow.glade.h:125
+msgid "_Open"
+msgstr ""
+
+#: uckFlow.glade.h:126
+msgid "_Project"
+msgstr ""
+
+#: uckFlow.glade.h:127
+msgid "_Quit"
+msgstr ""
+
+#: uckFlow.glade.h:128
+msgid "_Show Log"
+msgstr ""
+
+#: uckFlow.glade.h:129
+msgid "_View"
+msgstr ""
+
+#: uckFlow.glade.h:131
+msgid "translator-credits"
+msgstr ""
+
+#: uckFlow.glade.h:132
+msgid "uckFlow Logfile Viewer"
+msgstr ""
+
+#: uckFlow.glade.h:133
+msgid "uckFlow Parameter Editor"
+msgstr ""

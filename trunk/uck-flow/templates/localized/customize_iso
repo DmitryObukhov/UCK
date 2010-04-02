@@ -1,0 +1,188 @@
+#!/bin/bash
+#
+# $Id: customize_iso,v 2.1 2010-02-22 09:19:06 wjg Exp $
+#
+# NAME:
+#	customize_iso -- customize iso image outside of root FS
+#
+# SYNOPSIS:
+#	customize_iso project_dir
+#
+# DESCRIPTION:
+#	This procedure performs additional customization that needs to
+#	happen outside of the image of the root file system:
+#		- Configuration of the boot environment
+#			- isolinux configuration
+#			- gfxboot configuration (language/keyboard support!)
+#			- propagation of a new kernel/initrd
+#			- Simple bootmanager (directory "install" in image)
+#		- Configuration of additional resources outside the root FS
+#			- Add-Ons (like sample document/music/video files)
+#			- More Add-Ons (like OSS for Win / Mac)
+#			- Remove Add-Ons
+#
+#	Localized project has the following additional parameters
+#	(cf. project.uck):
+#	LANGUAGE_PACKS -- space separated list of language packs to install
+#	DESKTOP_LIST -- space separated list of desktops to install
+#	DESKTOP_TYPE -- desktop to run on the Live CD
+#	LANGUAGE -- language to run the Live CD in
+#
+# NOTES:
+#	Execution of the procedure may require Internet access to download
+#	the source of the latest version gfxboot-theme-ubuntu via wget.
+#
+#	If a local copy of gfxboot-theme-ubuntu is available in the remaster
+#	home, it will be used instead of a (possibly updated) download.
+#
+# COPYRIGHT:
+#	UCK - Ubuntu Customization Kit
+#	Copyright (C) 2006-2010 UCK Team
+# 
+#	UCK is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	UCK is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with UCK.  If not, see <http://www.gnu.org/licenses/>.
+
+# Print an error message an exit
+failure() { echo "$0: $@" >&2; exit 1; }
+
+# Source environment. Only argument is project directory
+if [ -f "$1/customization-scripts/project.uck" ]; then
+	. "$1/customization-scripts/project.uck"
+else
+	failure "Cannot create UCK environment!"
+fi
+
+# Can access all of the variables set in project config now:
+REMASTER_ROOT="$UCK_PROJECT_DIR/remaster-root"
+REMASTER_ISO="$UCK_PROJECT_DIR/remaster-iso"
+
+get_latest_kernel() {
+	set -- $(ls "$REMASTER_ROOT"/boot/vmlinuz* 2>/dev/null |
+		sed -e "s@$REMASTER_ROOT/boot/@@" |
+		tr --  '-.' '\t' |
+		sort --key=2 --key=3 --key=4  --key=5 --numeric-sort |
+		tail -n1 )
+	[ "$1" = "vmlinuz" ] && echo "$REMASTER_ROOT/boot/$1-$2.$3.$4-$5-$6"
+}
+
+# Create a temporary directory to assemble the gfxboot stuff in
+BUILD_DIR=`mktemp -d`
+if [ -d $UCK_PROJECT_DIR/gfxboot-theme-ubuntu ]
+then
+	cp -r $UCK_PROJECT_DIR/gfxboot-theme-ubuntu "$BUILD_DIR" ||
+		failure "Cannot copy gfxboot-theme-ubuntu to $BUILD_DIR"
+	pushd "$BUILD_DIR" >/dev/null ||
+		failure "Cannot change directory to $BUILD_DIR"
+else
+	pushd "$BUILD_DIR" >/dev/null ||
+		failure "Cannot change directory to $BUILD_DIR"
+	DISTRO_CODENAME=`cd "$REMASTER_ISO"/dists && find . -maxdepth 1 -type d | grep '/' | cut -d '/' -f2` ||
+		failure "Unable to identify Ubuntu distro codename"
+	GFXBOOT_THEME_UBUNTU_SOURCE_PACKAGE=`wget -q -O - http://packages.ubuntu.com/$DISTRO_CODENAME/gfxboot-theme-ubuntu | grep ".tar.gz" | cut -d '"' -f2`
+	wget $GFXBOOT_THEME_UBUNTU_SOURCE_PACKAGE ||
+		failure "Unable to download gfxboot-theme-ubuntu source package from $GFXBOOT_THEME_UBUNTU_SOURCE_PACKAGE"
+	tar xfz *.tar.gz ||
+		failure "Unable to extract gfxboot-theme-ubuntu source package"
+fi
+
+# Build the gfx boot theme
+cd gfxboot-theme-ubuntu
+make DEFAULT_LANG="$LANGUAGE" ||
+	failure "Failed to build gfxboot theme"
+
+# Fix list of languages
+pushd boot >/dev/null
+
+# Create regexp that matches all language packs on CD
+LANGPACKS=`echo "$LANGUAGE_PACKS" | sed 's/[ 	][ 	]*/|/g'`
+
+# Rewrite langlist ...
+ls *.tr | sed 's/\.tr$//' |
+	# ... to contain all languages available
+	#cat >langlist
+	# ... to contain all languages for which there are language packs on CD
+	grep -E "^($LANGPACKS)\>(_.*)?" >langlist
+popd >/dev/null
+
+# Copy to isolinux in image directory
+cp -af boot/* "$REMASTER_ISO/isolinux/" ||
+	failure "Error while copying boot files to $REMASTER_ISO/isolinux"
+
+popd >/dev/null
+
+# Cleanup
+[ "$BUILD_DIR" != "/" ] && rm -rf "$BUILD_DIR"
+
+# Copy kernel and initrd, in case it was changed during installation
+VMLINUZ=$(get_latest_kernel)
+if [ "$VMLINUZ" != "" ]
+then
+	INITRD="$REMASTER_ROOT"/boot/initrd.img-$(echo `basename $VMLINUZ` | cut -d'-' -f 2-)
+	if [ -e "$VMLINUZ" -a -e "$INITRD" ]
+	then
+		echo "Updating kernel:"
+		echo "	kernel=$VMLINUZ"
+		echo "	initrd=$INITRD"
+		cp -f "$VMLINUZ" "$REMASTER_ISO/casper/vmlinuz"
+		cp -f "$INITRD" "$REMASTER_ISO/casper/initrd.gz"
+	else
+		echo "Not updating kernel as initrd not present"
+	fi
+fi
+
+# Misc fixup for Karmic
+pushd "$REMASTER_ISO"/isolinux >/dev/null
+
+#	-- what used to be called "message" is now called "bootlogo"
+if [ -f isolinux.cfg -a -n "`grep "gfxboot bootlogo" isolinux.cfg 2>/dev/null`" ]
+then
+	if [ -f message ]
+	then
+		echo "Using bootlogo instead of message"
+		mv message bootlogo
+	fi
+fi
+
+#	-- what used to be a gzipped initrd now is a lzma compressed initrd
+if [ -f text.cfg ]
+then
+	lzused=`grep initrd.lz text.cfg`
+	lzmacmd=`which lzma`
+	if [ -n "$lzused" ]
+	then
+		if [ -n "$lzmacmd" ]
+		then
+			if [ -f ../casper/initrd.gz ]
+			then
+				pushd "$REMASTER_ISO"/casper >/dev/null
+				echo "Recompressing initrd from gzip to lzma"
+				rm -f initrd.lz
+				gunzip <initrd.gz | $lzmacmd >initrd.lz
+				rm -f initrd.gz
+				popd >/dev/null
+			fi
+		else
+			if [ -f ../casper/initrd.gz ]
+			then
+				echo "lzma command not installed"
+				echo "Switching permanently to gzipped initrd"
+				sed -i -e 's/initrd\.lz/initrd.gz/g' text.cfg
+				rm -f ../casper/initrd.lz
+			else
+				: do nothing - no initrd.gz
+			fi
+		fi
+	else
+		: do nothing - initrd.lz not used
+	fi
+fi

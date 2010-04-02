@@ -1,0 +1,450 @@
+#!/bin/bash
+#
+# $Id: customize_root,v 1.7 2010-03-03 17:29:54 wjg Exp $
+#
+# NAME:
+#	customize_root -- customize the root file system
+#
+# SYNOPSIS:
+#	customize_root
+#
+# DESCRIPTION:
+#	This script runs as root in the environment of the future root file
+#	system (chrooted to the unpacked root file system), therefore some
+#	special rules apply:
+#
+#	- The only data shared between your current system and the future
+#	  root file system is the customization-script directory that gets
+#	  copied into /tmp of the target root file system (but is *not*
+#	  copied back!).
+#
+#	This version of the script does localization...
+#		LANGUAGE_PACKS -- space separated list of language packs
+#		DESKTOP_LIST -- space separated list of desktops to install
+#		DESKTOP_TYPE -- desktop to run on the Live CD
+#		LANGUAGE -- language to run the Live CD in
+#
+#	... updates to the latest patch level, and adds several apt
+#	repositories and packages.
+#	
+# COPYRIGHT:
+#	Copyright © 2010, The UCK Team
+#
+# LICENSE:
+#	uckFlow is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	uckFlow is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with uckFlow.  If not, see <http://www.gnu.org/licenses/>.
+
+# Print an error message an exit
+failure() { echo "$0: $@" >&2; exit 1; }
+
+# Source environment. Special case customize_root: found in /tmp!
+if [ -f "/tmp/customization-scripts/project.uck" ]; then
+	. "/tmp/customization-scripts/project.uck"
+	UCK_PROJECT_DIR=/tmp
+else
+	failure "Cannot create UCK environment!"
+fi
+
+# Can access all of the variables set in project config now:
+PROJECT_DIR="$UCK_PROJECT_DIR"
+SCRIPT_DIR="$UCK_PROJECT_DIR/customization-scripts"
+
+# Determinte the current ubuntu release (codename)
+RELEASE=`lsb_release -cs`
+
+install_packages() {
+	echo ">>> Installing: $@"
+        apt-get install --quiet=2 --assume-yes --force-yes "$@" ||
+                failure "apt-get install $@ failed, error=$?"
+}
+
+install_interactive() {
+	echo ">>> Installing (interactive): $@"
+        xterm -e apt-get install "$@" ||
+                failure "apt-get install $@ failed, error=$?"
+}
+
+remove_packages() {
+	echo ">>> Removing: $@"
+        apt-get remove --quiet=2 --purge --assume-yes --force-yes "$@" ||
+                failure "apt-get remove $@ failed, error=$?"
+}
+
+# Add some repositories
+update_repositories() {
+	# Uncomment universe and multiverse
+	echo ">>> Adding universe and multiverse repositories..."
+	sed -i'~' '/^# deb/s//deb/' /etc/apt/sources.list
+	# Ubuntu tweak:
+	echo ">>> Adding Ubuntu Tweak repository..."
+	echo "deb http://ppa.launchpad.net/tualatrix/ppa/ubuntu $RELEASE main" >/etc/apt/sources.list.d/tualatrix-ppa-$RELEASE.list
+	echo "deb-src http://ppa.launchpad.net/tualatrix/ppa/ubuntu $RELEASE main" >>/etc/apt/sources.list.d/tualatrix-ppa-$RELEASE.list
+	apt-key adv --recv-keys --keyserver keyserver.ubuntu.com \
+	FE85409EEAB40ECCB65740816AF0E1940624A220
+
+	# Medibuntu:
+	echo ">>> Adding Medibuntu repository..."
+	wget --output-document=/etc/apt/sources.list.d/medibuntu.list \
+		http://www.medibuntu.org/sources.list.d/$RELEASE.list
+	apt-get --quiet=2 update
+	apt-get --yes --quiet=2 --allow-unauthenticated install medibuntu-keyring
+
+	# Swiss-Remix PPA
+	echo ">>> Adding Swiss-Remix repository..."
+	cp "$SCRIPT_DIR/swiss-users-$RELEASE.list" /etc/apt/sources.list.d
+	apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 5EEFA855
+	apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3CB8E5F3
+}
+
+# Add some packages
+install_additional() {
+	# The next packages are interactive - treat them specially
+	#	- kdm gets pulled by kubuntu-desktop
+	#	- postfix gets pulled by mdadm
+	install_interactive ipod-convenience kdm postfix
+
+	install_packages ubuntu-desktop-swiss
+
+	# WJG choices
+	install_packages ubuntu-tweak
+	install_packages vym xaos ssh openssh-blacklist 
+	install_packages vlc vlc-plugin-pulse mozilla-plugin-vlc
+	install_packages w32codecs libdvdcss2 mplayer mencoder
+	install_packages samba smbclient smbfs
+	install_packages debhelper fakeroot build-essential
+
+	# Swiss-Remix
+	install_packages mc htop openvpn filezilla gnome-device-manager gnome-ppp
+	install_packages usb-imagewriter nautilus-clamscan clamtk klamav clamav-freshclam
+	install_packages debconf-utils giver gwibber manpages-dev ndisgtk gtklp qtnx dosbox
+	install_packages gfax gnome-format gftp gnome-commander nautilus-actions nautilus-gksu
+	install_packages nautilus-image-converter nautilus-open-terminal nautilus-script-audio-convert
+	install_packages nautilus-sendto nautilus-share nautilus-wallpaper gpointing-device-settings
+	install_packages seahorse-plugins traceroute easytag acpi lm-sensors chkconfig recode
+	install_packages charmap.app oxygen-cursor-theme-extra chameleon-cursor-theme
+	install_packages ubuntustudio-screensaver
+
+	# Swiss-Remix: additional graphics (ca. 240MB)
+	install_packages inkscape tuxpaint scribus-ng ttf-droid digikam gsfonts-x11  ttf-larabie-deco
+	install_packages ttf-larabie-straight ttf-larabie-uncommon ubuntustudio-look
+	install_packages ubuntustudio-wallpapers gnome-themes-extras tropic-theme peace-theme
+	install_packages tropic-wallpapers blubuntu-wallpapers tropic-wallpapers shiki-colors
+	install_packages arc-colors gnome-colors gnome-backgrounds
+
+	# Swiss-Remix: Additional graphics tools (ca. 60MB)
+	install_packages fontmatrix libvigraimpex2ldbl lprof scribus-ng-doc scribus-template ktux
+	install_packages kscreensaver-xsavers kscreensaver kannasaver cmatrix electricsheep
+	install_packages edgy-community-wallpapers edgy-wallpapers feisty-wallpapers gutsy-wallpapers
+	install_packages kdewallpapers nautilus-wallpaper peace-wallpapers kdissert xicc gimp-gap
+	install_packages grokking-the-gimp gimp-data-extras gscan2pdf gimp-dcraw simple-ccsm
+	install_packages libxvidcore4 ttf-sil-gentium ttf-ubuntu-title xournal freemind
+	install_packages poster
+	install_packages imagination compizconfig-settings-manager compiz-fusion-plugins-extra
+	install_packages compiz-fusion-plugins-main compiz-plugins emerald create-resources
+	install_packages avant-window-navigator cairo-dock cairo-dock-plug-ins qt4-qtconfig
+
+	# Swiss-Remix: Internet & productivity (ca. 100MB)
+	install_packages enigmail lightning-extension sunbird sunbird-locale-de sunbird-locale-fr
+	install_packages sunbird-locale-it kompozer bluefish galeon freespeak gnome-translate gnucash
+	install_packages keepassx multiget screem gtg qstardict empathy-megaphone-applet
+	install_packages pidgin-facebookchat pidgin-guifications akonadi-kde-resource-googledata
+	install_packages goldendict pidgin-awayonlock google-gadgets-gtk zim basket
+
+	# Swiss-Remix: Additional productivity
+	install_packages planner amsn  network-manager-openvpn gnome-randr-applet glipper
+	install_packages sshmenu-gnome default-jre icedtea6-plugin icedtea-gcjwebplugin
+	install_packages moonlight-plugin-mozilla evolution-mapi klamav firestarter screenlets sbackup
+	install_packages gfax fbreader gnome-office synergy revelation community-themes gnome-themes
+	install_packages gtk-smooth-themes metacity-themes silicon-theme resilience-theme
+	install_packages gstreamer0.10-packagekit konqueror-plugins mountmanager pdfedit
+	install_packages stardict-plugin stardict-plugin-spell apturl apturl-kde telepathy-gnome
+	install_packages topshelf
+
+	# Swiss-Remix: Bluetooth stuff
+	install_packages python-bluez obexftp obexfs bluez-compat gnome-bluetooth
+	install_packages brother-cups-wrapper-ac brother-cups-wrapper-bh7 brother-cups-wrapper-common
+	install_packages brother-cups-wrapper-extra brother-cups-wrapper-laser
+	install_packages brother-cups-wrapper-laser1 brother-cups-wrapper-mfc9420cn cups-pdf c2050
+	install_packages escputil libsane-extras gimp-gutenprint envyng-gtk nvidia-kernel-common
+	install_packages nvidia-settings lshw-gtk quicksynergy printconf pconf-detect openobex-apps
+	install_packages wacom-tools cellwriter easystroke gtkpod ifuse hipo gpixpod
+
+	# Swiss-Remix: Multimedia (ca. 100MB)
+	install_packages gstreamer0.10-fluendo-mp3 libdvdcss2 totem-plugins-extra totem-xine
+	install_packages ubuntustudio-sounds shutter gtk-recordmydesktop miro jokosher mplayer-fonts
+	install_packages ttf-linux-libertine gnome-alsamixer gstreamer-dbus-media-service
+	install_packages gstreamer-tools pitivi alsa-oss libasound2-plugins ogmrip ogmrip-profiles
+	install_packages moovida moovida-plugins-bad moovida-plugins-good moovida-plugins-ugly
+	install_packages asoundconf-gtk padevchooser paman pavucontrol vlc-plugin-pulse freepats
+	install_packages pmidi gnome-audio sound-theme-freedesktop swfdec-gnome kdenlive gnash
+	install_packages mozilla-plugin-gnash
+
+	apt-get -y install --install-recommends gnome-mplayer smplayer smplayer-themes mozilla-mplayer
+	apt-get -y install --install-recommends audacity vlc mozilla-plugin-vlc mozilla-helix-player
+	apt-get -y install --install-recommends videolan-doc cheese gthumb gwenview gpodder
+	apt-get -y install --install-recommends banshee-extension-lyrics soundconverter
+
+	# Swiss-Remix: Desktops (more than 800MB)
+	install_packages xubuntu-desktop kubuntu-desktop ubuntu-desktop kdetoys kdeutils kdeartwork
+	install_packages kdebase-workspace kdebase-bin kdeplasma-addons konqueror-plugin-adblock
+
+	# Swiss-Remix: Edubuntu packages (ca. 500MB)
+	install_packages atomix gnome-icon-theme-gartoon gpaint khelpcenter4 gobby liferea pessulus
+	install_packages ubuntu-edu-preschool ubuntu-edu-primary ubuntu-edu-secondary
+	install_packages ubuntu-edu-tertiary umbrello kdegames frozen-bubble pingus supertux
+	install_packages kolourpaint4 gbrainy childsplay kgeography blinken kdeedu tuxmath kwordquiz
+	install_packages celestia celestia-gnome stellarium childsplay-alphabet-sounds-fr
+	install_packages childsplay-alphabet-sounds-it childsplay-alphabet-sounds-de anki
+
+	# Swiss-Remix: more office stuff (ca. 170MB)
+	install_packages openoffice.org-pdfimport openoffice.org-java-common
+	install_packages openoffice.org-filter-binfilter openoffice.org-evolution openclipart
+	install_packages openclipart-openoffice.org mozilla-openoffice.org mdbtools glabels kmymoney2
+	install_packages rednotebook gbirthday agave thunderbird-quickfile kde-thumbnailer-openoffice
+	install_packages ooo-thumbnailer openoffice.org-presenter-console tellico tesseract-ocr-eng
+	install_packages tesseract-ocr-fra tesseract-ocr-ita semantik tesseract-ocr-deu-f gocr-tk vym
+
+	# Swiss-Remix: system and ubuntu rescue remix tools (ca. 130MB)
+	install_packages cdw discover mdadm module-init-tools usbmount gddrescue ntfsprogs hfsprogs
+	install_packages hfsutils hfsplus gphotofs gparted gtkterm testdisk dares magicrescue
+	install_packages smartmontools jhead scalpel mondo mondo-doc hwtest lvm2 cryptsetup encfs
+	install_packages cryptkeeper sysinfo hwinfo sysfsutils nmap python-genshi python-psycopg2
+	install_packages mercurial  sysv-rc-conf foomatic-gui x11vnc vncviewer python-wxtools
+	install_packages libvncserver0 gedit-plugins cdbs fakeroot qt4-qmake libqt3-mt
+	install_packages backintime-common backintime-gnome luckybackup foremost php5-cli
+	install_packages lock-keys-applet pwgen pastebinit kommander p7zip fdutils davfs2 kdepim
+	install_packages kdepim-doc bzr cvs linux-headers-generic gnome-schedule strace flip xfsprogs
+	install_packages xfsdump lzip reiserfsprogs reiser4progs jfsutils kpartx dmraid grsync
+	install_packages rsnapshot conduit alien uck kdirstat
+
+	# Swiss-Remix: Windows & virtual computing
+	install_packages winbind
+	install_packages wine1.2
+	install_packages cabextract orange network-manager-pptp pidgin-librvp smbfs smbnetfs
+	install_packages ldap-utils libsasl2-modules-gssapi-mit adtool qemu kvm vde2 samba
+	install_packages system-config-samba bum gnome-exe-thumbnailer kdenetwork-filesharing smb4k
+	install_packages pyneighborhood smbnetfs ntfs-config mbr gnochm kchmviewer qemulator
+	
+	# post Build12a packages
+	# eventuell italc killen? Etwas damit experimentieren ...
+
+	# CHECKMARK: up to here all packages OK on 64-bit
+	# NOTE: wink,partimage do not exist on 64-bit
+	# NOTE: timidity-interfaces-extra,timidity,nscd not installed
+	# NOTE: nullmailer brings cfg dialog -> omitted 
+	# -> dependency problem with biabam -> omitted
+	# NOTE: kubuntu-desktop asks to select gdm or kdm
+	# NOTE: had to remove blueman due blueman-mechanics error
+
+	# Load some nice additions:
+	echo ">>> Adding optional software"
+	pushd /var/tmp >/dev/null
+	rm -rf options
+	tar xvf "$SCRIPT_DIR/options-$RELEASE.tgz"
+	pushd /var/tmp/options >/dev/null
+	for i in *.deb; do gdebi -n $i; done
+	popd >/dev/null
+	rm -rf options
+	popd >/dev/null
+}
+
+prepare_update() {
+	# try 2 times to avoid slow proxies failures
+	apt-get --quiet=2 update || apt-get --quiet=2 update ||
+		failure "apt-get update failed, error=$?"
+}
+
+update_packages() {
+	echo ">>> Running upgrade to latest patchlevel"		
+	# Problematic case in karmic/lucid: first upgrade of grup-pc/libpam0g requires
+	# manual intervention :-( Thanks to merge_debconf/whiptail/slang
+	# this cannot be called without interaction. grub-pc also
+	# forcibly sets a date in UTC which adversely affects the calling
+	# system (double YUC!)
+	xtra=
+	if apt-get dselect-upgrade --quiet=2 --assume-yes --force-yes -s |
+	   egrep "grub-pc" >/dev/null 2>&1
+	then
+		xtra="$xtra grub-pc"
+	fi
+	if apt-get dselect-upgrade --assume-yes --force-yes -s |
+	   egrep "libpamg0" >/dev/null 2>&1
+	then
+		xtra="$xtra libpamg0"
+	fi
+	if [ -n "$xtra"	]
+	then
+		echo ">>> Running forced interactive part of upgrade..."		
+		install_interactive $xtra
+		echo ">>> Forced interactive part of upgrade done."
+	fi
+
+	apt-get dselect-upgrade --quiet=2 --assume-yes --force-yes ||
+		failure "apt-get upgrade failed, error=$?"
+	apt-get autoremove --quiet=2 --purge --assume-yes --force-yes ||
+		failure "apt-get autoremove failed, error=$?"
+	apt-get autoclean --quiet=2 --assume-yes --force-yes ||
+		failure "apt-get autoclean failed, error=$?"
+}
+
+# If a previous run failed there may be a problem now that needs
+# to be fixed by running "dpkg --configure -a" or worse.
+if apt-get --quiet check
+then
+	: ok - looks good
+else
+	# Start terminal so caller can perform fixing...
+	xterm
+fi
+
+update_repositories || failure "Could not update repository list, error=$?"
+
+prepare_update || failure "Preparing installation failed, error=$?"
+
+install_additional || failure "Cannot install the additional packages, error=$?"
+
+# Work through list of language packs
+new=""
+if [ -n "$LANGUAGE_PACKS" ]; then
+	for lang in $LANGUAGE_PACKS; do
+		new="$new language-pack-$lang language-support-$lang"
+	
+		# Add desktop specific language packs, too
+		for dt in $DESKTOP_LIST; do
+			case $dt in
+			gnome|kde) new="$new language-pack-$dt-$lang";;
+			esac
+		done
+	done
+	
+	# Install new packages
+	echo ">>> Installing language packs ($LANGUAGE_PACKS)..."
+	install_packages $new ||
+		failure "Installing language packs failed, error=$?"
+	
+	# NOTE: we first install new language packs, then remove others as
+	# installing a language pack might pull packages which were not
+	# previously present.
+	echo ">>> Removing unnecessary language packages..."
+	langregexp=`echo "$LANGUAGE_PACKS" | sed 's/[ 	][ 	]*/|/g'`
+	goners=`dpkg-query --show | cut -f1 |
+		grep -E '^language(-pack|-support)' |
+		grep -v -E "[-]($langregexp)\>"`
+
+	remove_packages $goners ||
+		failure "Removing packages failed, error=$?"
+fi
+
+# Make sure that we have the latest version of all packages
+update_packages || failure "Updating packages failed, error=$?"
+
+# Swiss-Remix: Remove unwanted stuff that got pulled in
+echo ">>> Swiss-Remix cleaning"
+remove_packages postfix kubuntu-artwork-usplash xubuntu-default-settings xubuntu-artwork-usplash
+remove_packages orage xfce4-notes-plugin xfce4-screenshooter xubuntu-default-settings
+remove_packages xubuntu-artwork-usplash xfce4-dict gcursor xfce4-terminal xubuntu-wallpapers
+remove_packages usplash-theme-xubuntu
+
+# Swiss-Remix additional stuff:
+#	- Desktop Readme entry
+if [ ! -d /etc/skel/Desktop ]
+then
+	mkdir -p /etc/skel/Desktop
+fi
+cp "$SCRIPT_DIR"/about-swiss-remix-$RELEASE.desktop \
+	/etc/skel/Desktop/about-swiss-remix.desktop
+
+#	- Swiss-Remix icon / Readme
+if [ ! -d /usr/share/doc/ubuntu-desktop-swiss ]
+then
+	mkdir -p /usr/share/doc/ubuntu-desktop-swiss
+fi
+cp "$SCRIPT_DIR/ubuntu-ch.ico" /usr/share/doc/ubuntu-desktop-swiss
+cp "$SCRIPT_DIR/Readme-$RELEASE.html" \
+	/usr/share/doc/ubuntu-desktop-swiss/Readme.html
+
+#	- default list of applications to show
+cp "$SCRIPT_DIR/defaults-$RELEASE.list" /usr/share/applications/defaults.list
+
+#	- xubuntu has such a nice splash theme - use it!
+echo ">>> Swiss-Remix: Adding extra splash..."
+pushd /usr/share/images/xsplash >/dev/null
+tar xvf "$SCRIPT_DIR/human-swarmw-$RELEASE.tgz"
+popd >/dev/null
+
+#	- make sure that the right splash stuff is used
+update-alternatives --remove usplash-artwork.so /usr/lib/usplash/usplash-theme-kubuntu.so
+update-alternatives --remove usplash-artwork.so /usr/lib/usplash/usplash-theme-xubuntu.so
+update-alternatives --set usplash-artwork.so /usr/lib/usplash/usplash-theme-ubuntu.so
+apt-get install -y --reinstall usplash usplash-theme-ubuntu
+# WJG: The next will not work iff we have updated the kernel or are not running the release yet!
+# dpkg-reconfigure linux-image-`uname -r`
+
+#	- Adaptations for gnome (Fontsize 9px, Liberation Sans, Style)
+echo ">>> Swiss-Remix: Configuring the gnome..."
+gconftool-2 --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults --type string \
+	 --set /desktop/gnome/interface/font_name "Liberation Sans Regular 9"
+gconftool-2 --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults --type string  \
+	--set /desktop/gnome/interface/document_font_name "Liberation Sans Regular 9"
+gconftool-2 --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults --type string \
+	--set /desktop/gnome/interface/monospace_font_name "Monospace 9"
+gconftool-2 --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults --type string \
+	--set /apps/metacity/general/titlebar_font "Liberation Sans Bold 9"
+gconftool-2 --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults --type string \
+	--set /apps/nautilus/preferences/desktop_font "Liberation Sans Regular 9"
+
+#	- Resize background images to the same size -> less flicker
+gconftool-2 --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults --type string \
+	--set /desktop/gnome/background/picture_filename "/usr/share/images/xsplash/bg_2560x1600.jpg"
+sudo -u gdm gconftool-2 --type string \
+	--set /desktop/gnome/background/picture_filename "/usr/share/images/xsplash/bg_2560x1600.jpg"
+
+#	- firefox: activate apturl support
+#	(WJG: Is this necessary? Firefox will ask the first time it is used anyway.)
+for d in /etc/firefox*/pref
+do
+	if [ ! -f $d/apturl.js ]
+	then
+		cat >$d/apturl.js <<-EOF
+		# apturl protocol handler
+		pref("network.protocol-handler.app.apt", "/usr/bin/apturl");
+		pref("network.protocol-handler.app.apt+http", "/usr/bin/apturl");
+		pref("network.protocol-handler.warn-external.apt", false);
+		pref("network.protocol-handler.warn-external.apt+http", false);
+EOF
+	fi
+done
+
+# Check for upgraded kernel and remove old stuff...
+for kernel in `dpkg -l | grep "linux-image-2" | grep "^ii" | awk '{ print $2 }' | sed '$d'`
+do
+	echo "Removing unused kernel $kernel"
+	apt-get remove --assume-yes --force-yes $kernel
+done
+
+# Remove configuration for packages that are no longer installed
+for package in `dpkg -l | grep "^rc" | awk '{ print $2 }'`
+do
+	echo "Purging old config for $package..."
+	dpkg --purge $package
+done
+
+# Upgrading the kernel leaves .old symlinks that are invalid
+rm -f /*.old
+
+# Remove backup files created by some of the above actions
+rm -f /etc/apt/*~
+
+# Remove traces of crashes
+rm -f /var/crash/*
+
