@@ -523,7 +523,7 @@ msgid "UCK_EDITOR"
 msgstr ""
 
 #: uckFlow.glade.h:114
-msgid "UckFlow - The Ubuntu Customization Kit Flow Tool"
+msgid "uck-flow - The Ubuntu Customization Kit Flow Tool"
 msgstr ""
 
 #: uckFlow.glade.h:115
