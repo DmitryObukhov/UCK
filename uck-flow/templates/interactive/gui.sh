@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# $Id: gui.sh,v 2.1 2010-02-22 09:19:04 wjg Exp $
+# $Id$
 #
 # NAME:
 #	gui.sh -- library of gui functions

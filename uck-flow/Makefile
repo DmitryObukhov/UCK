@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 2.4 2010-04-02 05:48:56 wjg Exp $
+# $Id$
 #
 VERSION=0.3
 

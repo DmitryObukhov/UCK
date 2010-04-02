@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# $Id: uckFlowLog.py,v 2.3 2010-03-02 14:13:15 wjg Exp $
+# $Id$
 #
 # NAME:
 #	uckFlowLog -- the uckFlowLog handler

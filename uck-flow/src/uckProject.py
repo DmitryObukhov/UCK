@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# $Id: uckProject.py,v 2.1 2010-02-22 09:19:01 wjg Exp $
+# $Id$
 #
 # NAME:
 #	uckProject -- class to handle all configuration for an uckFlow
@@ -56,7 +56,7 @@ _ = gettext.gettext
 
 defaultConfiguration = """
 #
-# $Id: uckProject.py,v 2.1 2010-02-22 09:19:01 wjg Exp $
+# $Id$
 #
 # This is an uckFlow project configuration, same as is found in the template
 # files:

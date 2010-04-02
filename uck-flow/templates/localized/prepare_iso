@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: prepare_iso,v 2.1 2010-02-22 09:19:06 wjg Exp $
+# $Id$
 #
 # NAME:
 #	prepare_iso -- prepare an Ubuntu ISO for customization

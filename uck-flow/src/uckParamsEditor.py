@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# $Id: uckParamsEditor.py,v 2.1 2010-02-22 09:19:01 wjg Exp $
+# $Id$
 #
 # NAME:
 #	uckParamsEditor.py -- Parameter Editor for uckFlow

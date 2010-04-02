@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# $Id: uckExecutor.py,v 2.16 2010-03-03 10:28:39 wjg Exp $
+# $Id$
 #
 # NAME:
 #	uckExecutor -- execute commands
