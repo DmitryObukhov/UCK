@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# $Id: customize_test,v 2.1 2010-02-22 09:19:08 wjg Exp $
+#
+# NAME:
+#	customize_test -- test / export customized ISO file
+#
+# SYNOPSIS:
+#	customize_test project_dir
+#
+# DESCRIPTION:
+#	This script has user defined actions required to test or export
+#	a generated ISO after configuration has finished.
+#
+#	Typical steps include:
+#	- Running the customized ISO in qemu
+#	- Copying the ISO to some other place
+#	- Converting the ISO to an USB stick image
+#
+# COPYRIGHT:
+#	UCK - Ubuntu Customization Kit
+#	Copyright (C) 2006-2010 UCK Team
+# 
+#	UCK is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	UCK is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with UCK.  If not, see <http://www.gnu.org/licenses/>.
+
+# Print an error message an exit
+failure() { echo "$0: $@" >&2; exit 1; }
+
+# Source environment. Only argument is project directory
+if [ -f "$1/customization-scripts/project.uck" ]; then
+	. "$1/customization-scripts/project.uck"
+else
+	failure "Cannot create UCK environment!"
+fi
+
+# Can access all of the variables set in project config now:
+PROJECT_DIR="$UCK_PROJECT_DIR"
+REMASTER_ROOT="$UCK_PROJECT_DIR/remaster-root"
+REMASTER_ISO="$UCK_PROJECT_DIR/remaster-iso"
+SCRIPT_DIR="$UCK_PROJECT_DIR/customization-scripts"
+
+# Perform actions, exit on any error
+set -e
+
+# Example actions:
+#	- run fresh image in qemu
+# qemu -m 512M -cdrom $UCK_TARGET -boot d
+#	- burn CD in /dev/scd0
+# cdrecord ...
+#	- convert to USB image
+# ???
+
+
+# That's all folks
+exit 0

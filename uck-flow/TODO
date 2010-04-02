@@ -1,0 +1,20 @@
+$Id: TODO,v 2.12 2010-03-15 17:06:36 wjg Exp $
+
+Known Bugs:
+	- none at the moment
+
+Future changes:
+	- remember toplevel window size (how to?)
+	- center uckFlowLog on main window
+
+	- (UCK tools): is /var/run mount really necessary, and if so what for?
+
+	- Proper configuration editor instead of just gedit
+		should dynamically create text fields for configuration
+		items and allow to add items...
+
+	- refactor templates and create library (src in default, copied to
+  	  other templates via setup.py)
+
+	- eye candy
+		- add handling of progress bar / better status messages

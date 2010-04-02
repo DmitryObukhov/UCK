@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# $Id: prepare_iso,v 1.2 2010-02-28 16:58:46 wjg Exp $
+#
+# NAME:
+#	prepare_iso -- prepare an Ubuntu ISO for customization
+#
+# SYNOPSIS:
+#	prepare_iso project_dir
+#
+# DESCRIPTION:
+#	This script has user defined actions required to get
+#	an ISO file setup so that customization can begin.
+#
+#	Typical steps include:
+#	- getting a fresh ISO from the Ubuntu mirrors
+#	- Copying an ISO from some central repository
+#	- Ripping a CD to an ISO file
+#
+# COPYRIGHT:
+#	UCK - Ubuntu Customization Kit
+#	Copyright (C) 2006-2010 UCK Team
+# 
+#	UCK is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	UCK is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with UCK.  If not, see <http://www.gnu.org/licenses/>.
+
+# Print an error message an exit
+failure() { echo "$0: $@" >&2; exit 1; }
+
+# Source environment. Only argument is project directory
+if [ -f "$1/customization-scripts/project.uck" ]; then
+	. "$1/customization-scripts/project.uck"
+else
+	failure "Cannot create UCK environment!"
+fi
+
+# Can access all of the variables set in project config now:
+PROJECT_DIR="$UCK_PROJECT_DIR"
+REMASTER_ROOT="$UCK_PROJECT_DIR/remaster-root"
+REMASTER_ISO="$UCK_PROJECT_DIR/remaster-iso"
+SCRIPT_DIR="$UCK_PROJECT_DIR/customization-scripts"
+
+# Perform actions, exit on any error
+set -e
+
+# Example actions:
+#	- get fresh copy of Karmic from the Swiss Ubuntu Mirror:
+# wget http://mirror.switch.ch/ftp/ubuntu-cdimage/9.10/ubuntu-9.10-desktop-i386.iso
+# mv ubuntu-9.10.desktop-i386.iso $UCK_SOURCE
+#	- link to a locally available copy
+ln -f ~/iso/lucid-desktop-i386.iso $UCK_SOURCE
+#	- Rip CD in /dev/scd0
+# sudo cat /dev/scd0 >$UCK_SOURCE
+
+# That's all folks
+exit 0

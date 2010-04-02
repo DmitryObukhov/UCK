@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+# $Id: customize_initrd,v 1.1 2010-02-23 17:27:42 wjg Exp $
+#
+# NAME:
+#	customize_initrd -- customize the initial RAM disk
+#
+# SYNOPSIS:
+#	customize_initrd project_dir
+#
+# DESCRIPTION:
+#	This procedure performs customization that needs to happen on the
+#	initial RAM disk of the live system. Typical actions at this point
+#	include:
+#		- customize languages/keyboards available at boot time
+#		- customize/preset parameters for the Ubuntu installer
+#
+# COPYRIGHT:
+#	UCK - Ubuntu Customization Kit
+#	Copyright (C) 2006-2010 UCK Team
+# 
+#	UCK is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	UCK is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with UCK.  If not, see <http://www.gnu.org/licenses/>.
+
+# Print an error message an exit
+failure() { echo "$0: $@" >&2; exit 1; }
+
+# Source environment. Only argument is project directory
+if [ -f "$1/customization-scripts/project.uck" ]; then
+	. "$1/customization-scripts/project.uck"
+else
+	failure "Cannot create UCK environment!"
+fi
+
+# Can access all of the variables set in project config now:
+PROJECT_DIR="$UCK_PROJECT_DIR"
+REMASTER_ROOT="$UCK_PROJECT_DIR/remaster-root"
+REMASTER_ISO="$UCK_PROJECT_DIR/remaster-iso"
+REMASTER_INITRD="$UCK_PROJECT_DIR/remaster-initrd"
+SCRIPT_DIR="$UCK_PROJECT_DIR/customization-scripts"
+
+# Abort on errors
+set -e
+
+# The next two fixup the strange problems with the swiss keyboard:
+#	LANG=de_CH.utf8 -> layoutcode=ch, variantcode=
+#	LANG=fr_CH.utf8 -> layoutcode=ch, variantcode=fr
+#	LANG=it_CH.utf8 -> layoutcode=ch, variantcode=fr
+cp "$SCRIPT_DIR/19keyboard" "$REMASTER_INITRD/scripts/casper-bottom"
+cp "$SCRIPT_DIR/24preseed" "$REMASTER_INITRD/scripts/casper-bottom"
+
+# That's all folks
+exit 0

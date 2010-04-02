@@ -1,0 +1,57 @@
+uck-flow -- the Ubuntu Customization Kit workflow tool
+------------------------------------------------------
+
+What it is:
+	uck-flow is a workflow oriented GUI for UCK (the Ubuntu Customization
+	Toolkit).
+
+	It supports templates and repeatable customization.
+
+	It currently is versioned 0.3 and most of the stuff works (for
+	exceptions/known bugs see the file TODO)
+
+Prerequisites for Installation:
+	You need to have python 2.6 installed with the following modules:
+		pygtk
+		gtk
+		gtk.glade
+	(which all happen to be already available in a vanilla Ubuntu setup)
+	You also need to have the latest an greatest version of uck
+	installed:
+		sudo apt-get install uck
+
+Installation:
+	To install the UckFlow python module run
+		sudo python setup.py install
+	in the current directory.
+
+Running:
+	In a terminal type:
+		uck-flow &
+	or (if you have already created some project from a template)
+		uck-flow project_top_level_directory &
+
+	Have fun!
+
+Author:
+	Wolf Geldmacher, wolf <at> womaro.ch, http://www.womaro.ch
+
+Copyright:
+	Copyright (c) 2010, The UCK Team
+
+License:
+	uck-flow is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	uck-flow is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with uck-flow.  If not, see <http://www.gnu.org/licenses/>.
+
+Source Id:
+	$Id: README,v 2.3 2010-04-02 05:48:56 wjg Exp $
