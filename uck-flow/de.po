@@ -598,8 +598,8 @@ msgid "UCK_EDITOR"
 msgstr ""
 
 #: uckFlow.glade.h:114
-msgid "UckFlow - The Ubuntu Customization Kit Flow Tool"
-msgstr "UckFlow - Das Ubuntu Customization Kit Ablaufsteuerungswerkzeug"
+msgid "uck-flow - The Ubuntu Customization Kit Flow Tool"
+msgstr "uck-flow - Das Ubuntu Customization Kit Ablaufsteuerungswerkzeug"
 
 #: uckFlow.glade.h:115
 msgid "Unpack INITRD"

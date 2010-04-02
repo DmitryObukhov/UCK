@@ -4,7 +4,7 @@
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="uckFlow">
     <property name="visible">True</property>
-    <property name="title" translatable="yes">UckFlow - The Ubuntu Customization Kit Flow Tool</property>
+    <property name="title" translatable="yes">uck-flow - The Ubuntu Customization Kit Flow Tool</property>
     <property name="default_width">920</property>
     <property name="default_height">590</property>
     <property name="icon_name">applications-utilities</property>
