@@ -10,10 +10,7 @@ install: all
 	cd dist; \
 	tar xvf UckFlow-$(VERSION).tar.gz; \
 	cd UckFlow-$(VERSION); \
-	sudo python ./setup.py install; \
-	cd ..; \
-	# sudo rm -rf UckFlow-$(VERSION)
-	cd uck-patches; $(MAKE) $@
+	sudo python ./setup.py install
 
 dist: FRC
 	python setup.py sdist
@@ -21,8 +18,7 @@ dist: FRC
 clean:
 	rm -f src/*.bak src/*.py[co] src/uckFlow.glade.h uckFlow.glade.h
 	rm -f glademessage.pot
-	sudo rm -rf dist
-	rm -rf locale
+	sudo rm -rf dist locale
 
 messages.pot: src/uckFlow.glade uck-flow src/*.py
 	xgettext -L python -k_ -kN_ -o messages.pot uck-flow src/*.py
@@ -40,8 +36,5 @@ translations:
 		mkdir -p locale/$$i/LC_MESSAGES/; \
 		msgfmt $$i.po -o locale/$$i/LC_MESSAGES/uckFlow.mo; \
 	done
-
-ci checkin: clean
-	cvs ci -m"Intermediate" || true
 
 FRC:
