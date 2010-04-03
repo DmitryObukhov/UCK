@@ -18,6 +18,15 @@ How it works:
 	ISO image that can be burned to CD/DVD creating a customized Live
 	CD/DVD or copied onto an USB stick with usbcreator.
 
+Prerequisites:
+	You will need a fairly recent working Ubuntu installation of the same
+	architecture as the Live CD image you want to customize (cf.
+	Restrictions below) on either a virtual machine or a workstation with
+	a sufficently large disk.
+
+	Although it may be possible to run UCK on other distributions, this
+	is not a supported setup.
+
 Limitations and Caveats:
 	- UCK requires root privileges for many of the steps. You need to be
 	  able to run sudo (fakeroot will not suffice!) on the machine that you
@@ -44,7 +53,7 @@ Limitations and Caveats:
 	     if they require services that can only be run once on a system.
 
 	  3) While installing/removing packages in the chroot environment,
-	     services my be stopped/started by the packaging scripts. You will
+	     services may be stopped/started by the packaging scripts. You will
 	     need to take care that these services (a) do not collide with
 	     services running on the customization host and (b) that they
 	     get terminated near the end of the root file system customization
