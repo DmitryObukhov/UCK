@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# $Id$
+# $Id: uck-killtree 318 2010-04-02 06:45:03Z wjg57 $
 #
 # NAME:
-#	killtree -- kill a whole tree of processes
+#	uck-killtree -- kill a whole tree of processes
 #
 # SYNOPSIS:
-#	killtree [-n] [-l] [-s signo] pid
+#	uck-killtree [-n] [-l] [-s signo] pid
 #
 # DESCRIPTION:
 #	This command kills a process tree - regardless of whether the
@@ -26,7 +26,7 @@
 #	descendants.
 #
 # NOTES:
-#	It is not usually a good idea to killtree a parent of the killtree
+#	It is not usually a good idea to killtree a parent of the uck-killtree
 #	command - the killtree command itself will be terminated before it can
 #	do its work!
 #

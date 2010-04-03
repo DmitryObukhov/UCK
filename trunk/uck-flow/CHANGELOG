@@ -1,0 +1,7 @@
+0.4
+	- simple debian package generated from setup.py via "make dist"
+	- changed command/pathname from /usr/local/bin/killtree to
+	  /usr/bin/uck-killtree (this is where make dist puts it).
+	- Added CHANGELOG file that gets redistributed, too.
+	- Bumped version number to 0.4
+	- Single version now kept in "VERSION" file.

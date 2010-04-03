@@ -29,17 +29,27 @@
 #	along with uck-flow.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+import os
 from distutils.core import setup
 
+# Dynamically determine VERSION from file
+p = os.popen("cat VERSION")
+if p == 0:
+	print >>sys.stderr, "Cannot find VERSION file!"
+	sys.exit(2)
+else:
+	v = p.read().strip()
+	p.close()
+
 setup(	name = 'UckFlow',
-	version = '0.3',
+	version = v,
 	description = 'The uck-flow GUI for the Ubuntu Customization Toolkit',
 	author = 'Wolf Geldmacher',
 	author_email = 'wolf <at> womaro.ch',
 	license = 'GPL',
-	long_description = 'uck-flow is a python/glade/GTK GUI based on UCK (the Ubuntu Customization Kit) that alleviates the creation of Ubuntu customizations by providing a workflow.',
+	long_description = 'uck-flow is a python/glade/GTK GUI for UCK (the Ubuntu Customization Kit) that alleviates the creation of Ubuntu customizations by providing a workflow.',
 	url = 'http://uck.sourceforge.net',
-	scripts = [ 'uck-flow', 'killtree' ],
+	scripts = [ 'uck-flow', 'uck-killtree' ],
 	packages = [ 'UckFlow' ],
 	package_dir = {
 		'UckFlow' : 'src'

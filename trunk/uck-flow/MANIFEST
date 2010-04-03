@@ -1,13 +1,15 @@
 README
 TODO
 COPYING
+CHANGELOG
 MANIFEST
+VERSION
 Makefile
 de.po
 messages.pot
 setup.py
 uck-flow
-killtree
+uck-killtree
 src/__init__.py
 src/Singleton.py
 src/StaticMethod.py
