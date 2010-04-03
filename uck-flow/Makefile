@@ -1,7 +1,7 @@
 #
 # $Id$
 #
-VERSION=0.3
+VERSION=$(shell cat VERSION)
 
 all: translations
 
@@ -12,8 +12,17 @@ install: all
 	cd UckFlow-$(VERSION); \
 	sudo python ./setup.py install
 
-dist: FRC
+# Description of python to dpkg conversion: http://pypi.python.org/pypi/stdeb
+# The next needs the following packages installed:
+#	sudo apt-get install python-pip python-distutils-extra python-setuptools
+# plus it needs the python debian package generator installed by:
+#	sudo pip install stdeb
+dist: all
 	python setup.py sdist
+	cd dist; py2dsc UckFlow-$(VERSION).tar.gz
+	cd dist/deb_dist/uckflow-$(VERSION); \
+		dpkg-buildpackage -rfakeroot -uc -us
+	mv dist/deb_dist/*.deb .
 
 clean:
 	rm -f src/*.bak src/*.py[co] src/uckFlow.glade.h uckFlow.glade.h

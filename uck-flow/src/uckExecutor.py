@@ -56,7 +56,7 @@ class Executor:
 	# Special commands (not in project configuration)
 	sudo = "/usr/bin/gksudo"
 	tail = "/usr/bin/tail -n +0 -f"
-	kill = "/usr/local/bin/killtree -l"
+	kill = "/usr/bin/uck-killtree -l"
 	shell = "/usr/bin/xterm -T"		# Lowest common denominator!
 
 	def __init__(self, action, args = "", ioCallback = None, endCallback = None):
