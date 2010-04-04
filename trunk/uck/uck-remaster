@@ -57,7 +57,7 @@ if [ -z "$ISO_IMAGE" ]; then
 fi
 
 COPY_CUSTOMIZE_DIR="yes"
-if [ -z "$CUSTOMIZE_DIR" ]; then
+if [ -z "$CUSTOMIZE_DIR" -o -d "$REMASTER_HOME/customization-scripts" ]; then
 	COPY_CUSTOMIZE_DIR="no"
 	CUSTOMIZE_DIR="$REMASTER_HOME/customization-scripts"
 fi
