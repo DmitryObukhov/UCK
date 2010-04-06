@@ -30,6 +30,7 @@ fi
 rm -rf `find -name .svn`
 rm -rf logo
 rm -rf build.sh
+rm -rf localbuild.sh
 
 # generating deb package
 dpkg-buildpackage
