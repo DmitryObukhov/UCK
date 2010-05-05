@@ -435,7 +435,7 @@ function pack_iso()
 
 	echo "Updating md5sums..."
 	pushd "$ISO_REMASTER_DIR"
-	find . -type f -print0 | grep --null-data -v -E "$EXCLUDED_FROM_MD5_EXPRESSION" | xargs -0 md5sum > md5sum.txt
+	find . -type f -print0 | grep --null-data -v -E "$EXCLUDED_FROM_MD5_EXPRESSION" | xargs -0 md5sum | tee md5sum.txt | sed 's/ \.\// /g' >.checksum.md5
 	popd
 
 	echo "Packing ISO image..."
