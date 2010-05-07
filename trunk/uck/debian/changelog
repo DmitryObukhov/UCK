@@ -1,3 +1,9 @@
+uck (2.0.12-0ubuntu2) lucid; urgency=low
+
+  * Depends on wget, lzma (LP: #511301).
+
+ -- Alessio Treglia <quadrispro@ubuntu.com>  Sun, 31 Jan 2010 20:13:29 +0100
+
 uck (2.0.12-0ubuntu1) lucid; urgency=low
 
   * New upstream release:
