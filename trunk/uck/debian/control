@@ -3,7 +3,7 @@ Section: utils
 Priority: optional
 Maintainer: Alessio Treglia <quadrispro@ubuntu.com>
 Build-Depends: debhelper (>= 7.0.50~)
-Standards-Version: 3.8.3
+Standards-Version: 3.8.4
 Homepage: http://uck.sourceforge.net/
 
 Package: uck
