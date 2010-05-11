@@ -1,4 +1,11 @@
 ------------
+-- 2.2.1 --
+------------
+
+* Backend:
+	* Brasero style checksums support was added (#575825)
+
+------------
 -- 2.2.0 --
 ------------
 
