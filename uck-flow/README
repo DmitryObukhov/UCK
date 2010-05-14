@@ -7,6 +7,20 @@ What it is:
 
 	It supports templates and repeatable customization.
 
+	((
+	Note: There already is a GUI for UCK named uck-gui. uck-gui is more
+	directed to simple/standard customizations and provides a higher
+	degree of automation and simplicity for those. uck-flow is more of
+	an expert tool - it requires some knowledge of (shell-) programming as
+	it exposes more of the customization environment, but also allows much
+	greater freedom in what can be customized. It also allows repeated
+	customizations starting at (almost) arbitrary points in the
+	customization process, provided that the customization procedures are
+	re-entrant (i.e. can be run multiple times without adverse effects).
+	))
+
+	uck-flow is still in an alpha stage - feedback is welcome!
+
 Prerequisites for Installation:
 	You need to have python 2.6 installed with the following modules:
 		pygtk

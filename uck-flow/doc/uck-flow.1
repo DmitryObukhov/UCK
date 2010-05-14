@@ -1,0 +1,57 @@
+.IX Title "UCK-FLOW 1"
+.TH UCK-FLOW 1 "2008-02-04" "2.2.0" ""
+.\" For nroff, turn off justification.  Always turn off hyphenation; it makes
+.\" way too many mistakes in technical documents.
+.if n .ad l
+.nh
+.SH "NAME"
+\&\fBuck-flow\fR \- Ubuntu Customization Kit Workflow Tool
+.SH "SYNOPSIS"
+.IX Header "SYNOPSIS"
+uck-flow [ project-directory ]
+.SH "DESCRIPTION"
+.IX Header "DESCRIPTION"
+\&\fBuck-flow\fR is an alternative graphical user interface for the Ubuntu
+Customization Kit.
+.PP
+In contrast to uck-gui(1), which is tuned to allow easy execution of common
+customizations, \fBuck-flow\fR provides a fine grained control over each of the
+customization steps. In order to make use of this flexibility, some (shell\-)
+programming skills are required.
+.PP
+\fBuck-flow\fR provides templates for some of the most common customizations,
+can easily be extended with more templates and allows (re\-)execution of
+arbitrary customization steps.
+.PP
+The steps provided are:  "prepareIso", "unpackIso", "unpackRoot",
+"customizeRoot", "packRoot", "customizeIso", "unpackInitrd", "customizeInitrd",
+"packInitrd", "packIso", "test" and "cleanup".
+.PP
+User defined customization can be done in the "prepareIso", "customizeRoot",
+"customizeIso", "customizeInitrd" and "test" steps. The other steps directly
+map onto procedures provided by the Ubuntu Customization Kit.
+.PP
+\fBuck-flow\fR projects are directories with a predefined structure: A project
+contains a subdirectory named "customization-scripts" that contains all the
+procedures required for customizations (corresponding to the steps listed
+above) and a project configuration file named "project.uck".
+.PP
+Additional subdirectories are created during the customization steps
+(they all have the prefix remaster-) and are removed by the final cleanup.
+.PP
+The optional argument is the name of a project directory created by a previous
+run of \fBuck-flow\fR. If given, \fBuck-flow\fR will start with that project
+already loaded.
+.PP
+\fBuck-flow\fR is based on the tools provided by the Ubuntu Customization Kit,
+therefore the same restrictions and caveats apply as for UCK. Most notably:
+UCK requires plenty of disk space for the project on a non-encrypted local
+volume and root privileges for many of the steps.
+.SH "AUTHOR"
+.IX Header "AUTHOR"
+\fBuck-flow\fR has been written by Wolf Geldmacher <wolf@womaro.ch>
+.SH "COPYRIGHT"
+.IH Header "COPYRIGHT"
+Copyright 2010, The Ubuntu Customization Team.
+.br
+\fBuck-flow\fR is provided under the GNU Public License (GPL Version 3).

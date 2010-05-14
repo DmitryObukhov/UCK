@@ -11,6 +11,8 @@ stdeb.cfg
 setup.py
 uck-flow
 uck-killtree
+uck-flow.desktop
+doc/uck-flow.1
 src/__init__.py
 src/Singleton.py
 src/StaticMethod.py
