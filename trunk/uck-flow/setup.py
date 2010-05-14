@@ -110,6 +110,16 @@ setup(	name = 'UckFlow',
 			'locale/de/LC_MESSAGES/uckFlow.mo',
 		 ],
 		),
+		(
+		'/usr/share/applications', [
+			'uck-flow.desktop',
+		 ],
+		),
+		(
+		'/usr/share/man/man1', [
+			'doc/uck-flow.1',
+		 ],
+		),
 	],
 )
 

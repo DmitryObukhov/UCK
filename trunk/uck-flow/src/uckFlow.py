@@ -676,12 +676,13 @@ class UckFlow:
 	def update_template_preview(self, file_chooser, label):
 		p = Project.get_instance()
 		filename = file_chooser.get_preview_filename()
-		filename = os.path.join(filename, p.get("UCK_CONFIG"))
-		if os.path.isfile(filename):
-			info = Project.get_info(filename)
-			info = "\n".join(info)
-			label.set_text(_("UCK TEMPLATE:") + "\n" + info)
-			file_chooser.set_preview_widget_active(True)
+		if filename != None:
+			filename = os.path.join(filename, p.get("UCK_CONFIG"))
+			if os.path.isfile(filename):
+				info = Project.get_info(filename)
+				info = "\n".join(info)
+				label.set_text(_("UCK TEMPLATE:") + "\n" + info)
+				file_chooser.set_preview_widget_active(True)
 		else:
 			file_chooser.set_preview_widget_active(False)
 
@@ -689,13 +690,15 @@ class UckFlow:
 	def update_open_preview(self, file_chooser, label):
 		p = Project.get_instance()
 		filename = file_chooser.get_preview_filename()
-		filename = os.path.join(filename, p.get("UCK_CUSTOMIZE_DIR"),
+		if filename != None:
+			filename = os.path.join(filename,
+				p.get("UCK_CUSTOMIZE_DIR"),
 				p.get("UCK_CONFIG"))
-		if os.path.isfile(filename):
-			info = Project.get_info(filename)
-			info = "\n".join(info)
-			label.set_text(_("UCK PROJECT:") + "\n" + info)
-			file_chooser.set_preview_widget_active(True)
+			if os.path.isfile(filename):
+				info = Project.get_info(filename)
+				info = "\n".join(info)
+				label.set_text(_("UCK PROJECT:") + "\n" + info)
+				file_chooser.set_preview_widget_active(True)
 		else:
 			file_chooser.set_preview_widget_active(False)
 
