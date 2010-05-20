@@ -1,3 +1,12 @@
+0.4.4
+	- Make sure pack_root is inactive while shell is running. Would
+	  otherwise try to pack /proc /sys a.s.o
+	- Solve problem with new dialog looping by changing flags of
+	  dialog to require an existing directory to be chosen. A new
+	  project directory can still be created by using the "Create Dir"
+	  button in the dialog.
+	- Make preview widgets local to the respective previews.
+
 0.4.3
 	- undocumented change of libraray path led to uck-flow breaking - fixed.
 

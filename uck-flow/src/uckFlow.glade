@@ -1619,7 +1619,6 @@ UCK.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="action">select-folder</property>
-    <signal name="update_preview" handler="on_uckProjectOpenDialog_update_preview"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox3">
         <property name="visible">True</property>
@@ -1677,8 +1676,7 @@ UCK.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
     <property name="border_width">5</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
-    <property name="action">create-folder</property>
-    <signal name="update_preview" handler="on_uckProjectNewDialog_update_preview"/>
+    <property name="action">select-folder</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox5">
         <property name="visible">True</property>
