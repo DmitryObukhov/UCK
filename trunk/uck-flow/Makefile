@@ -8,8 +8,8 @@ all: translations
 install: all
 	$(MAKE) dist; \
 	cd dist; \
-	tar xvf UckFlow-$(VERSION).tar.gz; \
-	cd UckFlow-$(VERSION); \
+	tar xvf uckflow-$(VERSION).tar.gz; \
+	cd uckflow-$(VERSION); \
 	sudo python ./setup.py install
 
 # Description of python to dpkg conversion: http://pypi.python.org/pypi/stdeb
@@ -19,7 +19,7 @@ install: all
 #	sudo pip install stdeb
 dist: all
 	python setup.py sdist
-	cd dist; py2dsc UckFlow-$(VERSION).tar.gz
+	cd dist; py2dsc uckflow-$(VERSION).tar.gz
 	cd dist/deb_dist/uckflow-$(VERSION); \
 		dpkg-buildpackage -rfakeroot -uc -us
 	mv dist/deb_dist/*.deb .

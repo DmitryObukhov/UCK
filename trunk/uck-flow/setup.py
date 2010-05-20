@@ -41,7 +41,7 @@ else:
 	v = p.read().strip()
 	p.close()
 
-setup(	name = 'UckFlow',
+setup(	name = 'uckflow',
 	version = v,
 	description = 'The uck-flow GUI for the Ubuntu Customization Toolkit',
 	author = 'Wolf Geldmacher',
@@ -50,12 +50,12 @@ setup(	name = 'UckFlow',
 	long_description = 'uck-flow is a python/glade/GTK GUI for UCK (the Ubuntu Customization Kit) that alleviates the creation of Ubuntu customizations by providing a workflow.',
 	url = 'http://uck.sourceforge.net',
 	scripts = [ 'uck-flow', 'uck-killtree' ],
-	packages = [ 'UckFlow' ],
+	packages = [ 'uckflow' ],
 	package_dir = {
-		'UckFlow' : 'src'
+		'uckflow' : 'src'
 	},
 	package_data = {
-		'UckFlow' :  [
+		'uckflow' :  [
 			'uckFlow.glade',
 			'uckFlow.gladep',
 			'uck-full.gif',

@@ -38,7 +38,7 @@ import sys
 import pygtk
 pygtk.require("2.0")
 import gtk
-from UckFlow.uckFlow import UckFlow
+from uckflow.uckFlow import UckFlow
 
 # message localization support
 APP = "uckFlow"

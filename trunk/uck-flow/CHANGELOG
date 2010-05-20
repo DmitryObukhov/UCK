@@ -1,3 +1,6 @@
+0.4.3
+	- undocumented change of libraray path led to uck-flow breaking - fixed.
+
 0.4.2
 	- Added desktop menu entry for uck-flow
 	- Shell button now runs a login shell
