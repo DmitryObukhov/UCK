@@ -1,9 +1,6 @@
 $Id$
 
 Known Issues:
-	- (UCKFLOW) There seems to be a bug in the GTK file dialog that makes
-	  uck-flow loop when a new driectory is created when creating a project
-	  from a template.
 	- (UCK/gksudo/terminal) after chroot we end up in "/" instead of
 	  in "/root"
 	- (UCK) Environment sourcing in chroot environment (proxies!)

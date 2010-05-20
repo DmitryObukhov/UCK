@@ -314,7 +314,8 @@ class Sequence:
 				# - unpackRoot selected
 				# - unpacked Root available
 				if (self.actions[index - 2].get_state() or
-				    os.path.isdir(p.get_root_dir())):
+				    os.path.isdir(p.get_root_dir()) and not
+				    self.is_shellRunning()):
 					self.actions[index].set_sensitive(True)
 				else:
 					self.actions[index].set_state(False)
@@ -519,9 +520,6 @@ class UckFlow:
 		# Initialize sequencing
 		self.sequencer = Sequence(self.wTree)
 
-		# Create preview widget for dialogs
-		self.previewLabel = gtk.Label("PREVIEW");
-
 		# Called with an argument? Otherwise start with builtin.
 		if projectName:
 			p = Project.get_instance()
@@ -565,7 +563,6 @@ class UckFlow:
 		# Customize dialog to show what's going on
 		label = gtk.Label(_("Select project to create"))
 		new.set_extra_widget(label)
-		new.set_preview_widget_active(False)
 
 		response = new.run()
 
@@ -615,10 +612,11 @@ class UckFlow:
 
 		# Customize dialog to show what's going on
 		label = gtk.Label(_("Select template to use"))
+		previewLabel = gtk.Label("PREVIEW");
 		new.set_extra_widget(label)
-		new.set_preview_widget(self.previewLabel)
+		new.set_preview_widget(previewLabel)
 		new.connect("update-preview", self.update_template_preview,
-			self.previewLabel)
+			previewLabel)
 		new.set_preview_widget_active(False)
 
 		response = new.run()
@@ -636,10 +634,11 @@ class UckFlow:
 
 		# Customize dialog to show what's going on
 		label = gtk.Label(_("Select project to open/create"))
+		previewLabel = gtk.Label("PREVIEW");
 		open.set_extra_widget(label)
-		open.set_preview_widget(self.previewLabel)
+		open.set_preview_widget(previewLabel)
 		open.connect("update-preview", self.update_open_preview,
-			self.previewLabel)
+			previewLabel)
 		open.set_preview_widget_active(False)
 
 		response = open.run()
