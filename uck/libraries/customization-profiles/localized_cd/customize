@@ -114,37 +114,45 @@ DESKTOP_FLAVOURS=`cat "$SCRIPT_DIR/desktop_types"`
 
 prepare_install || failure "Preparing installation failed, error=$?"
 
-echo "Installing language packs ($LIVECD_LANGS)..."
-
+# List of packages to install to support the selected languages:
 PACKAGES_TO_INSTALL=""
+# Pattern to match all selected language packs:
 LANGPACKS_CONCATENATED=""
+# List of language related packages available in the repositories:
+REPO_LANGS=`apt-cache search "^language-" | sed 's/[ 	].*//'`
 
+echo "Installing language packs ($LIVECD_LANGS)..."
 if [ -n "$LIVECD_LANGS" ]; then
-	for LANGPACK in $LIVECD_LANGS; do
-		PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL language-pack-$LANGPACK language-support-$LANGPACK"
+	for l in $LIVECD_LANGS; do
+		# Add language specific packages not releated to kde or gnome
+		add=`echo "$REPO_LANGS" | grep -- -"$l" | grep -Ev "kde|gnome"`
+		PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL $add"
 	
-		if [ "$DESKTOP_FLAVOURS" ]; then
-			for FLAVOUR in $DESKTOP_FLAVOURS; do
-				if [ $FLAVOUR == "gnome" ] || [ $FLAVOUR == "kde" ]; then
-					PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL language-pack-$FLAVOUR-$LANGPACK"
-				fi
+		# Add desktop specific language packages
+		if [ -n "$DESKTOP_FLAVOURS" ]; then
+			for f in $DESKTOP_FLAVOURS; do
+				add=`echo "$REPO_LANGS" | grep -- -$f-$l`
+				PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL $add"
 			done
 		fi
 	
 		if [ -z "$LANGPACKS_CONCATENATED" ]; then
-			LANGPACKS_CONCATENATED="$LANGPACK"
+			LANGPACKS_CONCATENATED="$l"
 		else
-			LANGPACKS_CONCATENATED="$LANGPACKS_CONCATENATED|$LANGPACK"
+			LANGPACKS_CONCATENATED="$LANGPACKS_CONCATENATED|$l"
 		fi
 	done
 	
-	install_packages $PACKAGES_TO_INSTALL || failure "Installing language packs failed, error=$?"
+	install_packages $PACKAGES_TO_INSTALL ||
+		failure "Installing language packs failed, error=$?"
 	
-	#NOTE: we first install language pack, then remove others as installing language pack might pull packages
-	#which were not previously present
+	# NOTE:	we first install selected language packs, then remove others as
+	#	installing a language pack might pull in packages that were not
+	#	previously present
 	echo "Removing unnecessary language packages..."
-	REMOVED_PACKAGES=`dpkg-query --show | cut -f1 | grep -E '^(language-pack|language-support)' | grep -v -E "[-]($LANGPACKS_CONCATENATED)\>"`
-	remove_packages $REMOVED_PACKAGES || failure "Removing packages failed, error=$?"
+	REMOVED_PACKAGES=`dpkg-query --show | cut -f1 | grep -E '^(language-pack|language-support)' | grep -Ev "[-]($LANGPACKS_CONCATENATED)\>"`
+	remove_packages $REMOVED_PACKAGES ||
+		failure "Removing packages failed, error=$?"
 fi
 
 if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
