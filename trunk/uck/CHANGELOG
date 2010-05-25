@@ -6,6 +6,7 @@
 	* Brasero style checksums support was added (#575825)
 	* bugs with virtual packages for languages packs were solved
 	  (#580578, #525635)
+	* workarout for buggy portuguese language management in gfxboot (#582200)
 
 ------------
 -- 2.2.0 --
