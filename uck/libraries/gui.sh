@@ -16,6 +16,8 @@
 #                                                                                 #
 # You should have received a copy of the GNU General Public License               #
 # along with UCK.  If not, see <http://www.gnu.org/licenses/>.                    #
+###################################################################################
+
 # DESCRIPTION:
 #	This shell library module provides user interface funtionality.
 #
