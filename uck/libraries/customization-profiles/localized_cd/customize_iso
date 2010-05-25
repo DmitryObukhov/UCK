@@ -88,8 +88,14 @@ fi
 
 # Build the gfx boot theme
 cd gfxboot-theme-ubuntu
-make DEFAULT_LANG="$BOOT_LANG" ||
-	failure "Failed to build gfxboot theme"
+cd po
+ln -s pt.po pt_PT.po
+cd ..
+##if [ "$BOOT_LANG" = "pt_PT" ]; then
+##	make DEFAULT_LANG="pt" || failure "Failed to build gfxboot theme"
+##else
+	make DEFAULT_LANG="$BOOT_LANG" || failure "Failed to build gfxboot theme"
+##fi
 
 # Fix list of languages
 pushd boot >/dev/null
