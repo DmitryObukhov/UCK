@@ -161,26 +161,32 @@ dialog_multi_choice() {
 
 	case $_dialog_type in
 	kdialog)
+		args=
 		for i; do
-			PARAMS="$PARAMS $i $i 0"
+			args="$args '$i' '$i' 0"
 		done
-		kdialog --separate-output --checklist "$descr" $PARAMS
+		eval set -- "$args"
+		kdialog --separate-output --checklist "$descr" "$@"
 		;;
 
 	zenity)
+		args=
 		for i; do
-			PARAMS="$PARAMS $i $i"
+			args="$args '$i' '$i'"
 		done
+		eval set -- "$args"
 		zenity --separator $'\n' --list --checklist --multiple --width=500 --height=400 \
-			--text "$descr" --column "" --column ""  $PARAMS
+			--text "$descr" --column "" --column ""  "$@"
 		;;
 
 	dialog)
+		args=
 		for i; do
-			PARAMS="$PARAMS $i Language 0"
+			args="$args '$i' '' 0"
 		done
+		eval set -- "$args"
 		dialog --stdout --separate-output --checklist "$descr" \
-			20 30 10 $PARAMS
+			20 30 10 "$@"
 		;;
 
 	builtin)
@@ -193,16 +199,18 @@ dialog_multi_choice() {
 				eval echo "$i\)	\$$i" >&2
 			done
 			echo "Currently selected: $selection" >&2
-			echo -n "Your choice (1..$#, 0 if done, -1 to abort) > " >&2
+			echo -n "Your choice (1..$#, 0 or epmty line if done, -1 to abort) > " >&2
 			read choice
 
 			case $choice in
 			-1)	return 1;;
-			0)	break;;
+			""|0)	break;;
 			esac
 
 			# Sanity checks
 			if expr "$choice" : '[1-9][0-9]*$' >/dev/null; then
+				: this is what we need
+			else
 				continue
 			fi
 			[ "$choice" -gt $# ] && continue
@@ -301,23 +309,28 @@ dialog_choose_file() {
 		dialog --stdout --title "$descr" --fselect "`pwd`/" 10 70
 		;;
 
-	builtin)
-		while :
+	builtin) # run in subshell to leave cwd alone for caller
+		( while :
 		do
 			echo >&2
 			echo "$descr" >&2
 			echo "Current working directory: `pwd`" >&2
+			ls >&2
 			echo -n "Please enter file name, empty to abort > " >&2
 			read answ
 			if [ -z "$answ" ]; then
 				return 1
 			fi
 			if [ -f "$answ" ]; then
-				echo "$answ"
+				echo "`pwd`/$answ"
 				return 0
 			fi
+			if [ -d "$answ" ]; then
+				cd "$answ"
+				continue
+			fi
 			echo "That is not the name of a file. Try again..." >&2
-		done
+		done )
 		;;
 
 	*)	echo "$0: internal error: fall through case" >&2; exit 100
@@ -333,7 +346,7 @@ dialog_choose_file() {
 #	Status: nothing
 dialog_msgbox() {
 	descr="$1"; shift
-	text="$2"; shift
+	text="$1"; shift
 
 	case $_dialog_type in
 	kdialog)
@@ -368,7 +381,7 @@ dialog_msgbox() {
 #	Status: 0 for success / yes, 1 for failure / no
 dialog_question() {
 	descr="$1"; shift
-	text="$2"; shift
+	text="$1"; shift
 
 	case $_dialog_type in
 	kdialog)
@@ -386,7 +399,7 @@ dialog_question() {
 	builtin)
 		echo >&2
 		echo "$descr" >&2
-		echo -n "$text (y/n)> " >&2
+		echo -n "$text (y/N)> " >&2
 		read answ
 		case $answ in
 		[Yy]*)	return 0;;
@@ -397,6 +410,31 @@ dialog_question() {
 	*)	echo "$0: internal error: fall through case" >&2; exit 100
 		;;
 	esac
+}
+
+# Function to run regression tests for all available GUI's
+_regress() {
+	for t in builtin dialog zenity kdialog; do
+		_dialog_type=$t
+		echo "Running dialog_menu: "
+		dialog_menu "Description text" "choice 1" "choice 2" "choice 3"
+		sleep 3
+		echo "Running dialog_multi_choice: "
+		dialog_multi_choice "Description text" "choice 1" "choice 2" "choice 3"
+		sleep 3
+		echo "Running dialog_line_input: "
+		dialog_line_input "Description text" "Initial input text"
+		sleep 3
+		echo "Running dialog_choose: "
+		dialog_choose_file "Select a file (Descriptiont)"
+		sleep 3
+		echo "Running dialog_msgbox: "
+		dialog_msgbox "This is the title" "This is the message"
+		sleep 3
+		echo "Running dialog_question: "
+		dialog_question "This is the title" "This is the question"
+		sleep 3
+	done
 }
 
 find_dialog
