@@ -8,6 +8,8 @@
 	  (#580578, #525635)
 	* workarout for portuguese (pt_PT) language management was implemented
 	  (#582200)
+	* GUI now uses kdialog, zenity, dialog or builtin (in that order) iff
+	  available. (#577197)
 
 ------------
 -- 2.2.0 --
