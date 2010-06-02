@@ -485,7 +485,7 @@ class Sequence:
 class UckFlow:
 	"""This is the UckFlow application"""
 
-	def __init__(self, projectName = None):
+	def __init__(self, projectName = None, useMount = False):
 		# Set the Glade file (found in module directory)
 		self.dir = os.path.dirname(__file__)
 		self.gladefile = os.path.join(self.dir, "uckFlow.glade")
@@ -498,6 +498,7 @@ class UckFlow:
 		self.logfile = None
 		self.stdout = os.dup(sys.stdout.fileno())
 		self.stderr = os.dup(sys.stderr.fileno())
+		self.useMount = useMount
 
 		# Create dictionary of callbacks and autoconnect them
 		dic = {
@@ -524,6 +525,7 @@ class UckFlow:
 		if projectName:
 			p = Project.get_instance()
 			p.set_project_dir(projectName)
+			p.set_use_mount(self.useMount)
 
 			# Get project configuration
 			src = p.get_customize_dir()
@@ -545,6 +547,13 @@ class UckFlow:
 	def reset(self):
 		if self.sequencer.is_running():
 			self.sequencer.abort()
+
+		p = Project.get_instance()
+		finalize = p.get_finalize()
+		if os.path.isfile(finalize) and p.get_use_mount():
+			executor = Executor("finalize")
+			status = executor.wait()
+
 		self.logDialog.hide()
 		self.logDialog.set_logfile(None)
 		Project.get_instance().reset()
@@ -581,6 +590,7 @@ class UckFlow:
 
 			# Remember new project directory
 			p.set_project_dir(filename)
+			p.set_use_mount(self.useMount)
 
 			# Pattern for all customization files
 			target = p.get_customize_dir()
@@ -663,6 +673,7 @@ class UckFlow:
 
 			# make sure project directory stays!
 			p.set_project_dir(filename)
+			p.set_use_mount(self.useMount)
 
 			# Redirect I/O to project log
 			self.redirect_io()

@@ -72,7 +72,12 @@ class Executor:
 		p_src = p.get_source()
 		p_iso = p.get_target()
 		chroot = p.get_chroot_wrapper()
-		unpack = p.get_unpack_iso()
+		unpackIso = p.get_unpack_iso()
+		if p.get_use_mount():
+			unpackIso += " -m "
+		unpackRoot = p.get_unpack_root()
+		if p.get_use_mount():
+			unpackRoot += " -m "
 		pack = p.get_pack_iso()
 		p_desc = " --description \"" + p.get_project_name() + "\""
 
@@ -86,9 +91,9 @@ class Executor:
 		self.executors = {
 		"prepareIso" :	    [ p.get_prepare_iso() + " " + p_dir,
 				      False, True ],
-		"unpackIso" :	    [ unpack + " " + p_src + " " + p_dir,
+		"unpackIso" :	    [ unpackIso + " " + p_src + " " + p_dir,
 				      True, True ],
-		"unpackRoot" :	    [ p.get_unpack_root() + " " + p_dir,
+		"unpackRoot" :	    [ unpackRoot + " " + p_dir,
 				      True, True ],
 		"customizeRoot" :   [ chroot + " " + p_dir + " " + p_run,
 				      True, True ],
@@ -104,6 +109,8 @@ class Executor:
 				      True, True ],
 		"packIso" :	    [ pack + " " + p_iso + " " + p_dir + p_desc,
 				      True, True ],
+		"finalize" :	    [ p.get_finalize() + " " + p_dir,
+				      True, False ],
 		"test" :	    [ p.get_customize_test() + " " + p_dir,
 				      False, True ],
 		"cleanup" :	    [ p.get_cleanup() + " " + p_dir,
@@ -199,3 +206,8 @@ class Executor:
 	# Get state of running process
 	def state(self):
 		return self.proc.returncode
+
+	# Synchronously wait for Executor to end
+	def wait(self):
+		status = os.waitpid(self.proc.pid, 0)
+		return status
