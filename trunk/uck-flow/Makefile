@@ -23,6 +23,7 @@ dist: all
 	cd dist/deb_dist/uckflow-$(VERSION); \
 		dpkg-buildpackage -rfakeroot -uc -us
 	mv dist/deb_dist/*.deb .
+	mv dist/uckflow*.tar.gz .
 
 clean:
 	rm -f src/*.bak src/*.py[co] src/uckFlow.glade.h uckFlow.glade.h

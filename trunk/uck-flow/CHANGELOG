@@ -1,3 +1,13 @@
+0.4.5
+	- Added support for -m (mount instead of copy) option.
+		- Option handling in uck-flow / uckFlow.py
+		- Option storage in uckProject
+		- Option evaluation in uckExecutor
+	- Added synchronous execution (wait call) to uckExecutor.
+	- Fixed lost line in uckProject (function get_new_dir)
+	- Modified Makefile to copy generated source archive in preparation
+	  for upload to SF.
+
 0.4.4
 	- Make sure pack_root is inactive while shell is running. Would
 	  otherwise try to pack /proc /sys a.s.o

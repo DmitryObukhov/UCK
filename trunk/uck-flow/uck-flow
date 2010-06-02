@@ -7,12 +7,15 @@
 #	uck-flow -- run the UCK flow tool
 #
 # SYNOPSIS:
-#	uck-flow [project]
+#	uck-flow [-m] [project]
 #
 # DESCRIPTION:
 #	uck-flow is a tool that allows for restartable graphical customization
 #	of Ubuntu distributions. It closely interacts with UCK (the Ubuntu
 #	Customization Kit).
+#
+#	The -m option will try to use union mounts to preserve time and space.
+#	For this to work the UCK version used must support it.
 #
 # AUTHOR:
 #	Wolf Geldmacher, wolf <at> womaro.ch, http.//www.womaro.ch
@@ -45,19 +48,43 @@ APP = "uckFlow"
 DIR = "locale"
 import locale
 import gettext
+import getopt
 locale.setlocale(locale.LC_ALL, '')
 gettext.bindtextdomain(APP, DIR)
 gettext.textdomain(APP)
 _ = gettext.gettext
 
+# A utility funtion to print a usage message
+def usage():
+	print _("Usage: uck-flow [-m] [project-dir]")
+	sys.exit(2)
+
 # The main program
-if __name__ == "__main__":
-	if len(sys.argv) > 1:
-		anUckFlow = UckFlow(sys.argv[1])
+def main(argv):
+	try:
+		opts, args = getopt.getopt(argv, "mh", [ "mount", "help" ])
+	except getopt.GetoptError:
+		usage()
+
+	use_mount = False
+	for opt, arg in opts:
+		if opt in ("-h", "--help"):
+			usage()
+		elif opt in ("-m", "--mount"):
+			use_mount = True
+
+	# First of remaining arguments is taken to be project directory
+	if len(args) > 0:
+		anUckFlow = UckFlow(args[0], useMount = use_mount)
 	else:
-		anUckFlow = UckFlow()
+		anUckFlow = UckFlow(useMount = use_mount)
+
+	# Run the GUI
 	try:
 		gtk.main()
 	except KeyboardInterrupt:
 		print _("+++Program terminated by keyboard interrupt")
 		anUckFlow.quit()
+
+if __name__ == "__main__":
+	main(sys.argv[1:])

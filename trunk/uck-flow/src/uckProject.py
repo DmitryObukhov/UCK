@@ -174,6 +174,7 @@ builtinConfiguration = {
 	"UCK_PACK_INITRD"	: "uck-remaster-pack-initrd",
 	"UCK_INITRD_DIR"	: "remaster-initrd",
 	"UCK_PACK_ISO"		: "uck-remaster-pack-iso",
+	"UCK_FINALIZE"		: "uck-remaster-umount",
 	"UCK_NEW_DIR"		: "remaster-new-files",
 	"UCK_CLEAN"		: "uck-remaster-clean-all",
 }
@@ -344,6 +345,9 @@ class Project(Singleton):
 		# Read default configuration from built-in string
 		self.reset()
 
+		# Set default value for useMount
+		self.set_use_mount(False)
+
 		# As an alternative to the guard technique above we could
 		# just delete this constructor after first use by doing:
 		#del Project.__init__
@@ -390,6 +394,14 @@ class Project(Singleton):
 			self.project[name].set_value(value)
 		else:
 			CfgObject(name, value, comment, self.project)
+
+	# Set usemount property
+	def set_use_mount(self, value = False):
+		self.useMount = value
+
+	# Get usemount property
+	def get_use_mount(self):
+		return self.useMount
 
 	# Get rel/abs path of editor to use
 	def get_editor(self):
@@ -530,6 +542,10 @@ class Project(Singleton):
 	def get_pack_iso(self):
 		return self.b_path("UCK_PACK_ISO")
 
+	# Get path to finalize command
+	def get_finalize(self):
+		return self.b_path("UCK_FINALIZE")
+
 	# Get path to test script
 	def get_customize_test(self):
 		return self.c_path("UCK_CUSTOMIZE_TEST")
@@ -554,4 +570,5 @@ class Project(Singleton):
 		return self.b_path("UCK_CHROOT_WRAPPER")
 
 	# Get path to directory containg the new files
+	def get_new_dir(self):
 		return self.p_path("UCK_NEW_DIR")
