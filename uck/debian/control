@@ -21,6 +21,7 @@ Depends: bash (>= 3.0),
  xauth,
  gnupg,
  wget,
+ sudo,
  lzma,
  ${misc:Depends}
 Description: Tool to customize official Ubuntu Live CDs
