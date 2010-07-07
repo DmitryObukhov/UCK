@@ -1,3 +1,17 @@
+uck (2.2.1-0ubuntu1) maverick; urgency=low
+
+  * New upstream release:
+    - Brasero style checksums support was added (#575825)
+    - bugs with virtual packages for languages packs were solved.
+      Fixes LP: #580578 and #525635.
+    - workarout for portuguese (pt_PT) language management was implemented,
+	  fixes LP: #582200
+    - GUI now uses kdialog, zenity, dialog or builtin (in that order) if
+      available. Fixes LP: #577197
+  * Depends on sudo (LP: #602401)
+
+ -- Alessio Treglia <quadrispro@ubuntu.com>  Wed, 07 Jul 2010 01:47:14 +0200
+
 uck (2.2.0-0ubuntu1) maverick; urgency=low
 
   * New upstream release:
