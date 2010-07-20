@@ -3,7 +3,7 @@ Section: utils
 Priority: optional
 Maintainer: Alessio Treglia <quadrispro@ubuntu.com>
 Build-Depends: debhelper (>= 7.0.50~)
-Standards-Version: 3.8.4
+Standards-Version: 3.9.0
 Homepage: http://uck.sourceforge.net/
 
 Package: uck
@@ -24,6 +24,7 @@ Depends: bash (>= 3.0),
  sudo,
  lzma,
  ${misc:Depends}
+ Suggests: brasero | k3b | burn
 Description: Tool to customize official Ubuntu Live CDs
  UCK is a tool that helps you customizing official Ubuntu Live CDs (including
  Kubuntu/Xubuntu and Edubuntu) to your needs. You can add any package to the

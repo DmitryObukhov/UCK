@@ -9,8 +9,10 @@ uck (2.2.1-0ubuntu1) maverick; urgency=low
     - GUI now uses kdialog, zenity, dialog or builtin (in that order) if
       available. Fixes LP: #577197
   * Depends on sudo (LP: #602401)
+  * Bump Standards.
+  * Suggests on brasero | k3b | burn.
 
- -- Alessio Treglia <quadrispro@ubuntu.com>  Wed, 07 Jul 2010 01:47:14 +0200
+ -- Alessio Treglia <quadrispro@ubuntu.com>  Wed, 20 Jul 2010 01:47:14 +0200
 
 uck (2.2.0-0ubuntu1) maverick; urgency=low
 
