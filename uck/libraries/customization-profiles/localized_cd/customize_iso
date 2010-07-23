@@ -58,7 +58,7 @@ function failure()
 
 function get_latest_kernel()
 {
-	set -- $(ls "$REMASTER_DIR"/boot/vmlinuz* |
+	set -- $(ls "$REMASTER_DIR"/boot/vmlinuz* 2>/dev/null |
 		sed -e "s@$REMASTER_DIR/boot/@@" |
 		tr --  '-.' '\t' |
 		sort --key=2 --key=3 --key=4  --key=5 --numeric-sort |

@@ -62,6 +62,49 @@ function unmount_directory()
 	fi
 }
 
+# Check, whether union mounts are possible
+function check_union_mounts()
+{
+	[ -x /sbin/mount.aufs -o -x /usr/bin/unionfs-fuse ]
+}
+
+# union_mount -- mount a r/o file system r/w
+#	Parameters: src_file dest
+function union_mount()
+{
+	# Mount the readonly volume
+	[ ! -d "$2" ] && mkdir -p "$2-mount"
+	mount -o loop -r "$1" "$2-mount"
+
+	# Create cache and r/w directory
+	[ ! -d "$2-cache" ] && mkdir -p "$2-cache"
+	[ ! -d "$2" ] && mkdir -p "$2"
+
+	# mount as union to target
+	if [ -x /sbin/mount.aufs ]; then
+		mount -t aufs -o br:$2-cache:$2-mount none "$2"
+	elif [ -x /usr/bin/unionfs-fuse ]; then
+		unionfs-fuse -o cow,max_files=32768,hide_meta_files \
+			-o allow_other,suid,dev \
+			"$2-cache"=RW:"$2-mount"=RO "$2"
+	else
+		echo "Cannot use union_mounts!" >&2
+		exit 1
+	fi
+}
+
+# union_umount -- unmount a union_mount
+#	Paramters: mountdir
+function union_umount()
+{
+	sync
+	umount "$1"
+	rmdir "$1" >/dev/null 2>&1
+	rmdir "$1-cache" >/dev/null 2>&1
+	umount "$1-mount"
+	rmdir "$1-mount" >/dev/null 2>&1
+}
+
 # Create/Mount all filesystems for chroot environment
 function mount_pseudofilesystems()
 {
@@ -240,7 +283,11 @@ function unpack_iso()
 {
 	echo "Unpacking ISO image..."
 	cp -a "$ISO_MOUNT_DIR" "$ISO_REMASTER_DIR" || failure "Failed to unpack ISO from $ISO_MOUNT_DIR to $ISO_REMASTER_DIR"
-	
+	manifest_diff
+}
+
+function manifest_diff()
+{
 	#can't trap errors with diff because of its return codes,
 	#we pass the diff's output to cut cause we strip the version number
 	if [ -e "$ISO_REMASTER_DIR/casper/filesystem.manifest" ]; then
@@ -365,7 +412,8 @@ function pack_rootfs()
 			EXTRA_OPTS="-sort $CUSTOMIZE_DIR/rootfs.sort"
 		fi
 
-		mksquashfs "$REMASTER_DIR" "$ISO_REMASTER_DIR/casper/filesystem.squashfs" $EXTRA_OPTS || failure "Failed to create squashfs image to $ISO_REMASTER_DIR/casper/filesystem.squashfs, error=$?"
+		mksquashfs "$REMASTER_DIR" "$ISO_REMASTER_DIR/casper/filesystem.squashfs" $EXTRA_OPTS ||
+			failure "Failed to create squashfs image to $ISO_REMASTER_DIR/casper/filesystem.squashfs, error=$?"
 	else
 		echo "Remastering root directory does not exists"
 	fi

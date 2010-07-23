@@ -1,4 +1,42 @@
 ------------
+-- 2.3.0 --
+------------
+
+* GUI:
+	* GUI now uses kdialog, zenity, dialog or builtin (in that order) if
+	  available. (#577197)
+	* Updated uck-gui to accept parameters for loopback/unionfs mounting
+	  and added the possibility to specify a directory different from ~/tmp
+	  for remaster-dir. Change is backward compatible to uck-2.2.0.
+	  (Question/Answer 110374)
+
+* Backend:
+	* Sequence of actions in uck-remaster changed so that initrd is
+	  unpacked/customized/packed after the changes to the root file system
+	  and the ISO have been done. This avoids problems when customize_iso
+	  installs a new Live-CD kernel and initrd (which would previously be
+	  overwritten by the contents of the old initrd, causing a mismatch
+	  between the kernel (new) and the initrd (old)).
+	* Extended remaster-live-cd.sh by two procedures to perform 
+	  loopback+union mounts. (#72727)
+	* Added a -m option to uck-gui, uck-remaster, uck-remaster-unpack-iso
+	  and uck-remaster-unpack-rootfs that uses a combination of loopback
+	  and unionfs mounts instead of copying. This is an experimental
+	  feature as of now and not activated by default. It also depends on
+	  the packages fuse-utils and unionfs-fuse or aufs-tools, which are not
+	  (yet?) pre-requisites for UCK. Documentation for these commands
+	  updated accordingly. (#72727)
+	  At least unionfs-fuse 0.25~hg.20100315-1 is required (Currently
+	  only available from https://launchpad.net/~aakef/+archive/ppa )!
+	  Thanks to Bernd Schubert for the superb support in fixing the
+	  problems encountered.
+	* Added two new commands (uck-remaster-mount and uck-remaster-umount)
+	  and documentation. These commands are used to do the loopback/
+	  unionfs mounts/umounts required by the -m option described above.
+	  (#72727)
+	* Updated all manual pages to reference the source / bug reporting URLs.
+
+------------
 -- 2.2.2 --
 ------------
 
@@ -18,8 +56,6 @@
 	  (#580578, #525635)
 	* workarout for portuguese (pt_PT) language management was implemented
 	  (#582200)
-	* GUI now uses kdialog, zenity, dialog or builtin (in that order) if
-	  available. (#577197)
 
 ------------
 -- 2.2.0 --
