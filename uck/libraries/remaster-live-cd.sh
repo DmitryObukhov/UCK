@@ -470,7 +470,8 @@ function pack_iso()
 		mkisofs -o "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
 			-b "isolinux/isolinux.bin" -c "isolinux/boot.cat" \
 			-p "Ubuntu Customization Kit - http://uck.sf.net" \
-			-no-emul-boot -V "$LIVECD_ISO_DESCRIPTION" -r -J -l \
+			-no-emul-boot -boot-load-size 4 -boot-info-table \
+			-V "$LIVECD_ISO_DESCRIPTION" -cache-inodes -r -J -l \
 			-x "$ISO_REMASTER_DIR"/casper/manifest.diff \
 			-joliet-long \
 			$MKISOFS_EXTRA_OPTIONS \
