@@ -1,26 +1,25 @@
-.IX Title "UCK-REMASTER-PACK-ROOTFS 1"
-.TH UCK-REMASTER-PACK-ROOTFS 1 "2009-02-04" "2.3.0" ""
+.IX Title "UCK-REMASTER-UMOUNT 1"
+.TH UCK-REMASTER-UMOUNT 1 "2010-05-30" "2.3.0" ""
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
 .nh
 .SH "NAME"
-\&\fBuck\-remaster\-pack\-rootfs\fR \- Ubuntu Customization Kit rootfs
-packing script
+\&\fBuck-remaster-umount\fR \- Ubuntu Customization Kit image
+unmounting script
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-uck\-remaster\-pack\-rootfs [remaster\-dir] [\-c|\-\-clean-desktop\-manifest]
+uck-remaster-umount [remaster-dir]
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
-\&\fBuck\-remaster\-pack\-rootfs\fR generates the new rootfs image file compressing
-the extracted one.
+\&\fBuck-remaster-mount\fR undoes the mounts created by \fBuck-remaster-mount\fR.
+If the second argument is not specified, it defaults to ~/tmp.
 .SH "AUTHOR"
 .IX Header "AUTHOR"
 \fBUbuntu Customization Kit\fR has been written by Fabrizio Balliano \
 <fabrizio.balliano@crealabs.it> and Krzysztof Lichota <krzysiek@lichota.net>
 .PP
-This manual was provided by Fabrizio Balliano <fabrizio.balliano@crealabs.it>
-and Alessio Treglia <quadrispro@ubuntu.com>.
+This manual was provided by Wolf Geldmacher <wolf@womaro.ch>.
 .PP
 Source code for the \fBUbuntu Customization Kit\fR is available at
 http://uck.sourceforge.net

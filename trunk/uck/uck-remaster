@@ -18,10 +18,6 @@
 # along with UCK.  If not, see <http://www.gnu.org/licenses/>.                    #
 ###################################################################################
 
-ISO_IMAGE="$1"
-CUSTOMIZE_DIR="$2"
-REMASTER_HOME=~/tmp
-
 ##################
 # some functions #
 ##################
@@ -35,6 +31,9 @@ function check_exit_code()
 {
 	RESULT=$?
 	if [ "$RESULT" -ne 0 ]; then
+		if [ x"$use_mount" = x-m ]; then
+			uck-remaster-umount "$REMASTER_HOME"
+		fi
 		exit "$RESULT"
 	fi
 }
@@ -50,6 +49,17 @@ function check_if_user_is_root()
 #########################
 # input parameter check #
 #########################
+use_mount=
+if [ x"$1" = x-m ]; then
+	shift
+	if [ -x /usr/bin/uck-remaster-mount ]; then
+		use_mount=-m
+	fi
+fi
+
+ISO_IMAGE="$1"
+CUSTOMIZE_DIR="$2"
+REMASTER_HOME=${3:-~/tmp}
 
 if [ -z "$ISO_IMAGE" ]; then
 	usage
@@ -119,17 +129,12 @@ check_exit_code
 #############
 
 if [ "$CUSTOMIZE_ISO" = "yes" ] ; then
-	$SCRIPTS_DIR/uck-remaster-unpack-iso "$ISO_IMAGE" "$REMASTER_HOME"
-	check_exit_code
-fi
-
-if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
-	$SCRIPTS_DIR/uck-remaster-unpack-initrd "$REMASTER_HOME"
+	$SCRIPTS_DIR/uck-remaster-unpack-iso $use_mount "$ISO_IMAGE" "$REMASTER_HOME"
 	check_exit_code
 fi
 
 if [ "$CUSTOMIZE_ISO" = "yes" ] && [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
-	$SCRIPTS_DIR/uck-remaster-unpack-rootfs "$REMASTER_HOME"
+	$SCRIPTS_DIR/uck-remaster-unpack-rootfs $use_mount "$REMASTER_HOME"
 	check_exit_code
 fi
 
@@ -140,13 +145,6 @@ fi
 if [ "$REMOVE_WIN32_FILES" = "yes" ]; then
 	"$SCRIPTS_DIR/uck-remaster-remove-win32-files" "$REMASTER_HOME"
 	check_exit_code
-fi
-
-if [ "$CUSTOMIZE_INITRD" = "yes" ]; then
-	echo "Running initrd customization script $CUSTOMIZE_DIR/customize_initrd..."
-	"$CUSTOMIZE_DIR/customize_initrd" "$REMASTER_HOME"
-	check_exit_code
-	echo "Initrd customization script finished"
 fi
 
 if [ "$CUSTOMIZE_ISO" = "yes" ] && [ "$CUSTOMIZE_ROOTFS" = "yes" ]; then
@@ -169,6 +167,18 @@ fi
 if [ "$MANUAL_CUSTOMIZATION_PAUSE" = "yes" ] ; then
 	echo "Pausing for manual customization, press Enter when finished..."
 	read DUMMY
+fi
+
+if [ "$CUSTOMIZE_INITRD" = "yes" ] ; then
+	$SCRIPTS_DIR/uck-remaster-unpack-initrd "$REMASTER_HOME"
+	check_exit_code
+fi
+
+if [ "$CUSTOMIZE_INITRD" = "yes" ]; then
+	echo "Running initrd customization script $CUSTOMIZE_DIR/customize_initrd..."
+	"$CUSTOMIZE_DIR/customize_initrd" "$REMASTER_HOME"
+	check_exit_code
+	echo "Initrd customization script finished"
 fi
 
 ###########

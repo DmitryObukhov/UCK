@@ -1,5 +1,5 @@
 .IX Title "UCK-REMASTER-UNPACK-ISO 1"
-.TH UCK-REMASTER-UNPACK-ISO 1 "2009-02-04" "2.2.1" ""
+.TH UCK-REMASTER-UNPACK-ISO 1 "2009-02-04" "2.3.0" ""
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -9,10 +9,23 @@
 unpacking script
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-uck-remaster-unpack-iso iso-file.iso [remaster-dir]
+uck-remaster-unpack-iso [-m] iso-file.iso [remaster-dir]
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
-\&\fBuck-remaster-unpack-iso extracts the ISO image.
+\&\fBuck-remaster-unpack-iso\fR extracts the ISO image (first argument).
+If the second argument is not specified, it defaults to ~/tmp.
+.PP
+By default \fBuck-remaster-unpack-iso\fR works by mounting the ISO on a
+temporary directory and then copying all contents to the directory
+\&\fBremaster-iso\fR under \fBremaster-dir\fR.
+.PP
+If the \fB\-m\fR option is specified, a set of loop back and unionfs mounts
+will be used to create a writeable instance of the ISO image accessible as
+\&\fBremaster-iso\fR under \fBremaster-dir\fR. The modified parts of the ISO
+will be cached in \fBremaster-iso-cache\fR under \fBremaster-dir\fR.
+This is a lot faster and requires less disk space, but may not work for all
+scenarios and mandates the installation of some additional software (i.e.
+fuse-utils and unionfs-fuse).
 .SH "AUTHOR"
 .IX Header "AUTHOR"
 \fBUbuntu Customization Kit\fR has been written by Fabrizio Balliano \
@@ -20,3 +33,8 @@ uck-remaster-unpack-iso iso-file.iso [remaster-dir]
 .PP
 This manual was provided by Fabrizio Balliano <fabrizio.balliano@crealabs.it>
 and Alessio Treglia <quadrispro@ubuntu.com>.
+.PP
+Source code for the \fBUbuntu Customization Kit\fR is available at
+http://uck.sourceforge.net
+.PP
+Bugs can be reported at https://bugs.launchpad.net/uck/

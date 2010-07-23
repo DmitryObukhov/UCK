@@ -1,0 +1,33 @@
+.IX Title "UCK-REMASTER-MOUNT 1"
+.TH UCK-REMASTER-MOUNT 1 "2010-05-30" "2.3.0" ""
+.\" For nroff, turn off justification.  Always turn off hyphenation; it makes
+.\" way too many mistakes in technical documents.
+.if n .ad l
+.nh
+.SH "NAME"
+\&\fBuck-remaster-mount\fR \- Ubuntu Customization Kit image
+mounting script
+.SH "SYNOPSIS"
+.IX Header "SYNOPSIS"
+uck-remaster-mount iso-file.iso [remaster-dir]
+.SH "DESCRIPTION"
+.IX Header "DESCRIPTION"
+\&\fBuck-remaster-mount\fR mounts the ISO image (first argument) and the
+image of the squashed root file system within the ISO image via a series
+of loopback and unionfs mounts to create writeable instances of the
+images as \fBremaster-iso\fR and \fBreamster-root\fR in \fBremaster-dir\fR.
+If the second argument is not specified, it defaults to ~/tmp.
+.PP
+This may not work for all scenarios and mandates the installation of some
+additional software (i.e. fuse-utils and unionfs-fuse).
+.SH "AUTHOR"
+.IX Header "AUTHOR"
+\fBUbuntu Customization Kit\fR has been written by Fabrizio Balliano \
+<fabrizio.balliano@crealabs.it> and Krzysztof Lichota <krzysiek@lichota.net>
+.PP
+This manual was provided by Wolf Geldmacher <wolf@womaro.ch>.
+.PP
+Source code for the \fBUbuntu Customization Kit\fR is available at
+http://uck.sourceforge.net
+.PP
+Bugs can be reported at https://bugs.launchpad.net/uck/

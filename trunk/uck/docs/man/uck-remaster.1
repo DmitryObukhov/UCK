@@ -1,5 +1,5 @@
 .IX Title "UCK-REMASTER 1"
-.TH UCK-REMASTER 1 "2009-02-04" "2.2.1" ""
+.TH UCK-REMASTER 1 "2009-02-04" "2.3.0" ""
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -8,11 +8,32 @@
 \&\fBuck-remaster\fR \- Ubuntu Customization Kit main remastering backend script
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-uck-remaster iso-file.iso [customization-scripts-dir]
+uck-remaster [-m] iso-file.iso [customization-scripts-dir [remaster-dir] ]
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
-\&\fBuck-remaster takes an Ubuntu ISO image and a "remastering scripts diredtory"
-and do the whole process of generating the customized ISO automatically.
+\&\fBuck-remaster\fR takes an Ubuntu ISO image, an optional scripts directory
+and an optional "remaster-dir" as arguments and does the whole process of
+generating the customized ISO automatically.
+.PP
+The optional customization-scripts-dir argument designates a directory that
+contains the scripts to use during remastering. By default this is
+~/tmp/customization-scripts and will be created from a template by a call to
+uck-remaster without the customization-scripts-dir argument.
+.PP
+If the optional "remaster-dir" is specified this will be used as (local!)
+directory that will contain all data created during the customization process.
+This defaults to ~/tmp if not specified.
+.PP
+For historical (backwards compatibility) reasons the remaster-dir can only be
+specified, if the customization-scripts-dir argument is specified, too.
+.PP
+If the \fB\-m\fR option is specified, a set of loop back and unionfs mounts
+will be used to create a writeable instance of the ISO image accessible as
+\&\fBremaster-iso\fR under \fBremaster-dir\fR. The modified parts of the ISO
+will be cached in \fBremaster-iso-cache\fR under \fBremaster-dir\fR.
+This is a lot faster and requires less disk space, but may not work for all
+scenarios and mandates the installation of some additional software (i.e.
+fuse-utils and unionfs-fuse).
 .SH "AUTHOR"
 .IX Header "AUTHOR"
 \fBUbuntu Customization Kit\fR has been written by Fabrizio Balliano \
@@ -20,3 +41,8 @@ and do the whole process of generating the customized ISO automatically.
 .PP
 This manual was provided by Fabrizio Balliano <fabrizio.balliano@crealabs.it>
 and Alessio Treglia <quadrispro@ubuntu.com>.
+.PP
+Source code for the \fBUbuntu Customization Kit\fR is available at
+http://uck.sourceforge.net
+.PP
+Bugs can be reported at https://bugs.launchpad.net/uck/

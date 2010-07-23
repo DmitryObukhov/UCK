@@ -1,8 +1,5 @@
 #!/bin/bash
 
-REMASTER_HOME=~/tmp
-LIVECD_ISO_LOCATION=$REMASTER_HOME/remaster-new-files/livecd.iso
-
 ###################################################################################
 # UCK - Ubuntu Customization Kit                                                  #
 # Copyright (C) 2006-2010 UCK Team                                                #
@@ -37,6 +34,38 @@ function gui_failure()
 	dialog_msgbox "Error" "$@"
 	failure "$@"
 }
+
+############################
+# parsing input parameters #
+############################
+USE_MOUNT=
+WAIT_BEFORE_EXIT=0
+SAVED_ARGS="$@"
+while [ -n "$1" ]; do
+	case "$1" in
+	--wait-before-exit)
+		WAIT_BEFORE_EXIT=1;;
+	-m|--mount)
+		if [ -x /usr/bin/uck-remaster-mount ]; then
+			USE_MOUNT=-m
+		fi;;
+	-*)	echo "Unexpected argument: $1" >&2; exit 1;;
+	*)	break;;
+	esac
+	shift
+done
+
+REMASTER_HOME=${1:-~/tmp}
+LIVECD_ISO_LOCATION=$REMASTER_HOME/remaster-new-files/livecd.iso
+
+
+if [ -e libraries/gui.sh ]; then
+	SCRIPTS_DIR=`dirname "$0"`
+	LIBRARIES_DIR=$SCRIPTS_DIR/libraries
+else
+	SCRIPTS_DIR=/usr/bin
+	LIBRARIES_DIR=/usr/lib/uck/
+fi
 
 ############
 # MESSAGES #
@@ -132,27 +161,11 @@ EOF
 # EXECUTION STARTS HERE #
 #########################
 
-if [ -e libraries/gui.sh ]; then
-	SCRIPTS_DIR=`dirname "$0"`
-	LIBRARIES_DIR=$SCRIPTS_DIR/libraries
-else
-	SCRIPTS_DIR=/usr/bin
-	LIBRARIES_DIR=/usr/lib/uck/
-fi
-
 . $LIBRARIES_DIR/gui.sh
 
 if [ `id -un` = "root" ] ; then
 	gui_failure "UCK GUI should not be run as root, please run again as a normal user. You will be asked for your password when administrator privileges are required."
 fi
-
-# parsing input parameters
-WAIT_BEFORE_EXIT=0
-for arg ; do
-	if [ $arg = "--wait-before-exit" ] ; then
-		WAIT_BEFORE_EXIT=1
-	fi
-done
 
 dialog_msgbox "Welcome" "$WELCOME_TEXT"
 
@@ -284,8 +297,9 @@ fi
 
 echo "Running build process..."
 (
+echo "Build ($0 $SAVED_ARGS) started at `date +'%Y-%m-%d %H:%M:%S'`"
 export UCK_USERNAME="$USER"
-sudo bash "$SCRIPTS_DIR"/uck-remaster "$ISO_IMAGE" "$BUILD_DIR"
+sudo bash "$SCRIPTS_DIR"/uck-remaster $USE_MOUNT "$ISO_IMAGE" "$BUILD_DIR"
 RESULT=$?
 
 if [ $RESULT -ne 0 ]; then
@@ -301,6 +315,7 @@ else
 		dialog_msgbox "ISO too big" "Warning: ISO image might be too big to fit on 700MB CD-ROM"
 	fi
 fi
+echo "Build ended at `date +'%Y-%m-%d %H:%M:%S'`"
 ) 2>&1 | tee -a $REMASTER_HOME/build.log
 
 if [ $WAIT_BEFORE_EXIT = 1 ] ; then

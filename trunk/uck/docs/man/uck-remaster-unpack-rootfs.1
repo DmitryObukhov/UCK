@@ -1,5 +1,5 @@
 .IX Title "UCK-REMASTER-UNPACK-ROOTFS 1"
-.TH UCK-REMASTER-UNPACK-ROOTFS 1 "2009-02-04" "2.2.1" ""
+.TH UCK-REMASTER-UNPACK-ROOTFS 1 "2009-02-04" "2.3.0" ""
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -9,10 +9,24 @@
 unpacking script
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-uck-remaster-unpack-rootfs [remaster-dir]
+uck-remaster-unpack-rootfs [-m] [remaster-dir]
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
-\&\fBuck-remaster-unpack-rootfs extracts the rootfs image file.
+\&\fBuck-remaster-unpack-rootfs\fR extracts the root file system stored
+in compressed form from an unpacked ISO image (cf. \fBuck-remaster-unpack-iso\fR).
+If the argument is not specified, it defaults to ~/tmp.
+.PP
+By default \fBuck-remaster-unpack-rootfs\fR works by mounting the rootfs image
+on a temporary directory and then copying all contents to the directory
+\&\fBremaster-root\fR under \fBremaster-dir\fR.
+.PP
+If the \fB\-m\fR option is specified, a set of loop back and unionfs mounts
+will be used to create a writeable instance of the rootfs image accessible as
+\&\fBremaster-root\fR under \fBremaster-dir\fR. The modified parts of the root
+file system will be cached in \fBremaster-root-cache\fR under \fBremaster-dir\fR.
+This is a lot faster and requires less disk space, but may not work for all
+scenarios and mandates the installation of some additional software (i.e.
+fuse-utils and unionfs-fuse).
 .SH "AUTHOR"
 .IX Header "AUTHOR"
 \fBUbuntu Customization Kit\fR has been written by Fabrizio Balliano \
@@ -20,3 +34,8 @@ uck-remaster-unpack-rootfs [remaster-dir]
 .PP
 This manual was provided by Fabrizio Balliano <fabrizio.balliano@crealabs.it>
 and Alessio Treglia <quadrispro@ubuntu.com>.
+.PP
+Source code for the \fBUbuntu Customization Kit\fR is available at
+http://uck.sourceforge.net
+.PP
+Bugs can be reported at https://bugs.launchpad.net/uck/

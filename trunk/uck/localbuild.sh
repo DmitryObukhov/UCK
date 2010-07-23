@@ -3,6 +3,7 @@
 # Script to build a local version of the package
 #
 VERSION=`cat VERSION`
+ret=`pwd`
 rm -rf /tmp/uck-$VERSION
 mkdir -p /tmp/uckbuild/uck-$VERSION
 cp -ar . /tmp/uckbuild/uck-$VERSION
@@ -24,8 +25,21 @@ rm -rf `find -name .svn`
 rm -rf logo
 rm -rf build.sh
 
+# Add appropriate header to debian/changelog
+(
+  LANG=C
+  cat <<EOF
+uck ($VERSION-0test1) maverick; urgency=low
+  * New test release
+
+ -- Wolf Geldmacher <wolf@womaro.ch>  `date -R`
+
+EOF
+  cat debian/changelog ) >debian/changelog.$$ &&
+mv debian/changelog.$$ debian/changelog
+
 # generating deb package
-dpkg-buildpackage
+dpkg-buildpackage -us -uc
 
 # generating source package
 rm -rf debian
@@ -33,11 +47,6 @@ cd ..
 tar cfp uck_$VERSION.tar uck-$VERSION
 gzip -9 uck_$VERSION.tar
 
-# just a note
-echo
-echo
-echo
-echo "########################################################"
-echo "# Generation completed, find packages in /tmp/uckbuild #"
-echo "########################################################"
-echo
+cd "$ret"
+cp /tmp/uckbuild/*.deb /tmp/uckbuild/*.gz .
+rm -rf /tmp/uckbuild

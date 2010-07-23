@@ -18,15 +18,13 @@
 # along with UCK.  If not, see <http://www.gnu.org/licenses/>.                    #
 ###################################################################################
 
-REMASTER_HOME="$1"
-
 #############################
 # general purpose functions #
 #############################
 
 function usage()
 {
-	echo "Usage: $0 [remaster-dir]"
+	echo "Usage: $0 [-m] [remaster-dir]"
 }
 
 function failure()
@@ -38,6 +36,15 @@ function failure()
 #########################
 # input parameter check #
 #########################
+use_mount=false
+if [ x"$1" = x-m ]; then
+	shift
+	if [ -x /usr/bin/uck-remaster-mount ]; then
+		use_mount=true
+	fi
+fi
+
+REMASTER_HOME="$1"
 
 if [ -z "$REMASTER_HOME" ]; then
 	REMASTER_HOME=~/tmp
@@ -47,13 +54,24 @@ fi
 # main #
 ########
 
-. libraries/remaster-live-cd.sh 2>/dev/null || . /usr/lib/uck/remaster-live-cd.sh 2>/dev/null || failure "libraries not found"
+. libraries/remaster-live-cd.sh 2>/dev/null ||
+	. /usr/lib/uck/remaster-live-cd.sh 2>/dev/null ||
+	failure "libraries not found"
 
 SQUASHFS_MOUNT_DIR="$REMASTER_HOME/squashfs-mount"
 SQUASHFS_IMAGE="$REMASTER_HOME/remaster-iso/casper/filesystem.squashfs"
 REMASTER_DIR="$REMASTER_HOME/remaster-root"
 
-remove_remaster_dir
-mount_squashfs
-unpack_rootfs
-unmount_squashfs
+if [ $use_mount = true ] && check_union_mounts; then
+	remove_remaster_dir
+	union_mount "$SQUASHFS_IMAGE" "$REMASTER_HOME/remaster-root"
+else
+	if [ $use_mount = true ]; then
+		echo "Cannot use union mounts - \"-m\" option ignored!"
+		use_mount=false
+	fi
+	remove_remaster_dir
+	mount_squashfs
+	unpack_rootfs
+	unmount_squashfs
+fi
