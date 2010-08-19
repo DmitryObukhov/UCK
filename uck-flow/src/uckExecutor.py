@@ -54,10 +54,9 @@ class Executor:
 	"""
 
 	# Special commands (not in project configuration)
-	sudo = "/usr/bin/gksudo"
-	tail = "/usr/bin/tail -n +0 -f"
+	gksudo = "/usr/bin/gksudo"
+	tail = "/usr/bin/tail -n +0 -F"
 	kill = "/usr/bin/uck-killtree -l"
-	shell = "/usr/bin/xterm -ls -T"		# Lowest common denominator!
 
 	def __init__(self, action, args = "", ioCallback = None, endCallback = None):
 		self.ioCallback = ioCallback
@@ -68,7 +67,7 @@ class Executor:
 		p = Project.get_instance()
 
 		# Some shorthands
-		p_dir = p.get_project_dir()
+		p_dir = "\"" + p.get_project_dir() + "\""
 		p_src = p.get_source()
 		p_iso = p.get_target()
 		chroot = p.get_chroot_wrapper()
@@ -80,6 +79,19 @@ class Executor:
 			unpackRoot += " -m "
 		pack = p.get_pack_iso()
 		p_desc = " --description \"" + p.get_project_name() + "\""
+
+		# Shorthand for "exec Xterm running a scripted sh in chroot env"
+		# Note: Uses xterm - gnome-terminal backgrounds immediately and
+		# is not usable in this context (interlock with packiso fails).
+		p_terminal = ""
+		p_terminal += "/usr/bin/xterm -T \""
+		p_terminal += p.get_project_name()
+		p_terminal += "\" -e "
+		if (p.get_script_shell() == "True"):
+			p_terminal += "/usr/bin/script -a \"" +p.get_logfile()+ "\" -c "
+			p_terminal += "'/usr/bin/sudo " + chroot + " " + p_dir + "'"
+		else:
+			p_terminal += "/usr/bin/sudo " + chroot + " " + p_dir
 
 		# Special case: The customize root script runs within
 		# a chroot environment so the path name is different!
@@ -96,6 +108,8 @@ class Executor:
 		"unpackRoot" :	    [ unpackRoot + " " + p_dir,
 				      True, True ],
 		"customizeRoot" :   [ chroot + " " + p_dir + " " + p_run,
+				      True, True ],
+		"finalizeRoot" :    [ p.get_finalize_root() + " " + p_dir,
 				      True, True ],
 		"packRoot" :	    [ p.get_pack_root() + " " + p_dir,
 				      True, True ],
@@ -117,8 +131,8 @@ class Executor:
 				      True, True ],
 		"tail" :	    [ Executor.tail,
 				      False, False ],
-		"shell" :	    [ chroot +" "+ p_dir +" "+ Executor.shell +" \""+ p.get_project_name() + "\"",
-				      True, True ],
+		"shell" :	    [ p_terminal,
+				      False, True ],
 		}
 
 		# Flush any pending output
@@ -129,12 +143,13 @@ class Executor:
 		self.command = self.executors[action][0]
 		self.dolog = self.executors[action][2]
 		if self.executors[action][1]:
-			self.command = Executor.sudo + " -- " + self.command
+			self.command = Executor.gksudo + " -- " + self.command
 			self.runAs = True
 
 		# Create subprocess
 		if ioCallback != None:
 			self.proc = subprocess.Popen(self.command + " " + args,
+				bufsize = 0,
 				shell = True,
 				preexec_fn = self.make_session,
 				stdout = subprocess.PIPE,
@@ -166,7 +181,7 @@ class Executor:
 		if self.proc != None:
 			if self.runAs:
 				os.system("{0} -- {1} {2}".format(
-					Executor.sudo, Executor.kill,
+					Executor.gksudo, Executor.kill,
 					self.proc.pid))
 			else:
 				os.system("{0} {1}".format(Executor.kill,

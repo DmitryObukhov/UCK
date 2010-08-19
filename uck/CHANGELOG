@@ -34,7 +34,14 @@
 	  and documentation. These commands are used to do the loopback/
 	  unionfs mounts/umounts required by the -m option described above.
 	  (#72727)
+	* Added code to library for union_umount to kill processes still using
+	  files in the mount. This happens when updates start daemons in the
+	  root fs.
 	* Updated all manual pages to reference the source / bug reporting URLs.
+
+* Other:
+	* Updated localbuild.sh procedure to patch the debian/changelog file
+	  so that a local unsigned test version can be generated correctly.
 
 ------------
 -- 2.2.2 --

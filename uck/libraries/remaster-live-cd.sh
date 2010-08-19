@@ -98,6 +98,12 @@ function union_mount()
 function union_umount()
 {
 	sync
+	# Kill processes possibly still using the mount
+	for pid in `lsof | grep "$1" | grep -v unionfs | awk '{print $2}' | sort -u`
+	do
+		kill $pid
+	done
+	sync
 	umount "$1"
 	rmdir "$1" >/dev/null 2>&1
 	rmdir "$1-cache" >/dev/null 2>&1

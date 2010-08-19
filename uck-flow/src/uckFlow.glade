@@ -6,13 +6,12 @@
     <property name="visible">True</property>
     <property name="title" translatable="yes">uck-flow - The Ubuntu Customization Kit Flow Tool</property>
     <property name="default_width">920</property>
-    <property name="default_height">590</property>
+    <property name="default_height">650</property>
     <property name="icon_name">applications-utilities</property>
     <signal name="delete_event" handler="on_uckFlow_delete"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkMenuBar" id="menubar1">
             <property name="visible">True</property>
@@ -171,7 +170,7 @@ in another window.</property>
                   <widget class="GtkTable" id="table1">
                     <property name="visible">True</property>
                     <property name="border_width">6</property>
-                    <property name="n_rows">15</property>
+                    <property name="n_rows">16</property>
                     <property name="n_columns">5</property>
                     <property name="column_spacing">6</property>
                     <property name="row_spacing">6</property>
@@ -249,26 +248,6 @@ root file system step.</property>
                         <signal name="toggled" handler="on_packRootCheckButton_toggled"/>
                       </widget>
                       <packing>
-                        <property name="top_attach">7</property>
-                        <property name="bottom_attach">8</property>
-                        <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkCheckButton" id="customizeIsoCheckButton">
-                        <property name="label" translatable="yes">Customize ISO Image</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="tooltip" translatable="yes">Activate to run the ISO
-customization script.</property>
-                        <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
-                        <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_customizeIsoCheckButton_toggled"/>
-                      </widget>
-                      <packing>
                         <property name="top_attach">8</property>
                         <property name="bottom_attach">9</property>
                         <property name="x_options">GTK_FILL</property>
@@ -289,8 +268,8 @@ unpack INITRD step.</property>
                         <signal name="toggled" handler="on_unpackInitrdCheckButton_toggled"/>
                       </widget>
                       <packing>
-                        <property name="top_attach">9</property>
-                        <property name="bottom_attach">10</property>
+                        <property name="top_attach">10</property>
+                        <property name="bottom_attach">11</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
@@ -309,8 +288,8 @@ customization script.</property>
                         <signal name="toggled" handler="on_customizeInitrdCheckButton_toggled"/>
                       </widget>
                       <packing>
-                        <property name="top_attach">10</property>
-                        <property name="bottom_attach">11</property>
+                        <property name="top_attach">11</property>
+                        <property name="bottom_attach">12</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
@@ -329,8 +308,8 @@ INITRD step.</property>
                         <signal name="toggled" handler="on_packInitrdCheckButton_toggled"/>
                       </widget>
                       <packing>
-                        <property name="top_attach">11</property>
-                        <property name="bottom_attach">12</property>
+                        <property name="top_attach">12</property>
+                        <property name="bottom_attach">13</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
@@ -349,8 +328,8 @@ ISO file step.</property>
                         <signal name="toggled" handler="on_packIsoCheckButton_toggled"/>
                       </widget>
                       <packing>
-                        <property name="top_attach">12</property>
-                        <property name="bottom_attach">13</property>
+                        <property name="top_attach">13</property>
+                        <property name="bottom_attach">14</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
@@ -369,8 +348,8 @@ and delivery script.</property>
                         <signal name="toggled" handler="on_testCheckButton_toggled"/>
                       </widget>
                       <packing>
-                        <property name="top_attach">13</property>
-                        <property name="bottom_attach">14</property>
+                        <property name="top_attach">14</property>
+                        <property name="bottom_attach">15</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
@@ -388,8 +367,8 @@ cleanup step.</property>
                         <signal name="toggled" handler="on_cleanupCheckButton_toggled"/>
                       </widget>
                       <packing>
-                        <property name="top_attach">14</property>
-                        <property name="bottom_attach">15</property>
+                        <property name="top_attach">15</property>
+                        <property name="bottom_attach">16</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
@@ -440,23 +419,6 @@ This step may take a long time, as squeezing the file system is a time consuming
                       <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
-                        <property name="top_attach">7</property>
-                        <property name="bottom_attach">8</property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="customizeIsoLabel">
-                        <property name="visible">True</property>
-                        <property name="tooltip" translatable="yes">Some things can only be customized outside of the root file system. For instance if you choose to update your kernel the new kernel and its associated initial ram disk (usually called INITRD) needs to be transferred to the outside of the packed root file system so it can be run at boot time.
-You may also want to put some additional data on your Live CD that should be accessible without having to boot the Ubuntu Live CD - this is the place to do it.</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">Run / Edit additional steps to customize you ISO image.</property>
-                        <property name="wrap">True</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
                         <property name="top_attach">8</property>
                         <property name="bottom_attach">9</property>
                         <property name="y_options"></property>
@@ -476,8 +438,8 @@ If you do not need to change anything on the INITRD (i.e. you do not perform the
                       <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
-                        <property name="top_attach">9</property>
-                        <property name="bottom_attach">10</property>
+                        <property name="top_attach">10</property>
+                        <property name="bottom_attach">11</property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
@@ -492,8 +454,8 @@ If you do not need to change anything on the INITRD (i.e. you do not perform the
                       <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
-                        <property name="top_attach">10</property>
-                        <property name="bottom_attach">11</property>
+                        <property name="top_attach">11</property>
+                        <property name="bottom_attach">12</property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
@@ -509,8 +471,8 @@ Only needed if you have a customized INITRD.</property>
                       <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
-                        <property name="top_attach">11</property>
-                        <property name="bottom_attach">12</property>
+                        <property name="top_attach">12</property>
+                        <property name="bottom_attach">13</property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
@@ -525,8 +487,8 @@ Only needed if you have a customized INITRD.</property>
                       <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
-                        <property name="top_attach">12</property>
-                        <property name="bottom_attach">13</property>
+                        <property name="top_attach">13</property>
+                        <property name="bottom_attach">14</property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
@@ -542,8 +504,8 @@ Performing this action also allows you to export the ISO image generated in the 
                       <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
-                        <property name="top_attach">13</property>
-                        <property name="bottom_attach">14</property>
+                        <property name="top_attach">14</property>
+                        <property name="bottom_attach">15</property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
@@ -558,8 +520,8 @@ Performing this action also allows you to export the ISO image generated in the 
                       <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
-                        <property name="top_attach">14</property>
-                        <property name="bottom_attach">15</property>
+                        <property name="top_attach">15</property>
+                        <property name="bottom_attach">16</property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
@@ -739,8 +701,8 @@ activated below.</property>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">7</property>
-                        <property name="bottom_attach">8</property>
+                        <property name="top_attach">8</property>
+                        <property name="bottom_attach">9</property>
                         <property name="x_options"></property>
                         <property name="y_options"></property>
                       </packing>
@@ -754,29 +716,14 @@ activated below.</property>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">9</property>
-                        <property name="bottom_attach">10</property>
+                        <property name="top_attach">10</property>
+                        <property name="bottom_attach">11</property>
                         <property name="x_options"></property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
                     <child>
                       <widget class="GtkLabel" id="blank08">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes"> </property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">11</property>
-                        <property name="bottom_attach">12</property>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="blank09">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes"> </property>
@@ -791,6 +738,21 @@ activated below.</property>
                       </packing>
                     </child>
                     <child>
+                      <widget class="GtkLabel" id="blank09">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes"> </property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">13</property>
+                        <property name="bottom_attach">14</property>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
                       <widget class="GtkLabel" id="blank10">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
@@ -799,8 +761,8 @@ activated below.</property>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">14</property>
-                        <property name="bottom_attach">15</property>
+                        <property name="top_attach">15</property>
+                        <property name="bottom_attach">16</property>
                         <property name="x_options"></property>
                         <property name="y_options"></property>
                       </packing>
@@ -826,26 +788,6 @@ file system customization script.</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkButton" id="customizeIsoEditButton">
-                        <property name="label" translatable="yes">Edit</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="tooltip" translatable="yes">Press this button to edit the
-ISO customization script.</property>
-                        <property name="use_underline">True</property>
-                        <signal name="clicked" handler="on_customizeIsoEditButton_clicked"/>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">8</property>
-                        <property name="bottom_attach">9</property>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
                       <widget class="GtkButton" id="customizeInitrdEditButton">
                         <property name="label" translatable="yes">Edit</property>
                         <property name="visible">True</property>
@@ -859,8 +801,8 @@ INITRD customization script.</property>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">10</property>
-                        <property name="bottom_attach">11</property>
+                        <property name="top_attach">11</property>
+                        <property name="bottom_attach">12</property>
                         <property name="x_options"></property>
                         <property name="y_options"></property>
                       </packing>
@@ -879,8 +821,8 @@ test and delivery script.</property>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">13</property>
-                        <property name="bottom_attach">14</property>
+                        <property name="top_attach">14</property>
+                        <property name="bottom_attach">15</property>
                         <property name="x_options"></property>
                         <property name="y_options"></property>
                       </packing>
@@ -967,21 +909,6 @@ test and delivery script.</property>
                       <packing>
                         <property name="left_attach">4</property>
                         <property name="right_attach">5</property>
-                        <property name="top_attach">7</property>
-                        <property name="bottom_attach">8</property>
-                        <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkImage" id="customizeIsoSuccessImage">
-                        <property name="visible">True</property>
-                        <property name="tooltip" translatable="yes">Status last time this action was performed</property>
-                        <property name="stock">gtk-no</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">4</property>
-                        <property name="right_attach">5</property>
                         <property name="top_attach">8</property>
                         <property name="bottom_attach">9</property>
                         <property name="x_options">GTK_FILL</property>
@@ -997,8 +924,8 @@ test and delivery script.</property>
                       <packing>
                         <property name="left_attach">4</property>
                         <property name="right_attach">5</property>
-                        <property name="top_attach">12</property>
-                        <property name="bottom_attach">13</property>
+                        <property name="top_attach">13</property>
+                        <property name="bottom_attach">14</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
@@ -1012,29 +939,14 @@ test and delivery script.</property>
                       <packing>
                         <property name="left_attach">4</property>
                         <property name="right_attach">5</property>
-                        <property name="top_attach">13</property>
-                        <property name="bottom_attach">14</property>
+                        <property name="top_attach">14</property>
+                        <property name="bottom_attach">15</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
                     <child>
                       <widget class="GtkImage" id="unpackInitrdSuccessImage">
-                        <property name="visible">True</property>
-                        <property name="tooltip" translatable="yes">Status last time this action was performed</property>
-                        <property name="stock">gtk-no</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">4</property>
-                        <property name="right_attach">5</property>
-                        <property name="top_attach">9</property>
-                        <property name="bottom_attach">10</property>
-                        <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkImage" id="customizeInitrdSuccessImage">
                         <property name="visible">True</property>
                         <property name="tooltip" translatable="yes">Status last time this action was performed</property>
                         <property name="stock">gtk-no</property>
@@ -1049,6 +961,21 @@ test and delivery script.</property>
                       </packing>
                     </child>
                     <child>
+                      <widget class="GtkImage" id="customizeInitrdSuccessImage">
+                        <property name="visible">True</property>
+                        <property name="tooltip" translatable="yes">Status last time this action was performed</property>
+                        <property name="stock">gtk-no</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">4</property>
+                        <property name="right_attach">5</property>
+                        <property name="top_attach">11</property>
+                        <property name="bottom_attach">12</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
                       <widget class="GtkImage" id="cleanupSuccessImage">
                         <property name="visible">True</property>
                         <property name="tooltip" translatable="yes">Status last time this action was performed</property>
@@ -1057,8 +984,8 @@ test and delivery script.</property>
                       <packing>
                         <property name="left_attach">4</property>
                         <property name="right_attach">5</property>
-                        <property name="top_attach">14</property>
-                        <property name="bottom_attach">15</property>
+                        <property name="top_attach">15</property>
+                        <property name="bottom_attach">16</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
@@ -1072,8 +999,8 @@ test and delivery script.</property>
                       <packing>
                         <property name="left_attach">4</property>
                         <property name="right_attach">5</property>
-                        <property name="top_attach">11</property>
-                        <property name="bottom_attach">12</property>
+                        <property name="top_attach">12</property>
+                        <property name="bottom_attach">13</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
@@ -1308,21 +1235,6 @@ prepare ISO step.</property>
                       <packing>
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
-                        <property name="top_attach">7</property>
-                        <property name="bottom_attach">8</property>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="blank9">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes"> </property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
                         <property name="top_attach">8</property>
                         <property name="bottom_attach">9</property>
                         <property name="x_options"></property>
@@ -1338,21 +1250,6 @@ prepare ISO step.</property>
                       <packing>
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
-                        <property name="top_attach">9</property>
-                        <property name="bottom_attach">10</property>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="blank16">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes"> </property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
                         <property name="top_attach">10</property>
                         <property name="bottom_attach">11</property>
                         <property name="x_options"></property>
@@ -1360,7 +1257,7 @@ prepare ISO step.</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="blank17">
+                      <widget class="GtkLabel" id="blank16">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes"> </property>
@@ -1375,7 +1272,7 @@ prepare ISO step.</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="blank18">
+                      <widget class="GtkLabel" id="blank17">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes"> </property>
@@ -1390,7 +1287,7 @@ prepare ISO step.</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="blank19">
+                      <widget class="GtkLabel" id="blank18">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes"> </property>
@@ -1405,7 +1302,7 @@ prepare ISO step.</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="blank20">
+                      <widget class="GtkLabel" id="blank19">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes"> </property>
@@ -1415,6 +1312,21 @@ prepare ISO step.</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">14</property>
                         <property name="bottom_attach">15</property>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="blank20">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes"> </property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">15</property>
+                        <property name="bottom_attach">16</property>
                         <property name="x_options"></property>
                         <property name="y_options"></property>
                       </packing>
@@ -1434,6 +1346,185 @@ prepare ISO step.</property>
                         <property name="bottom_attach">7</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options">GTK_FILL</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckButton" id="customizeIsoCheckButton">
+                        <property name="label" translatable="yes">Customize ISO Image</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="tooltip" translatable="yes">Activate to run the ISO
+customization script.</property>
+                        <property name="use_underline">True</property>
+                        <property name="xalign">0</property>
+                        <property name="draw_indicator">True</property>
+                        <signal name="toggled" handler="on_customizeIsoCheckButton_toggled"/>
+                      </widget>
+                      <packing>
+                        <property name="top_attach">9</property>
+                        <property name="bottom_attach">10</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="customizeIsoEditButton">
+                        <property name="label" translatable="yes">Edit</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="tooltip" translatable="yes">Press this button to edit the
+ISO customization script.</property>
+                        <property name="use_underline">True</property>
+                        <signal name="clicked" handler="on_customizeIsoEditButton_clicked"/>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">9</property>
+                        <property name="bottom_attach">10</property>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="customizeIsoLabel">
+                        <property name="visible">True</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="tooltip" translatable="yes">Some things can only be customized outside of the root file system. For instance if you choose to update your kernel the new kernel and its associated initial ram disk (usually called INITRD) needs to be transferred to the outside of the packed root file system so it can be run at boot time.
+You may also want to put some additional data on your Live CD that should be accessible without having to boot the Ubuntu Live CD - this is the place to do it.</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Run / Edit additional steps to customize you ISO image.</property>
+                        <property name="wrap">True</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">9</property>
+                        <property name="bottom_attach">10</property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="customizeIsoSuccessImage">
+                        <property name="visible">True</property>
+                        <property name="tooltip" translatable="yes">Status last time this action was performed</property>
+                        <property name="stock">gtk-no</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">4</property>
+                        <property name="right_attach">5</property>
+                        <property name="top_attach">9</property>
+                        <property name="bottom_attach">10</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="blank21">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes"> </property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">9</property>
+                        <property name="bottom_attach">10</property>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckButton" id="finalizeRootCheckButton">
+                        <property name="label" translatable="yes">Finalize Root Filesystem</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="tooltip" translatable="yes">Activate to run the finalize
+root file system step.</property>
+                        <property name="use_underline">True</property>
+                        <property name="xalign">0</property>
+                        <property name="draw_indicator">True</property>
+                        <signal name="toggled" handler="on_finalizeRootCheckButton_toggled"/>
+                      </widget>
+                      <packing>
+                        <property name="top_attach">7</property>
+                        <property name="bottom_attach">8</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="finalizeRootEditButton">
+                        <property name="label" translatable="yes">Edit</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="tooltip" translatable="yes">Press this button to edit the
+the finalize root file system script.</property>
+                        <property name="use_underline">True</property>
+                        <signal name="clicked" handler="on_finalizeRootEditButton_clicked"/>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">7</property>
+                        <property name="bottom_attach">8</property>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="finalizeRootLabel">
+                        <property name="visible">True</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="tooltip" translatable="yes">In this step you can polish your customization of the root filesystem by copying files from your system into the future root file system.</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Run / Edit the root file system finalization.</property>
+                        <property name="wrap">True</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">7</property>
+                        <property name="bottom_attach">8</property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="blank9">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes"> </property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">7</property>
+                        <property name="bottom_attach">8</property>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="finalizeRootSuccessImage">
+                        <property name="visible">True</property>
+                        <property name="tooltip" translatable="yes">Status last time this action was performed</property>
+                        <property name="stock">gtk-no</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">4</property>
+                        <property name="right_attach">5</property>
+                        <property name="top_attach">7</property>
+                        <property name="bottom_attach">8</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"></property>
                       </packing>
                     </child>
                   </widget>
@@ -1499,7 +1590,6 @@ prepare ISO step.</property>
     <child>
       <widget class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkScrolledWindow" id="scrolledwindow2">
             <property name="visible">True</property>
@@ -1622,7 +1712,6 @@ UCK.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox3">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
           <widget class="GtkHButtonBox" id="dialog-action_area3">
@@ -1680,7 +1769,6 @@ UCK.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox5">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
           <widget class="GtkHButtonBox" id="dialog-action_area5">
@@ -1735,7 +1823,6 @@ UCK.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
     <child>
       <widget class="GtkVBox" id="vbox2">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkNotebook" id="uckParamsNotebook">
             <property name="visible">True</property>
@@ -1744,7 +1831,6 @@ UCK.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
             <child>
               <widget class="GtkVBox" id="uckParamVBox_01">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkScrolledWindow" id="scrolledwindow4">
                     <property name="visible">True</property>
@@ -1878,7 +1964,6 @@ UCK.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox6">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkFrame" id="frame2">
             <property name="visible">True</property>

@@ -94,7 +94,7 @@ UCK_TEMPLATE="default"
 # running action will forcibly be terminated - possibly leaving the system in
 # an inconsistent state. If set to "wait" the currently running action will
 # be allowed to end in its time and only then will no further activity occur.
-UCK_TERMINATE_BEHAVIOUR="wait"
+UCK_TERMINATE_BEHAVIOUR="force"
 
 # The UCK_SOURCE parameter can either contain the absolute pathname to the
 # source of the ISO image to customize or a file name relative to the
@@ -125,6 +125,12 @@ UCK_PREPARE_ISO="prepare_iso"
 # unpacked root file system. This is where packages can be
 # installed/updated/removed.
 UCK_CUSTOMIZE_ROOT="customize_root"
+
+# UCK_FINALIZE_ROOT is the name of a script (absoluta path or relative to
+# to UCK_PROJECT_DIR/customization-scripts) that will be run from outside the
+# unpacked root file system. This is where files can be copied to the root
+# filesystem from other parts of your system.
+UCK_FINALIZE_ROOT="finalize_root"
 
 # UCK_CUSTOMIZE_ISO is the name of a script (absolute path or relative to
 # UCK_PROJECT_DIR/customization-scripts) that is run to customize the ISO
@@ -157,6 +163,11 @@ UCK_BINDIR="/usr/bin"
 # that will be copied to UCK_PROJECT_DIR/customization-scripts to create an
 # initial configuration.
 UCK_TEMPLATE_DIR="/usr/lib/uck/templates"
+
+# The UCK_SCRIPT_SHELL variable determines, whether script will be used to
+# protocol all activity in a chroot terminal window. The two possible values
+# are "True" and "False".
+UCK_SCRIPT_SHELL="False"
 """
 
 # The following configuration is built-in and takes precedence
@@ -197,6 +208,7 @@ class CfgObject:
 		"UCK_SOURCE"		: NO_DELETE,
 		"UCK_TARGET"		: NO_DELETE,
 		"UCK_LOGFILE"		: NO_DELETE,
+		"UCK_SCRIPT_SHELL"	: NO_DELETE,
 		"UCK_BINDIR"		: NO_DELETE|READ_ONLY,
 		"UCK_TEMPLATE_DIR"	: NO_DELETE|READ_ONLY,
 	}
@@ -431,6 +443,9 @@ class Project(Singleton):
 	def get_terminate_behaviour(self):
 		return self.get("UCK_TERMINATE_BEHAVIOUR")
 
+	def get_script_shell(self):
+		return self.get("UCK_SCRIPT_SHELL")
+
 	# Create path relative to project directory or return absolute path
 	# for an configuration item.
 	def p_path(self, name):
@@ -517,6 +532,10 @@ class Project(Singleton):
 	# Get path to rootfs customization script
 	def get_customize_root(self):
 		return self.c_path("UCK_CUSTOMIZE_ROOT")
+
+	# Get path to rootfs finalization script
+	def get_finalize_root(self):
+		return self.c_path("UCK_FINALIZE_ROOT")
 
 	# Get path to pack rootfs command
 	def get_pack_root(self):

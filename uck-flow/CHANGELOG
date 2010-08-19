@@ -1,3 +1,17 @@
+0.4.6
+	- Added step so that rootfs customization outside the chroot
+	  environment can happen before the root file system is packed again.
+	  This allows to copy (demo/package cache) files into the future root
+	  file system.
+	- Shell handling changed so that all that is required in the target
+	  system is /bin/sh. This allows uck-flow to be used to modify/create
+	  minimal systems (ubuntu-mini). Also: script can used to append all
+	  output of the shell session to the project log by setting the new
+	  project variable UCK_SCRIPT_SHELL to "True" in a project. Note that
+	  this will usually generate *lots* of somewhat weird output due to
+	  the way the script command works.
+	- Buffer handling for sys.stdout and sys.stderr nailed to "unbuffered".
+
 0.4.5
 	- Added support for -m (mount instead of copy) option.
 		- Option handling in uck-flow / uckFlow.py
