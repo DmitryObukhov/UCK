@@ -96,6 +96,12 @@ UCK_CUSTOMIZE_TEST='customize_test'
 # installed/updated/removed.
 UCK_CUSTOMIZE_ROOT='customize_root'
 
+# UCK_FINALIZE_ROOT is the name of a script (absoluta path or relative to
+# to UCK_PROJECT_DIR/customization-scripts) that will be run from outside the
+# unpacked root file system. This is where files can be copied to the root
+# filesystem from other parts of your system.
+UCK_FINALIZE_ROOT="finalize_root"
+
 # The UCK_TEMPLATE variable has the name of the currently used template. This
 # matches to a subdirectory name in UCK_TEMPLATE_DIR.
 UCK_TEMPLATE='swiss-remix'

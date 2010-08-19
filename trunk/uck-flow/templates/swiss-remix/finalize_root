@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# $Id: finalize_root 318 2010-04-02 06:45:03Z wjg57 $
+#
+# NAME:
+#	finalize_root -- finalize customization of the root directory
+#
+# SYNOPSIS:
+#	finalize_root project_dir
+#
+# DESCRIPTION:
+#	This script has user defined actions that are used to finalize the
+#	root file system from outside the chroot environment before it is
+#	recompressed again.
+#
+#	Typical steps include:
+#	- Copying files from your system into the future root file system
+#
+# COPYRIGHT:
+#	UCK - Ubuntu Customization Kit
+#	Copyright (C) 2006-2010 UCK Team
+# 
+#	UCK is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	UCK is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with UCK.  If not, see <http://www.gnu.org/licenses/>.
+
+# Print an error message an exit
+failure() { echo "$0: $@" >&2; exit 1; }
+
+# Source environment. Only argument is project directory
+if [ -f "$1/customization-scripts/project.uck" ]; then
+	. "$1/customization-scripts/project.uck"
+else
+	failure "Cannot create UCK environment!"
+fi
+
+# Can access all of the variables set in project config now:
+PROJECT_DIR="$UCK_PROJECT_DIR"
+REMASTER_ROOT="$UCK_PROJECT_DIR/remaster-root"
+REMASTER_ISO="$UCK_PROJECT_DIR/remaster-iso"
+SCRIPT_DIR="$UCK_PROJECT_DIR/customization-scripts"
+
+# Perform actions, exit on any error
+set -e
+
+# Example actions:
+#	Create the /var/cache/apt/apt-file directory needed for the apt-file
+#	command (this cannot be done in the chroot environment, as
+#	/var/cache/apt is mounted then!)
+# mkdir "$REMASTER_ROOT/var/cache/apt/apt-file"
+
+# That's all folks
+exit 0

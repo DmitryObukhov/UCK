@@ -37,7 +37,7 @@ UCK_TEMPLATE="updated"
 # running action will forcibly be terminated - possibly leaving the system in
 # an inconsistent state. If set to "wait" the currently running action will
 # be allowed to end in its time and only then will no further activity occur.
-UCK_TERMINATE_BEHAVIOUR="wait"
+UCK_TERMINATE_BEHAVIOUR="force"
 
 # The UCK_SOURCE parameter can either contain the absolute pathname to the
 # source of the ISO image to customize or a file name relative to the
@@ -68,6 +68,12 @@ UCK_PREPARE_ISO="prepare_iso"
 # unpacked root file system. This is where packages can be
 # installed/updated/removed.
 UCK_CUSTOMIZE_ROOT="customize_root"
+
+# UCK_FINALIZE_ROOT is the name of a script (absoluta path or relative to
+# to UCK_PROJECT_DIR/customization-scripts) that will be run from outside the
+# unpacked root file system. This is where files can be copied to the root
+# filesystem from other parts of your system.
+UCK_FINALIZE_ROOT="finalize_root"
 
 # UCK_CUSTOMIZE_ISO is the name of a script (absolute path or relative to
 # UCK_PROJECT_DIR/customization-scripts) that is run to customize the ISO

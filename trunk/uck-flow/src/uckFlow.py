@@ -149,7 +149,7 @@ class Sequence:
 	# widgets and callbacks associated with each action.
 	actionNames = [
 		"prepareIso", "unpackIso",
-		"unpackRoot", "customizeRoot", "packRoot",
+		"unpackRoot", "customizeRoot", "finalizeRoot", "packRoot",
 		"customizeIso",
 		"unpackInitrd", "customizeInitrd", "packInitrd",
 		"packIso",
@@ -182,6 +182,7 @@ class Sequence:
 			self.wTree.get_widget("configEditButton"),
 			self.wTree.get_widget("prepareIsoEditButton"),
 			self.wTree.get_widget("customizeRootEditButton"),
+			self.wTree.get_widget("finalizeRootEditButton"),
 			self.wTree.get_widget("customizeIsoEditButton"),
 			self.wTree.get_widget("customizeInitrdEditButton"),
 			self.wTree.get_widget("customizeTestEditButton"),
@@ -227,11 +228,11 @@ class Sequence:
 			#	unpackRoot -> customizeRoot
 			next = wTree.get_widget("customizeRootCheckButton")
 		elif widget == wTree.get_widget("customizeRootCheckButton"):
-			#	customizeRoot -> packRoot
+			#	customizeRoot -> finalizeRoot
+			next = wTree.get_widget("finalizeRootCheckButton")
+		elif widget == wTree.get_widget("finalizeRootCheckButton"):
+			#	finalizeRoot -> packRoot
 			next = wTree.get_widget("packRootCheckButton")
-		elif widget == wTree.get_widget("packRootCheckButton"):
-			#	packRoot -> customizeIso
-			next = wTree.get_widget("customizeIsoCheckButton")
 		elif widget == wTree.get_widget("unpackInitrdCheckButton"):
 			#	unpackInitrd -> customizeInitrd
 			next = wTree.get_widget("customizeInitrdCheckButton")
@@ -310,10 +311,21 @@ class Sequence:
 				else:
 					self.actions[index].set_state(False)
 					self.actions[index].set_sensitive(False)
+			elif aName == "finalizeRoot":
+				# - unpackRoot selected
+				# - unpacked Root available
+				# - no root shell running
+				if ((self.actions[index - 2].get_state() or 
+				     os.path.isdir(p.get_root_dir())) and not
+				    self.is_shellRunning()):
+					self.actions[index].set_sensitive(True)
+				else:
+					self.actions[index].set_state(False)
+					self.actions[index].set_sensitive(False)
 			elif aName == "packRoot":
 				# - unpackRoot selected
 				# - unpacked Root available
-				if (self.actions[index - 2].get_state() or
+				if (self.actions[index - 3].get_state() or
 				    os.path.isdir(p.get_root_dir()) and not
 				    self.is_shellRunning()):
 					self.actions[index].set_sensitive(True)
@@ -323,7 +335,7 @@ class Sequence:
 			elif aName == "customizeIso":
 				# - unpackIso selected
 				# - unpacked Iso available
-				if (self.actions[index - 4].get_state() or 
+				if (self.actions[index - 5].get_state() or 
 				    os.path.isdir(p.get_iso_dir())):
 					self.actions[index].set_sensitive(True)
 				else:
@@ -332,7 +344,7 @@ class Sequence:
 			elif aName == "unpackInitrd":
 				# - unpackIso selected
 				# - unpacked Iso available
-				if (self.actions[index - 5].get_state() or
+				if (self.actions[index - 6].get_state() or
 				    os.path.isdir(p.get_iso_dir())):
 					self.actions[index].set_sensitive(True)
 				else:
@@ -359,7 +371,7 @@ class Sequence:
 			elif aName == "packIso":
 				# - unpackIso selected
 				# - unpacked Iso available
-				if (self.actions[index - 8].get_state() or
+				if (self.actions[index - 9].get_state() or
 				    os.path.isdir(p.get_iso_dir())):
 					self.actions[index].set_sensitive(True)
 				else:
@@ -496,6 +508,10 @@ class UckFlow:
 		self.config_time = 0
 		self.logDialog = UckFlowLog(self.gladefile)
 		self.logfile = None
+		# Make sure output is unbuffered
+		sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+		sys.stderr = os.fdopen(sys.stderr.fileno(), 'w', 0)
+		# Remember current output streams
 		self.stdout = os.dup(sys.stdout.fileno())
 		self.stderr = os.dup(sys.stderr.fileno())
 		self.useMount = useMount
@@ -512,6 +528,7 @@ class UckFlow:
 		"on_configEditButton_clicked" : self.config_edit,
 		"on_prepareIsoEditButton_clicked" : self.prepare_iso_edit,
 		"on_customizeRootEditButton_clicked" : self.customize_root_edit,
+		"on_finalizeRootEditButton_clicked" : self.finalize_root_edit,
 		"on_customizeIsoEditButton_clicked" : self.customize_iso_edit,
 		"on_customizeInitrdEditButton_clicked" : self.customize_initrd_edit,
 		"on_customizeTestEditButton_clicked" : self.customize_test_edit,
@@ -831,7 +848,7 @@ class UckFlow:
 		# Switch to the named logfile
 		try:
 			print _("+++ Switching logfile to %s") % (lf)
-			logfile = file(lf, "a")
+			logfile = file(lf, "a", 0)
 			os.dup2(logfile.fileno(), sys.stdout.fileno())
 			os.dup2(logfile.fileno(), sys.stderr.fileno())
 			logfile.close()
@@ -858,6 +875,12 @@ class UckFlow:
 	def customize_root_edit(self, widget):
 		editor = Project.get_instance().get_editor()
 		cfgfile = Project.get_instance().get_customize_root()
+		os.system(editor + " \"" + cfgfile + "\" &")
+
+	# Asynchronously start editor for root fs finalization script
+	def finalize_root_edit(self, widget):
+		editor = Project.get_instance().get_editor()
+		cfgfile = Project.get_instance().get_finalize_root()
 		os.system(editor + " \"" + cfgfile + "\" &")
 
 	# Asynchronously start editor for ISO customization script

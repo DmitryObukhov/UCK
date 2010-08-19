@@ -18,25 +18,26 @@ fi
 
 if [ "`grep "$VERSION" debian/changelog | wc -l`" -eq "0" ]; then
 	echo "WARNING: you've to update version number in debian/changelog"
+	echo "WARNING: Creating temporary packages for testing purposes"
+
+	# Add appropriate temporary header to debian/changelog
+	( LANG=C
+	  cat <<EOF
+uck ($VERSION-0test1) maverick; urgency=low
+  * New temporary test release
+    - This is a local build not meant for release. It is for testing only!
+
+ -- Wolf Geldmacher <wolf@womaro.ch>  `date -R`
+
+EOF
+	cat debian/changelog ) >debian/changelog.$$ &&
+	mv debian/changelog.$$ debian/changelog
 fi
 
 # cleaning
 rm -rf `find -name .svn`
 rm -rf logo
-rm -rf build.sh
-
-# Add appropriate header to debian/changelog
-(
-  LANG=C
-  cat <<EOF
-uck ($VERSION-0test1) maverick; urgency=low
-  * New test release
-
- -- Wolf Geldmacher <wolf@womaro.ch>  `date -R`
-
-EOF
-  cat debian/changelog ) >debian/changelog.$$ &&
-mv debian/changelog.$$ debian/changelog
+rm -rf build.sh localbuild.sh
 
 # generating deb package
 dpkg-buildpackage -us -uc
