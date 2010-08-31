@@ -2,6 +2,7 @@
 # $Id$
 #
 VERSION=$(shell cat VERSION)
+KEY=$(shell if test `id -nu` = wjg; then echo BA4B79B2; else echo 713EBAFF; fi)
 
 all: translations
 
@@ -17,6 +18,15 @@ install: all
 #	sudo apt-get install python-pip python-distutils-extra python-setuptools
 # plus it needs the python debian package generator installed by:
 #	sudo pip install stdeb
+sdist: all
+	rm -rf dist
+	python setup.py sdist
+	cd dist; py2dsc uckflow-$(VERSION).tar.gz
+	cd dist/deb_dist/uckflow-$(VERSION); \
+		dpkg-buildpackage -S -rfakeroot -k$(KEY)
+upload: sdist
+	cd dist/deb_dist; dput ppa:uck-team/uck *.changes
+
 dist: all
 	python setup.py sdist
 	cd dist; py2dsc uckflow-$(VERSION).tar.gz
