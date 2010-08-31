@@ -4,10 +4,19 @@
 #
 VERSION=`cat VERSION`
 ret=`pwd`
-rm -rf /tmp/uck-$VERSION
-mkdir -p /tmp/uckbuild/uck-$VERSION
-cp -ar . /tmp/uckbuild/uck-$VERSION
-cd /tmp/uckbuild/uck-$VERSION
+rm -rf dist
+mkdir -p dist/uck-$VERSION
+cp -ar * dist/uck-$VERSION
+cd dist/uck-$VERSION
+
+# Caller and Key
+if [ `id -nu` = wjg ]; then
+	KEY=BA4B79B2
+	CALLER="Wolf Geldmacher <wolf@womaro.ch>"
+else
+	KEY=713EBAFF
+	CALLER="Fabrizio Balliano <fabrizio@fabrizioballiano.it>"
+fi
 
 # checking if version number has been updated everywhere
 MAN_FILES=`ls docs/man/*.1 | wc -l`
@@ -23,11 +32,12 @@ if [ "`grep "$VERSION" debian/changelog | wc -l`" -eq "0" ]; then
 	# Add appropriate temporary header to debian/changelog
 	( LANG=C
 	  cat <<EOF
-uck ($VERSION-0test1) maverick; urgency=low
+uck ($VERSION-0) lucid; urgency=low
   * New temporary test release
-    - This is a local build not meant for release. It is for testing only!
+    - This is a build not meant for release. It is for testing only!
+      For the real changes see the file /usr/share/doc/uck/changelog.gz
 
- -- Wolf Geldmacher <wolf@womaro.ch>  `date -R`
+ -- $CALLER  `date -R`
 
 EOF
 	cat debian/changelog ) >debian/changelog.$$ &&
@@ -36,11 +46,22 @@ fi
 
 # cleaning
 rm -rf `find -name .svn`
-rm -rf logo
-rm -rf build.sh localbuild.sh
+rm -rf logo dist
+rm -rf build.sh localbuild.sh Makefile
 
 # generating deb package
-dpkg-buildpackage -us -uc
+case $1 in
+-U)	# Upload
+	dpkg-buildpackage -S -k$KEY
+	( cd ..; dput ppa:uck-team/uck *.changes )
+	;;
+-S)	# Source release
+	dpkg-buildpackage -S -k$KEY
+	;;
+*)	# Binary release
+	dpkg-buildpackage -k$KEY
+	;;
+esac
 
 # generating source package
 rm -rf debian
@@ -49,5 +70,3 @@ tar cfp uck_$VERSION.tar uck-$VERSION
 gzip -9 uck_$VERSION.tar
 
 cd "$ret"
-cp /tmp/uckbuild/*.deb /tmp/uckbuild/*.gz .
-rm -rf /tmp/uckbuild
