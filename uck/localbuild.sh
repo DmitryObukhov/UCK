@@ -53,7 +53,7 @@ rm -rf build.sh localbuild.sh Makefile
 case $1 in
 -U)	# Upload
 	dpkg-buildpackage -S -k$KEY
-	( cd ..; dput ppa:uck-team/uck *.changes )
+	( cd ..; dput ppa:uck-team/uck-unstable *.changes )
 	;;
 -S)	# Source release
 	dpkg-buildpackage -S -k$KEY
