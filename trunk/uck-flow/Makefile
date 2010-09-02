@@ -25,7 +25,7 @@ sdist: all
 	cd dist/deb_dist/uckflow-$(VERSION); \
 		dpkg-buildpackage -S -rfakeroot -k$(KEY)
 upload: sdist
-	cd dist/deb_dist; dput ppa:uck-team/uck *.changes
+	cd dist/deb_dist; dput ppa:uck-team/uck-unstable *.changes
 
 dist: all
 	python setup.py sdist
