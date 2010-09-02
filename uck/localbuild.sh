@@ -14,7 +14,7 @@ if [ `id -nu` = wjg ]; then
 	KEY=BA4B79B2
 	CALLER="Wolf Geldmacher <wolf@womaro.ch>"
 else
-	KEY=713EBAFF
+	KEY=063FFBAE
 	CALLER="Fabrizio Balliano <fabrizio@fabrizioballiano.it>"
 fi
 
