@@ -2,7 +2,7 @@
 # $Id$
 #
 VERSION=$(shell cat VERSION)
-KEY=$(shell if test `id -nu` = wjg; then echo BA4B79B2; else echo 713EBAFF; fi)
+KEY=$(shell if test `id -nu` = wjg; then echo BA4B79B2; else echo 063FFBAE; fi)
 
 all: translations
 
