@@ -34,7 +34,10 @@ rm -rf localbuild.sh
 rm -rf Makefile
 
 # generating deb package
-dpkg-buildpackage
+KEY=063FFBAE
+CALLER="Fabrizio Balliano <fabrizio@fabrizioballiano.it>"
+dpkg-buildpackage -k$KEY
+
 
 # generating source package
 rm -rf debian
