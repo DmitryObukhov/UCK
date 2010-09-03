@@ -1,8 +1,5 @@
 $Id$
 
-Bug:
-	- Logic in uckFlow.py w/r to actions available when a valid project
-	  exists is not quite right - cannot unpack root w/o unpacked iso ?!?
 Known Issues:
 	- (UCK/gksudo/terminal) after chroot we end up in "/" instead of
 	  in "/root"
