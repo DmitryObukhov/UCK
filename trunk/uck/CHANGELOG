@@ -10,6 +10,8 @@
 	  --> We need to change the strategy here! Upstart has similar issues
 	  --> need to start "private" dbus system bus instance?!?
 	* Added error checking for arguments to uck-remaster-mount.
+* Package:
+	* gfxboot-dev dep added for maverick
 
 ------------
 -- 2.3.0 --
