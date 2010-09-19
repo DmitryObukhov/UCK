@@ -99,9 +99,10 @@ function union_umount()
 {
 	sync
 	# Kill processes possibly still using the mount
-	for pid in `lsof | grep "$1" | grep -v unionfs | awk '{print $2}' | sort -u`
+	for pid in `lsof 2>/dev/null | grep "$1" | grep -v unionfs | awk '{print $2}' | sort -u`
 	do
 		kill $pid
+		sleep 2		# Give some time to terminate...
 	done
 	sync
 	umount "$1"

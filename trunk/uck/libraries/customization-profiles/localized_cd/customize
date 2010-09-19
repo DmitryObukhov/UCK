@@ -50,6 +50,9 @@ function run_package_manager()
 		PACKAGE_APP=`which adept_manager`
 	fi
 	if [ "$PACKAGE_APP" = "" ]; then
+		PACKAGE_APP=`which kpackagekit`
+	fi
+	if [ "$PACKAGE_APP" = "" ]; then
 		PACKAGE_APP=`which synaptic`
 		PACKAGE_APP_OPTIONS=(-t "UCK Package manager")
 	fi

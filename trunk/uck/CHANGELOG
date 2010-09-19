@@ -1,4 +1,17 @@
 ------------
+-- 2.3.1 --
+------------
+
+* Backend:
+	* Backend now checks for kpackagekit as packaging tool, too.
+	  Note: This requires that packagekit ist installed on the hosting
+	  system - otherwise the dbus queries to packagekitd will fail.
+	  FIXME: Running packagekitd on the host will give wrong results!!!
+	  --> We need to change the strategy here! Upstart has similar issues
+	  --> need to start "private" dbus system bus instance?!?
+	* Added error checking for arguments to uck-remaster-mount.
+
+------------
 -- 2.3.0 --
 ------------
 

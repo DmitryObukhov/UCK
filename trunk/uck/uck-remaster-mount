@@ -28,6 +28,7 @@ REMASTER_HOME="$2"
 function usage()
 {
 	echo "Usage: $0 source.iso [remaster-dir]"
+	exit 1
 }
 
 function failure()
@@ -42,6 +43,10 @@ function failure()
 
 if [ -z "$REMASTER_HOME" ]; then
 	REMASTER_HOME=~/tmp
+fi
+
+if [ -z "$SOURCE" ]; then
+	usage
 fi
 
 ########
