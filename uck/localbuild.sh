@@ -3,14 +3,13 @@
 # Script to build a local version of the package
 #
 VERSION=`cat VERSION`
+SUITE=`cat SUITE`
+
 ret=`pwd`
 rm -rf dist
 mkdir -p dist/uck-$VERSION
 cp -ar * dist/uck-$VERSION
 cd dist/uck-$VERSION
-
-# Suite
-SUITE=maverick
 
 # Caller and Key
 if [ `id -nu` = wjg ]; then
@@ -50,7 +49,7 @@ fi
 # cleaning
 rm -rf `find -name .svn`
 rm -rf logo dist
-rm -rf build.sh localbuild.sh Makefile
+rm -rf build.sh localbuild.sh Makefile SUITE
 
 # generating deb package
 case $1 in
