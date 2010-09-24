@@ -1,3 +1,6 @@
+0.4.7
+	- Updated dependecies.
+
 0.4.6
 	- Added step so that rootfs customization outside the chroot
 	  environment can happen before the root file system is packed again.
