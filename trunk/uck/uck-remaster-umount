@@ -51,13 +51,19 @@ fi
 	. /usr/lib/uck/remaster-live-cd.sh 2>/dev/null ||
 	failure "libraries not found"
 
-# Mount r/W copy of rootfs on iso
+# Check arguments
+case "$1" in
+/*)	: ok - has absolute path;;
+*)	failure "remaster-dir argument must be absolute path";;
+esac
+
+# Umount r/w copy of rootfs on iso
 if mountpoint "$REMASTER_HOME/remaster-root"; then
 	union_umount "$REMASTER_HOME/remaster-root" ||
 		failure "Can't union_umount $REMASTER_HOME/remaster-root"
 fi
 
-# Mount r/w copy of iso
+# Umount r/w copy of iso
 if mountpoint "$REMASTER_HOME/remaster-iso"; then
 	union_umount "$REMASTER_HOME/remaster-iso" ||
 		failure "Can't union_umount $REMASTER_HOME/remaster-iso"

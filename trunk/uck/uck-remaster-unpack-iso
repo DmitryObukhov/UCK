@@ -38,10 +38,7 @@ function failure()
 #########################
 use_mount=false
 if [ x"$1" = x-m ]; then
-	shift
-	if [ -x /usr/bin/uck-remaster-mount ]; then
-		use_mount=true
-	fi
+	use_mount=true; shift
 fi
 
 ISO_IMAGE="$1"
@@ -65,15 +62,24 @@ fi
 	failure "libraries not found"
 
 ISO_REMASTER_DIR="$REMASTER_HOME/remaster-iso"
-ISO_MOUNT_DIR="$REMASTER_HOME/iso-mount"
+
+# Check for previous use of union mounts and implicitly turn on -m iff found
+if [ -d "$ISO_REMASTER_DIR"-cache ]; then
+	use_mount=true
+fi
 
 if [ $use_mount = true ] && check_union_mounts; then
-	remove_iso_remaster_dir
-	union_mount "$ISO_IMAGE" "$REMASTER_HOME/remaster-iso"
+	# Mount r/w copy of iso
+	if mountpoint "$ISO_REMASTER_DIR"; then
+		: do nothing - is already mounted
+	else
+		union_mount "$ISO_IMAGE" "$ISO_REMASTER_DIR" ||
+			failure "Can't union_mount $ISO_REMASTER_DIR"
+	fi
 	manifest_diff
 else
 	if [ $use_mount = true ]; then
-		echo "Cannot use union mounts - \"-m\" option ignored!"
+		echo "Cannot use union mounts - using copy instead!"
 		use_mount=false
 	fi
 	remove_iso_remaster_dir

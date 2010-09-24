@@ -46,9 +46,7 @@ while [ -n "$1" ]; do
 	--wait-before-exit)
 		WAIT_BEFORE_EXIT=1;;
 	-m|--mount)
-		if [ -x /usr/bin/uck-remaster-mount ]; then
-			USE_MOUNT=-m
-		fi;;
+		USE_MOUNT=-m;;
 	-*)	echo "Unexpected argument: $1" >&2; exit 1;;
 	*)	break;;
 	esac
