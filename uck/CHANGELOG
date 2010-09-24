@@ -10,6 +10,11 @@
 	  --> We need to change the strategy here! Upstart has similar issues
 	  --> need to start "private" dbus system bus instance?!?
 	* Added error checking for arguments to uck-remaster-mount.
+	* improved error checking and handling for union mounts: either all or
+	  nothing now; imply -m if tell-tale directory (-cache) is found;
+	  made reentrant for use by uck-flow; pointless check for
+	  uck-remaster-mount removed; fallback to copy if union mount not
+	  possible; do not remove target when using mounts.
 * Package:
 	* gfxboot-dev dep added for maverick
 

@@ -73,8 +73,13 @@ function check_union_mounts()
 function union_mount()
 {
 	# Mount the readonly volume
-	[ ! -d "$2" ] && mkdir -p "$2-mount"
-	mount -o loop -r "$1" "$2-mount"
+	[ ! -d "$2-mount" ] && mkdir -p "$2-mount"
+	if mount -o loop -r "$1" "$2-mount"; then
+		: ok, mount succeeded
+	else
+		rmdir "$2-mount" 2>/dev/null
+		return 1
+	fi
 
 	# Create cache and r/w directory
 	[ ! -d "$2-cache" ] && mkdir -p "$2-cache"
@@ -89,8 +94,14 @@ function union_mount()
 			"$2-cache"=RW:"$2-mount"=RO "$2"
 	else
 		echo "Cannot use union_mounts!" >&2
-		exit 1
+		false
 	fi
+	status=$?
+	if [ $status -ne 0 ]; then
+		umount "$2-mount" >/dev/null 2>&1
+		rmdir "$2" "$2-cache" "$2-mount" >/dev/null 2>&1
+	fi
+	return $status
 }
 
 # union_umount -- unmount a union_mount

@@ -60,6 +60,12 @@ fi
 check_union_mounts ||
 	failure "Cannot use union mounts - no OS support found"
 
+# Check arguments
+case "$2" in
+/*)	: ok - has absolute path;;
+*)	failure "remaster-dir argument must be absolute path";;
+esac
+
 # Mount r/w copy of iso
 if mountpoint "$REMASTER_HOME/remaster-iso"; then
 	: do nothing - is already mounted

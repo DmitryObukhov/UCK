@@ -24,7 +24,7 @@
 
 function usage()
 {
-	echo "Usage: $0 iso-file.iso [customization-scripts-dir]"
+	echo "Usage: $0 [-m] iso-file.iso [customization-scripts-dir]"
 }
 
 function check_exit_code()
@@ -51,10 +51,7 @@ function check_if_user_is_root()
 #########################
 use_mount=
 if [ x"$1" = x-m ]; then
-	shift
-	if [ -x /usr/bin/uck-remaster-mount ]; then
-		use_mount=-m
-	fi
+	use_mount=-m; shift
 fi
 
 ISO_IMAGE="$1"
