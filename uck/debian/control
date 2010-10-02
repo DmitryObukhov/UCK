@@ -9,7 +9,7 @@ Homepage: http://uck.sourceforge.net/
 Package: uck
 Architecture: all
 Depends: bash (>= 3.0),
- gfxboot (<< 4.2.2) |gfxboot-dev,
+ gfxboot (<< 4.2.2) | gfxboot-dev,
  dialog | xdialog | zenity | kdebase-bin,
  genisoimage,
  squashfs-tools (>= 2.0),
