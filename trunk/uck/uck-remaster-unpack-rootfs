@@ -55,7 +55,7 @@ fi
 	. /usr/lib/uck/remaster-live-cd.sh 2>/dev/null ||
 	failure "libraries not found"
 
-SQUASHFS_MOUNT_DIR="$REMASTER_HOME/squashfs-mount"
+SQUASHFS_MOUNT_DIR="$REMASTER_HOME/remaster-root-mount"
 SQUASHFS_IMAGE="$REMASTER_HOME/remaster-iso/casper/filesystem.squashfs"
 REMASTER_DIR="$REMASTER_HOME/remaster-root"
 

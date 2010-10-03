@@ -62,7 +62,7 @@ fi
 	failure "libraries not found"
 
 ISO_REMASTER_DIR="$REMASTER_HOME/remaster-iso"
-ISO_MOUNT_DIR="$REMASTER_HOME/iso-mount"
+ISO_MOUNT_DIR="$REMASTER_HOME/remaster-iso-mount"
 
 # Check for previous use of union mounts and implicitly turn on -m iff found
 if [ -d "$ISO_REMASTER_DIR"-cache ]; then
