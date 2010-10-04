@@ -3,6 +3,9 @@
 ------------
 
 * Backend:
+	* initctl is disabled (replaced with /bin/true) during chroot sessions.
+	  With this change is now possible to install mysql/apache and other
+	  services in the guest system.
 	* Backend now checks for kpackagekit as packaging tool, too.
 	  Note: This requires that packagekit ist installed on the hosting
 	  system - otherwise the dbus queries to packagekitd will fail.

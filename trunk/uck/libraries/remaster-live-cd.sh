@@ -353,8 +353,6 @@ function prepare_rootfs_for_chroot()
 	echo "Creating DBUS uuid..."
 	chroot "$REMASTER_DIR" dbus-uuidgen --ensure 1>/dev/null 2>&1
 
-	# The next is not needed by uckFlow (uses gksudo), but left in here for
-	# backwards compatibility
 	if [ -e "$REMASTER_HOME/customization-scripts/Xcookie" ] ; then
 		UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
 		if [ `echo $UCK_USER_HOME_DIR | cut -d '/' -f2` == 'home' ] ; then
@@ -365,11 +363,18 @@ function prepare_rootfs_for_chroot()
 			cat "$REMASTER_HOME/customization-scripts/Xcookie" | chroot "$REMASTER_DIR" xauth merge - || failure "Failed to merge X authorization file in user directory, error=$?"
 		fi
 	fi
+	
+	echo "Deactivating initctl..."
+	chroot "$REMASTER_DIR" mv /sbin/initctl /sbin/initctl.uck_blocked
+	chroot "$REMASTER_DIR" ln -s /bin/true /sbin/initctl
 }
 
 function clean_rootfs_after_chroot()
 {
-	# Not used by uckFlow, but left for backward compatibility:
+	echo "Reactivating initctl..."
+	chroot "$REMASTER_DIR" rm /sbin/initctl
+	chroot "$REMASTER_DIR" mv /sbin/initctl.uck_blocked /sbin/initctl
+	
 	UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
 	if [ `echo $UCK_USER_HOME_DIR | cut -d '/' -f2` == 'home' ] ; then
 		echo "Removing /home/username directory..."
