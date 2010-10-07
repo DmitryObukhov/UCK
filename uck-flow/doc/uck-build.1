@@ -1,0 +1,37 @@
+.IX Title "UCK-BUILD 1"
+.TH UCK-BUILD 1 "2010-10-06" "0.4.8" ""
+.\" For nroff, turn off justification.  Always turn off hyphenation; it makes
+.\" way too many mistakes in technical documents.
+.if n .ad l
+.nh
+.SH "NAME"
+\&\fBuck-build\fR \- Non-Interactive Ubuntu Customization Kit Workflow Tool
+.SH "SYNOPSIS"
+.IX Header "SYNOPSIS"
+uck-build [ -m ] project-directory
+.SH "DESCRIPTION"
+.IX Header "DESCRIPTION"
+\&\fBuck-build\fR is the non-gui version of uck-flow. 
+.PP
+\fBuck-build\fR projects are directories with a predefined structure: A project
+contains a subdirectory named "customization-scripts" that contains all the
+procedures required for customizations and a project configuration file named "project.uck".
+.PP
+Additional subdirectories are created during the customization steps
+(they all have the prefix remaster-) and are removed by the final cleanup.
+.PP
+The argument is the name of a project directory as created by a previous
+run of \fBuck-flow\fR.
+.PP
+\fBuck-build\fR is based on the tools provided by the Ubuntu Customization Kit,
+therefore the same restrictions and caveats apply as for UCK. Most notably:
+UCK requires plenty of disk space for the project on a non-encrypted local
+volume and root privileges for many of the steps.
+.SH "AUTHOR"
+.IX Header "AUTHOR"
+\fBuck-build\fR has been written by Wolf Geldmacher <wolf@womaro.ch>
+.SH "COPYRIGHT"
+.IH Header "COPYRIGHT"
+Copyright 2010, The Ubuntu Customization Team.
+.br
+\fBuck-build\fR is provided under the GNU Public License (GPL Version 3).
