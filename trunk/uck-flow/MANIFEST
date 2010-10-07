@@ -9,10 +9,12 @@ de.po
 messages.pot
 stdeb.cfg
 setup.py
+uck-build
 uck-flow
 uck-killtree
 uck-flow.desktop
 doc/uck-flow.1
+doc/uck-build.1
 src/__init__.py
 src/Singleton.py
 src/StaticMethod.py

@@ -20,6 +20,8 @@
 	  possible; do not remove target when using mounts.
 * Package:
 	* gfxboot-dev dep added for maverick
+* Internal:
+	* New target updman in Makefile to update manual page version numbers.
 
 ------------
 -- 2.3.0 --

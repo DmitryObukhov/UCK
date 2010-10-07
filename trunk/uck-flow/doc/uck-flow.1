@@ -1,5 +1,5 @@
 .IX Title "UCK-FLOW 1"
-.TH UCK-FLOW 1 "2008-02-04" "2.2.0" ""
+.TH UCK-FLOW 1 "2010-10-06" "0.4.8" ""
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -8,7 +8,7 @@
 \&\fBuck-flow\fR \- Ubuntu Customization Kit Workflow Tool
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-uck-flow [ project-directory ]
+uck-flow [ -m ] [ project-directory ]
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
 \&\fBuck-flow\fR is an alternative graphical user interface for the Ubuntu
@@ -24,12 +24,12 @@ can easily be extended with more templates and allows (re\-)execution of
 arbitrary customization steps.
 .PP
 The steps provided are:  "prepareIso", "unpackIso", "unpackRoot",
-"customizeRoot", "packRoot", "customizeIso", "unpackInitrd", "customizeInitrd",
-"packInitrd", "packIso", "test" and "cleanup".
+"customizeRoot", "finalizeRoot", "packRoot", "customizeIso", "unpackInitrd",
+"customizeInitrd", "packInitrd", "packIso", "test" and "cleanup".
 .PP
 User defined customization can be done in the "prepareIso", "customizeRoot",
-"customizeIso", "customizeInitrd" and "test" steps. The other steps directly
-map onto procedures provided by the Ubuntu Customization Kit.
+"finalizeRoot", "customizeIso", "customizeInitrd" and "test" steps. The other
+steps directly map onto procedures provided by the Ubuntu Customization Kit.
 .PP
 \fBuck-flow\fR projects are directories with a predefined structure: A project
 contains a subdirectory named "customization-scripts" that contains all the
