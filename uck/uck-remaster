@@ -32,7 +32,7 @@ function check_exit_code()
 	RESULT=$?
 	if [ "$RESULT" -ne 0 ]; then
 		if [ x"$use_mount" = x-m ]; then
-			uck-remaster-umount "$REMASTER_HOME"
+			$SCRIPTS_DIR/uck-remaster-umount "$REMASTER_HOME"
 		fi
 		exit "$RESULT"
 	fi
