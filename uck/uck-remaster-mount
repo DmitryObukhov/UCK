@@ -61,7 +61,7 @@ check_union_mounts ||
 	failure "Cannot use union mounts - no OS support found"
 
 # Check arguments
-case "$2" in
+case "$REMASTER_HOME" in
 /*)	: ok - has absolute path;;
 *)	failure "remaster-dir argument must be absolute path";;
 esac
