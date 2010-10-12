@@ -52,7 +52,7 @@ fi
 	failure "libraries not found"
 
 # Check arguments
-case "$1" in
+case "$REMASTER_HOME" in
 /*)	: ok - has absolute path;;
 *)	failure "remaster-dir argument must be absolute path";;
 esac
