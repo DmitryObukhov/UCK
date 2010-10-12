@@ -78,6 +78,8 @@ if [ $use_mount = true ] && check_union_mounts; then
 			failure "Can't union_mount $ISO_REMASTER_DIR"
 	fi
 	manifest_diff
+	# Prevent immediate unmount by cleanup code
+	trap : EXIT
 else
 	if [ $use_mount = true ]; then
 		echo "Cannot use union mounts - using copy instead!"

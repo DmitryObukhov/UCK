@@ -20,6 +20,8 @@
 	  possible; do not remove target when using mounts.
 	* uck-remaster-remove-win32-files now removes usb-creator.exe which
 	  was added in maverick
+	* Fixed immediate umount in uck-remaster-unpack-{iso,rootfs} by trap
+	  EXIT handling when using -m.
 * Package:
 	* gfxboot-dev dep added for maverick
 * Internal:
