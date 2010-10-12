@@ -72,6 +72,8 @@ if [ $use_mount = true ] && check_union_mounts; then
 		union_mount "$SQUASHFS_IMAGE" "$REMASTER_DIR" ||
 			failure "Can't union_mount $REMASTER_DIR"
 	fi
+	# Prevent immediate unmount by cleanup code
+	trap : EXIT
 else
 	if [ $use_mount = true ]; then
 		echo "Cannot use union mounts - using copy instead!"
