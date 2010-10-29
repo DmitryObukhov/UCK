@@ -6,6 +6,9 @@
 	* initctl is disabled (replaced with /bin/true) during chroot sessions.
 	  With this change is now possible to install mysql/apache and other
 	  services in the guest system.
+	* update-grub is disabled (replaced with /bin/true) during chroot sessions.
+	  With this change is now possible to upgrade kernel in maverick too.
+	* host's fstab/mtab are copied to the guest so that chrooted "df" can work.
 	* Backend now checks for kpackagekit as packaging tool, too.
 	  Note: This requires that packagekit ist installed on the hosting
 	  system - otherwise the dbus queries to packagekitd will fail.
