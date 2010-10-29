@@ -1,39 +1,5 @@
 ------------
--- 2.3.1 --
-------------
-
-* Backend:
-	* initctl is disabled (replaced with /bin/true) during chroot sessions.
-	  With this change is now possible to install mysql/apache and other
-	  services in the guest system.
-	* update-grub is disabled (replaced with /bin/true) during chroot sessions.
-	  With this change is now possible to upgrade kernel in maverick too.
-	* host's fstab/mtab are copied to the guest so that chrooted "df" can work.
-	* Backend now checks for kpackagekit as packaging tool, too.
-	  Note: This requires that packagekit ist installed on the hosting
-	  system - otherwise the dbus queries to packagekitd will fail.
-	  FIXME: Running packagekitd on the host will give wrong results!!!
-	  --> We need to change the strategy here! Upstart has similar issues
-	  --> need to start "private" dbus system bus instance?!?
-	* Added error checking for arguments to uck-remaster-mount.
-	* improved error checking and handling for union mounts: either all or
-	  nothing now; imply -m if tell-tale directory (-cache) is found;
-	  made reentrant for use by uck-flow; pointless check for
-	  uck-remaster-mount removed; fallback to copy if union mount not
-	  possible; do not remove target when using mounts.
-	* uck-remaster-remove-win32-files now removes usb-creator.exe which
-	  was added in maverick
-	* Fixed immediate umount in uck-remaster-unpack-{iso,rootfs} by trap
-	  EXIT handling when using -m.
-	* unmount strategy (after chroot) was rewritten to unmount every mountpoint
-	  found inside remaster-root.
-* Package:
-	* gfxboot-dev dep added for maverick
-* Internal:
-	* New target updman in Makefile to update manual page version numbers.
-
-------------
--- 2.3.0 --
+-- 2.3.4 --
 ------------
 
 * GUI:
@@ -43,7 +9,6 @@
 	  and added the possibility to specify a directory different from ~/tmp
 	  for remaster-dir. Change is backward compatible to uck-2.2.0.
 	  (Question/Answer 110374)
-
 * Backend:
 	* Sequence of actions in uck-remaster changed so that initrd is
 	  unpacked/customized/packed after the changes to the root file system
@@ -72,8 +37,34 @@
 	  files in the mount. This happens when updates start daemons in the
 	  root fs.
 	* Updated all manual pages to reference the source / bug reporting URLs.
-
-* Other:
+	* initctl is disabled (replaced with /bin/true) during chroot sessions.
+	  With this change is now possible to install mysql/apache and other
+	  services in the guest system.
+	* update-grub is disabled (replaced with /bin/true) during chroot sessions.
+	  With this change is now possible to upgrade kernel in maverick too.
+	* host's fstab/mtab are copied to the guest so that chrooted "df" can work.
+	* Backend now checks for kpackagekit as packaging tool, too.
+	  Note: This requires that packagekit ist installed on the hosting
+	  system - otherwise the dbus queries to packagekitd will fail.
+	  FIXME: Running packagekitd on the host will give wrong results!!!
+	  --> We need to change the strategy here! Upstart has similar issues
+	  --> need to start "private" dbus system bus instance?!?
+	* Added error checking for arguments to uck-remaster-mount.
+	* improved error checking and handling for union mounts: either all or
+	  nothing now; imply -m if tell-tale directory (-cache) is found;
+	  made reentrant for use by uck-flow; pointless check for
+	  uck-remaster-mount removed; fallback to copy if union mount not
+	  possible; do not remove target when using mounts.
+	* uck-remaster-remove-win32-files now removes usb-creator.exe which
+	  was added in maverick
+	* Fixed immediate umount in uck-remaster-unpack-{iso,rootfs} by trap
+	  EXIT handling when using -m.
+	* unmount strategy (after chroot) was rewritten to unmount every mountpoint
+	  found inside remaster-root.
+* Package:
+	* gfxboot-dev dep added for maverick
+* Internal:
+	* New target updman in Makefile to update manual page version numbers.
 	* Updated localbuild.sh procedure to patch the debian/changelog file
 	  so that a local unsigned test version can be generated correctly.
 
