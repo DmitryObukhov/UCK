@@ -25,6 +25,7 @@
 	  was added in maverick
 	* Fixed immediate umount in uck-remaster-unpack-{iso,rootfs} by trap
 	  EXIT handling when using -m.
+	* after chroot also /root/.gvfs is unmounted.
 * Package:
 	* gfxboot-dev dep added for maverick
 * Internal:

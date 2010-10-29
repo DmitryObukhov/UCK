@@ -171,6 +171,7 @@ function unmount_pseudofilesystems()
 		unmount_directory "$REMASTER_DIR/lib/modules/*/volatile"
 		unmount_directory "$REMASTER_DIR/tmp/customization-scripts"
 		unmount_directory "$REMASTER_DIR/var/cache/apt"
+		unmount_directory "$REMASTER_DIR/root/.gvfs"
 		unmount_directory "$REMASTER_DIR/root"
 		unmount_directory "$REMASTER_DIR/tmp"
 		unmount_directory "$REMASTER_DIR/var/run"
