@@ -349,6 +349,14 @@ function prepare_rootfs_for_chroot()
 	echo "Copying resolv.conf..."
 	cp -f /etc/resolv.conf "$REMASTER_DIR/etc/resolv.conf" ||
 		failure "Failed to copy resolv.conf, error=$?"
+		
+	echo "Copying fstab/mtab..."
+	mv "$REMASTER_DIR/etc/fstab" "$REMASTER_DIR/etc/fstab.uck" ||
+		failure "Failed to copy fstab, error=$?"
+	cp -f /etc/fstab "$REMASTER_DIR/etc/fstab" ||
+		failure "Failed to copy fstab, error=$?"
+	cp -f /etc/mtab "$REMASTER_DIR/etc/mtab" ||
+		failure "Failed to copy mtab, error=$?"
 
 	echo "Creating DBUS uuid..."
 	chroot "$REMASTER_DIR" dbus-uuidgen --ensure 1>/dev/null 2>&1
@@ -367,6 +375,10 @@ function prepare_rootfs_for_chroot()
 	echo "Deactivating initctl..."
 	chroot "$REMASTER_DIR" mv /sbin/initctl /sbin/initctl.uck_blocked
 	chroot "$REMASTER_DIR" ln -s /bin/true /sbin/initctl
+	
+	echo "Deactivating update-grub..."
+	chroot "$REMASTER_DIR" mv /usr/sbin/update-grub /usr/sbin/update-grub.uck_blocked
+	chroot "$REMASTER_DIR" ln -s /bin/true /usr/sbin/update-grub
 }
 
 function clean_rootfs_after_chroot()
@@ -374,6 +386,10 @@ function clean_rootfs_after_chroot()
 	echo "Reactivating initctl..."
 	chroot "$REMASTER_DIR" rm /sbin/initctl
 	chroot "$REMASTER_DIR" mv /sbin/initctl.uck_blocked /sbin/initctl
+	
+	echo "Deactivating update-grub..."
+	chroot "$REMASTER_DIR" ln -s /usr/sbin/update-grub
+	chroot "$REMASTER_DIR" mv /usr/sbin/update-grub.uck_blocked /usr/sbin/update-grub 
 	
 	UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
 	if [ `echo $UCK_USER_HOME_DIR | cut -d '/' -f2` == 'home' ] ; then
@@ -386,6 +402,10 @@ function clean_rootfs_after_chroot()
 
 	echo "Removing generated resolv.conf..."
 	chroot "$REMASTER_DIR" rm -f /etc/resolv.conf
+	
+	echo "Removing generated fstab/mtab..."
+	mv "$REMASTER_DIR/etc/fstab.uck" "$REMASTER_DIR/etc/fstab"
+	chroot "$REMASTER_DIR" rm -f /etc/mtab
 
 	unmount_pseudofilesystems
 
