@@ -56,7 +56,8 @@ function mount_directory()
 # Unmount - but only if mounted
 function unmount_directory()
 {
-	if mountpoint -q "$1"; then
+	#if mountpoint -q "$1"; then
+	if mountpoint "$1"; then
 		echo "Unmounting $1..."
 		umount -l "$1" || failure "Cannot unmount $1"
 	fi
@@ -168,16 +169,9 @@ function mount_pseudofilesystems()
 function unmount_pseudofilesystems()
 {
 	if [ -n "$REMASTER_DIR" ]; then
-		unmount_directory "$REMASTER_DIR/lib/modules/*/volatile"
-		unmount_directory "$REMASTER_DIR/tmp/customization-scripts"
-		unmount_directory "$REMASTER_DIR/var/cache/apt"
-		unmount_directory "$REMASTER_DIR/root/.gvfs"
-		unmount_directory "$REMASTER_DIR/root"
-		unmount_directory "$REMASTER_DIR/tmp"
-		unmount_directory "$REMASTER_DIR/var/run"
-		unmount_directory "$REMASTER_DIR/dev/pts"
-		unmount_directory "$REMASTER_DIR/sys"
-		unmount_directory "$REMASTER_DIR/proc"
+		for i in `mount | grep " $REMASTER_DIR/" | cut -d " " -f3 | sort -r`; do
+			unmount_directory "$i"
+		done
 	fi
 }
 
@@ -388,8 +382,8 @@ function clean_rootfs_after_chroot()
 	chroot "$REMASTER_DIR" rm /sbin/initctl
 	chroot "$REMASTER_DIR" mv /sbin/initctl.uck_blocked /sbin/initctl
 	
-	echo "Deactivating update-grub..."
-	chroot "$REMASTER_DIR" ln -s /usr/sbin/update-grub
+	echo "Reactivating update-grub..."
+	chroot "$REMASTER_DIR" rm /usr/sbin/update-grub
 	chroot "$REMASTER_DIR" mv /usr/sbin/update-grub.uck_blocked /usr/sbin/update-grub 
 	
 	UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
