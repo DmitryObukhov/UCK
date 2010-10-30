@@ -47,7 +47,7 @@ case $# in
 	exit 1;;
 esac
 
-if [ ! -d "$1" -o ! -d "$1"/customization-dir ]; then
+if [ ! -d "$1" -o ! -d "$1"/customization-scripts ]; then
 	echo "$0: '$1' does not seem to be a project directory" >&2
 	exit 1
 fi
