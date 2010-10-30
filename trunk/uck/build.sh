@@ -32,6 +32,7 @@ rm -rf logo
 rm -rf build.sh
 rm -rf localbuild.sh
 rm -rf Makefile
+rm -rf SUITE
 
 # generating deb package
 KEY=063FFBAE
