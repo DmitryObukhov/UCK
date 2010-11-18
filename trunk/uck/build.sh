@@ -11,6 +11,7 @@ VERSION=`cat VERSION`
 # renaming uck dir adding version
 cd ..
 mv uck uck-$VERSION
+tar zcf uck_$VERSION.orig.tar.gz uck-$VERSION
 cd uck-$VERSION
 
 # checking if version number has been updated everywhere
