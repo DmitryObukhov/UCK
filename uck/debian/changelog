@@ -5,7 +5,8 @@ uck (2.4.0-0ubuntu1) maverick; urgency=low
       Fixes LP: #659572 and #618705 and #664709.
     - gvfs problem in chroot environment was solved.
       Fixes LP: #657689.
-  * Depends on gfxboot-dev (only >= maverick)    
+  * Depends on gfxboot-dev (only >= maverick).
+  * Bump Standards.
   
  -- Fabrizio Balliano <fabrizio@fabrizioballiano.it>  Thu, 18 Nov 2010 01:47:14 +0200
 
