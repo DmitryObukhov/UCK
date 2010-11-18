@@ -1,3 +1,14 @@
+uck (2.4.0-0ubuntu1) maverick; urgency=low
+
+  * New upstream release:
+    - Support for maverick was added.
+      Fixes LP: #659572 and #618705 and #664709.
+    - gvfs problem in chroot environment was solved.
+      Fixes LP: #657689.
+  * Depends on gfxboot-dev (only >= maverick)    
+  
+ -- Fabrizio Balliano <fabrizio@fabrizioballiano.it>  Thu, 18 Nov 2010 01:47:14 +0200
+
 uck (2.2.1-0ubuntu1) maverick; urgency=low
 
   * New upstream release:
