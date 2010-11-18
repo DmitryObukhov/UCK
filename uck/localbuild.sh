@@ -47,6 +47,7 @@ EOF
 fi
 
 # cleaning
+tar zcf ../uck_$VERSION.orig.tar.gz .
 rm -rf `find -name .svn`
 rm -rf logo dist
 rm -rf build.sh localbuild.sh Makefile SUITE
