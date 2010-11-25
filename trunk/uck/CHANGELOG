@@ -1,4 +1,12 @@
 ------------
+-- 2.4.1 --
+------------
+
+* Backend:
+	* Applied patch to handle changed named of syslinux config file.
+	  Thanks to Tom Freudenberg for this patch.
+
+------------
 -- 2.4.0 --
 ------------
 

@@ -154,9 +154,9 @@ then
 fi
 
 #	-- what used to be a gzipped initrd now is a lzma compressed initrd
-if [ -f text.cfg ]
+if [ -f text.cfg -o -f txt.cfg ]
 then
-	lzused=`grep initrd.lz text.cfg`
+	lzused=`grep initrd.lz text.cfg txt.cfg`
 	lzmacmd=`which lzma`
 	if [ -n "$lzused" ]
 	then
@@ -176,7 +176,7 @@ then
 			then
 				echo "lzma command not installed"
 				echo "Switching permanently to gzipped initrd"
-				sed -i -e 's/initrd\.lz/initrd.gz/g' text.cfg
+				sed -i -e 's/initrd\.lz/initrd.gz/g' text.cfg txt.cfg
 				rm -f ../casper/initrd.lz
 			else
 				: do nothing - no initrd.gz
