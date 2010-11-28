@@ -374,10 +374,27 @@ function prepare_rootfs_for_chroot()
 	echo "Deactivating update-grub..."
 	chroot "$REMASTER_DIR" mv /usr/sbin/update-grub /usr/sbin/update-grub.uck_blocked
 	chroot "$REMASTER_DIR" ln -s /bin/true /usr/sbin/update-grub
+
+	echo "Remembering kernel update state..."
+	update_flags="reboot-required reboot-required.pkgs do-not-hibernate"
+	varrun="$REMASTER_DIR"/var/run
+	for flag in $update_flags; do
+		[ -f "$varrun"/$flag ] &&
+			mv "$varrun"/$flag "$varrun"/$flag.uck_blocked
+	done
 }
 
 function clean_rootfs_after_chroot()
 {
+	echo "Restoring kernel update state..."
+	update_flags="reboot-required reboot-required.pkgs do-not-hibernate"
+	varrun="$REMASTER_DIR"/var/run
+	for flag in $update_flags; do
+		rm -f "$varrun"/$flag
+		[ -f "$varrun"/$flag.uck_blocked ] &&
+			mv "$varrun"/$flag.uck_blocked "$varrun"/$flag
+	done
+
 	echo "Reactivating initctl..."
 	chroot "$REMASTER_DIR" rm /sbin/initctl
 	chroot "$REMASTER_DIR" mv /sbin/initctl.uck_blocked /sbin/initctl
