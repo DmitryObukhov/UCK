@@ -5,6 +5,7 @@
 * Backend:
 	* Added code to remember kernel update state (shared /var/run
 	  issue). (#682108)
+	* yaboot dep was added (only for ppc)
 
 ------------
 -- 2.4.1 --
