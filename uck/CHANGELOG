@@ -1,23 +1,31 @@
-------------
+-----------
+-- 2.4.3 --
+-----------
+
+* Backend:
+	* uck-remaster-prepare-alternate and uck-remaster-finalize-alternate now
+	  support all architectures (and not only i386)
+
+-----------
 -- 2.4.2 --
-------------
+-----------
 
 * Backend:
 	* Added code to remember kernel update state (shared /var/run
 	  issue). (#682108)
 	* yaboot dep was added (only for ppc)
 
-------------
+-----------
 -- 2.4.1 --
-------------
+-----------
 
 * Backend:
 	* Applied patch to handle changed named of syslinux config file.
 	  Thanks to Tom Freudenberg for this patch. (#681032)
 
-------------
+-----------
 -- 2.4.0 --
-------------
+-----------
 
 * GUI:
 	* GUI now uses kdialog, zenity, dialog or builtin (in that order) if

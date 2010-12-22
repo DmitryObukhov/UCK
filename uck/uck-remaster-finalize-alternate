@@ -62,11 +62,17 @@ if [ ! -e "$ISO_REMASTER_DIR" ]; then
 	failure "ISO remastering directory does not exists"
 fi
 
+##########################
+# detecting architecture #
+##########################
+
+ARCH=`ls "$ISO_REMASTER_DIR"/dists/stable/main | grep binary | cut -d \- -f2`
+
 ############################
 # creating pool structures #
 ############################
 
-mkdir -p $ISO_REMASTER_DIR/dists/stable/extras/binary-i386 $ISO_REMASTER_DIR/pool/extras
+mkdir -p $ISO_REMASTER_DIR/dists/stable/extras/binary-$ARCH $ISO_REMASTER_DIR/pool/extras
 mkdir -p $REMASTER_ALT_TMP/keyring
 mkdir -p $REMASTER_ALT_TMP/indices
 
@@ -74,7 +80,7 @@ mkdir -p $REMASTER_ALT_TMP/indices
 # creating realease file for extras #
 #####################################
 
-cat $ISO_REMASTER_DIR/dists/stable/main/binary-i386/Release | sed 's/Component: main/Component: extras/' > $ISO_REMASTER_DIR/dists/stable/extras/binary-i386/Release
+cat $ISO_REMASTER_DIR/dists/stable/main/binary-$ARCH/Release | sed 's/Component: main/Component: extras/' > $ISO_REMASTER_DIR/dists/stable/extras/binary-$ARCH/Release
 
 ##############################
 # detecting release codename #
@@ -124,13 +130,13 @@ TreeDefault {
 };
 
 BinDirectory \"pool/main\" {
-  Packages \"dists/$RELEASE_CODENAME/main/binary-i386/Packages\";
+  Packages \"dists/$RELEASE_CODENAME/main/binary-$ARCH/Packages\";
   BinOverride \"$REMASTER_ALT_TMP/indices/override.$RELEASE_CODENAME.main\";
   ExtraOverride \"$REMASTER_ALT_TMP/indices/override.$RELEASE_CODENAME.extra.main\";
 };
 
 BinDirectory \"pool/restricted\" {
- Packages \"dists/$RELEASE_CODENAME/restricted/binary-i386/Packages\";
+ Packages \"dists/$RELEASE_CODENAME/restricted/binary-$ARCH/Packages\";
  BinOverride \"$REMASTER_ALT_TMP/indices/override.$RELEASE_CODENAME.restricted\";
 };
 
@@ -158,12 +164,12 @@ TreeDefault {
 };
 
 BinDirectory \"pool/main\" {
-  Packages \"dists/$RELEASE_CODENAME/main/debian-installer/binary-i386/Packages\";
+  Packages \"dists/$RELEASE_CODENAME/main/debian-installer/binary-$ARCH/Packages\";
   BinOverride \"$REMASTER_ALT_TMP/indices/override.$RELEASE_CODENAME.main.debian-installer\";
 };
 
 BinDirectory \"pool/restricted\" {
-  Packages \"dists/$RELEASE_CODENAME/restricted/debian-installer/binary-i386/Packages\";
+  Packages \"dists/$RELEASE_CODENAME/restricted/debian-installer/binary-$ARCH/Packages\";
   BinOverride \"$REMASTER_ALT_TMP/indices/override.$RELEASE_CODENAME.restricted.debian-installer\";
 };
 
@@ -191,7 +197,7 @@ TreeDefault {
 };
 
 BinDirectory \"pool/extras\" {
-  Packages \"dists/$RELEASE_CODENAME/extras/binary-i386/Packages\";
+  Packages \"dists/$RELEASE_CODENAME/extras/binary-$ARCH/Packages\";
 };
 
 Default {
