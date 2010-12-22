@@ -55,7 +55,17 @@ if [ ! -e "$ISO_REMASTER_DIR" ]; then
 	failure "ISO remastering directory does not exists"
 fi
 
+##########################
+# detecting architecture #
+##########################
+
+ARCH=`ls "$ISO_REMASTER_DIR"/dists/stable/main | grep binary | cut -d \- -f2`
+
+#######################################
+# creating basic extra pool structure #
+#######################################
+
 cd $ISO_REMASTER_DIR
-mkdir -p dists/stable/extras/binary-i386 pool/extras
+mkdir -p dists/stable/extras/binary-$ARCH pool/extras
 
 echo "now you can copy your packages in $ISO_REMASTER_DIR/pool/extras, customize preseed files or do other customizations"
