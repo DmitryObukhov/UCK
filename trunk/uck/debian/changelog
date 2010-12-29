@@ -1,3 +1,17 @@
+uck (2.4.3-0ubuntu1) maverick; urgency=low
+  * New upstream release:
+    - yaboot dep was added (only for ppc)
+      Fixes LP: #516231
+    - Added code to remember kernel update state (shared /var/run issue)
+      Fixes LP: #682108
+    - Applied patch to handle changed named of syslinux config file.
+	  Fixes LP: #681032
+	- uck-remaster-prepare-alternate and uck-remaster-finalize-alternate now
+	  support all architectures (and not only i386)
+	  Fixes LP: #693620
+
+ -- Fabrizio Balliano <fabrizio@fabrizioballiano.it>  Wec, 29 Dec 2010 01:47:14 +0200
+
 uck (2.4.0-0ubuntu1) maverick; urgency=low
 
   * New upstream release:
