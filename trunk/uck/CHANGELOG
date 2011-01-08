@@ -1,4 +1,15 @@
 -----------
+-- 2.4.4 --
+-----------
+
+* Frontend:
+	* Fixed usage message in uck-remaster to match the parameter handling
+	  that was already implemented.
+* Documentation:
+	* Fixed uck-gui man page: uck-gui does not accept a customization-dir
+	  parameter.
+
+-----------
 -- 2.4.3 --
 -----------
 

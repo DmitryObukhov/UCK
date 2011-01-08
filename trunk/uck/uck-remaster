@@ -24,7 +24,7 @@
 
 function usage()
 {
-	echo "Usage: $0 [-m] iso-file.iso [customization-scripts-dir]"
+	echo "Usage: $0 [-m] iso-file.iso [customization-scripts-dir] [remoaster-home]"
 }
 
 function check_exit_code()
