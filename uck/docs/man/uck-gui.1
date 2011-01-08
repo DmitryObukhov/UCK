@@ -8,7 +8,7 @@
 \&\fBuck-gui\fR \- Ubuntu Customization Kit graphical user interface
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-uck-gui [-m] [scripts-dir] [remaster-dir]
+uck-gui [-m] [remaster-dir]
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
 \&\fBUbuntu Customization Kit\fR is a tool that helps you customizing
@@ -16,18 +16,9 @@ official Ubuntu Live CDs (including Kubuntu/Xubuntu and Edubuntu) to your
 needs. You can add (almost) any package to the live system, for example
 language packs, or applications.
 .PP
-If the optional scripts-dir parameter is specified it is assumed to be the name
-of a directory containing the scripts to use during customization. If not given
-it defaults to an enhanced copy of
-/usr/lib/uck/customization-profiles/localized_cd, as localization of CD's is
-the most common task performed with UCK.
-.PP
 If the optional "remaster-dir" is specified this will be used as (local!)
 directory that will contain all data created during the customization process.
 This defaults to ~/tmp if not specified.
-.PP
-To perform a customization with the default customization scripts in a different
-location use an explicit empty second parameter (e.g. "").
 .PP
 If the \fB\-m\fR option is specified, a set of loop back and unionfs mounts
 will be used to create a writeable instance of the ISO image accessible as
@@ -36,6 +27,8 @@ will be cached in \fBremaster-iso-cache\fR under \fBremaster-dir\fR.
 This is a lot faster and requires less disk space, but may not work for all
 scenarios and mandates the installation of some additional software (i.e.
 fuse-utils and unionfs-fuse).
+.PP
+The scripts run during customization are a copy of the scripts found in /usr/lib/uck/customization-profiles/localized_cd.
 .PP
 Note that \fBuck-gui\fR is an interface designed to make localization of and
 simple addition of packages to Ubuntu Live-CD's simple, but that the UCK
