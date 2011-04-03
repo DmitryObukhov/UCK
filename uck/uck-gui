@@ -47,7 +47,9 @@ while [ -n "$1" ]; do
 		WAIT_BEFORE_EXIT=1;;
 	-m|--mount)
 		USE_MOUNT=-m;;
-	-*)	echo "Unexpected argument: $1" >&2; exit 1;;
+	-*)	echo "Unexpected argument: $1" >&2
+		echo "Usage: $0 [--wait-before-exit] [-m] [remaster_home]" >&2
+		exit 1;;
 	*)	break;;
 	esac
 	shift
@@ -75,8 +77,12 @@ else
 	VERSION=`cat /usr/lib/uck/VERSION`
 fi
 
+rel="`lsb_release -is` `lsb_release -rs`"
+kernel=`uname -rm`
+
 WELCOME_TEXT=`cat <<EOF
 Welcome to Ubuntu Customization Kit $VERSION!
+(Running on $rel, $kernel)
 
 This tool lets you create Ubuntu live CDs in your language,
 with all the necessary language packs preinstalled.
@@ -288,6 +294,15 @@ echo "$RUN_MANUAL_CUSTOMIZATIONS" >"$BUILD_DIR"/run_manual_customizations
 echo "$REMOVE_WIN32_FILES" >"$BUILD_DIR"/remove_win32_files
 echo "yes" >"$BUILD_DIR"/clean_desktop_manifest
 
+# Pass proxy variables around sudo to chroot environment
+>"$BUILD_DIR"/environment
+for var in `env | grep -i _proxy`
+do
+	name=`echo "$var" | sed 's/=.*//'`
+	value=`echo "$var" | sed 's/[^=]*=//'`
+	echo "export $name=\"$value\"" >>"$BUILD_DIR"/environment
+done
+
 if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 	echo "Creating X authentication cookie..."
 	xauth extract - $DISPLAY > "$BUILD_DIR"/Xcookie || failure "Cannot create Xauthentication cookie in $BUILD_DIR/Xcookie, error=$?"
@@ -297,7 +312,7 @@ echo "Running build process..."
 (
 echo "Build ($0 $SAVED_ARGS) started at `date +'%Y-%m-%d %H:%M:%S'`"
 export UCK_USERNAME="$USER"
-sudo bash "$SCRIPTS_DIR"/uck-remaster $USE_MOUNT "$ISO_IMAGE" "$BUILD_DIR"
+sudo bash "$SCRIPTS_DIR"/uck-remaster $USE_MOUNT "$ISO_IMAGE" "$BUILD_DIR" "$REMASTER_HOME"
 RESULT=$?
 
 if [ $RESULT -ne 0 ]; then

@@ -109,11 +109,21 @@ function run_console()
 SCRIPT_DIR=`dirname "$0"`
 . "$SCRIPT_DIR/gui.sh"
 
+# Inherit environment
+[ -f "$SCRIPT_DIR/environment" ] &&
+	. "$SCRIPT_DIR/environment"
+
 LIVECD_LANGS=`cat "$SCRIPT_DIR/language_packs"`
 RUN_MANUAL_CUSTOMIZATIONS=`cat "$SCRIPT_DIR/run_manual_customizations"`
 DESKTOP_TYPE=`cat "$SCRIPT_DIR/desktop_type"`
 
 DESKTOP_FLAVOURS=`cat "$SCRIPT_DIR/desktop_types"`
+
+# Print some information on the system being customized:
+rel="`lsb_release -is` `lsb_release -rs`"
+kernel=`ls /boot/config-* | sed 's/.*config-//'`
+arch=`if [ -d /lib64 ]; then echo x86_64; else echo i586; fi`
+echo ">> Customizing: $rel, $kernel $arch"
 
 prepare_install || failure "Preparing installation failed, error=$?"
 

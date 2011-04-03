@@ -83,7 +83,10 @@ else
 	VERSION=`cat /usr/lib/uck/VERSION`
 fi
 
-echo "Ubuntu Customization Kit $VERSION"
+# Some information of the hosting system
+rel="`lsb_release -is` `lsb_release -rs`"
+kernel=`uname -rm`
+echo ">> Ubuntu Customization Kit $VERSION on $rel, $kernel"
 echo "Starting CD remastering on " `date`
 echo "Customization dir=$CUSTOMIZE_DIR"
 
