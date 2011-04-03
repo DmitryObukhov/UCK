@@ -5,6 +5,20 @@
 * Frontend:
 	* Fixed usage message in uck-remaster to match the parameter handling
 	  that was already implemented.
+	* Start message now contains output of uname and lsb_release. This
+	  should help to better diagnose problems.
+	* customize script now outputs kernel and lsb_release info. This
+	  should help to better diagnose problems,
+	* uck-gui now gives proper usage message and outputs uname and
+	  lsb_release information.
+	* uck-gui now passes REMASTER_HOME to uck-remaster. Necessary for
+	  changed behaviour of sudo in Natty. Fixes (#748209). Answer
+	  questions #151311, #151108, #150223
+* Backend:
+	* Extract proxy environment variables in uck-gui and pass them on to
+	  the chroot environment around sudo calls. Solves (#111253)
+	* Modified customize_iso to correctly use REMASTER_HOME if SCRIPT_DIR
+	  was not specified.
 * Documentation:
 	* Fixed uck-gui man page: uck-gui does not accept a customization-dir
 	  parameter.

@@ -45,7 +45,7 @@
 
 SCRIPT_DIR=`dirname "$0"`
 REMASTER_HOME=${1:-~/tmp}
-SCRIPT_DIR=${2-~/tmp/customization-scripts}
+SCRIPT_DIR=${2-$REMASTER_HOME/customization-scripts}
 ISO_REMASTER_DIR="$REMASTER_HOME/remaster-iso"
 REMASTER_DIR="$REMASTER_HOME/remaster-root"
 BOOT_LANG=`cat "$SCRIPT_DIR/livecd_locale"`
@@ -156,7 +156,8 @@ fi
 # What used to be a gzipped initrd now is a lzma compressed initrd
 if [ -f text.cfg ] || [ -f txt.cfg ]
 then
-	lzused=`grep initrd.lz text.cfg txt.cfg`
+	# At least one of the .cfg file will be missing. Drop error message.
+	lzused=`grep initrd.lz text.cfg txt.cfg 2>/dev/null`
 	lzmacmd=`which lzma`
 	if [ -n "$lzused" ]
 	then
