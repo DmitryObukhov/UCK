@@ -1,3 +1,14 @@
+uck (2.4.4-0ubuntu1) natty; urgency=low
+  * New upstream release:
+    - Extract proxy environment variables in uck-gui and pass them on to
+      the chroot environment around sudo calls.
+      Fixes LP: #111253
+    - uck-gui now passes REMASTER_HOME to uck-remaster. Necessary for
+      changed behaviour of sudo in Natty.
+      Fixes LP: #748209
+
+ -- Fabrizio Balliano <fabrizio@fabrizioballiano.it>  Mon, 04 Apr 2011 01:47:14 +0200
+
 uck (2.4.3-0ubuntu1) maverick; urgency=low
   * New upstream release:
     - yaboot dep was added (only for ppc)
