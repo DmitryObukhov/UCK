@@ -1,4 +1,12 @@
 -----------
+-- 2.4.5 --
+-----------
+
+* Frontend:
+	* new languages (zh-hans/zh-hant) are now correctly handled.
+	  Fixes #770810
+
+-----------
 -- 2.4.4 --
 -----------
 

@@ -173,7 +173,7 @@ fi
 
 dialog_msgbox "Welcome" "$WELCOME_TEXT"
 
-AVAILABLE_LANGUAGE_PACKS=`apt-cache pkgnames language-support | egrep '^language-support-.{2,3}$' | cut -d'-' -f3 | sort`
+AVAILABLE_LANGUAGE_PACKS=`apt-cache pkgnames language-support | egrep '^language-support-.{2,7}$' | cut -b 18- | sort`
 CD_LANGS=`dialog_multi_choice $'Please choose language packs to install\n(you can choose more than one)' $AVAILABLE_LANGUAGE_PACKS`
 RESULT=$?
 
