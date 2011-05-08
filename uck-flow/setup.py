@@ -32,17 +32,8 @@ import sys
 import os
 from distutils.core import setup
 
-# Dynamically determine VERSION from file
-p = os.popen("cat VERSION")
-if p == 0:
-	print >>sys.stderr, "Cannot find VERSION file!"
-	sys.exit(2)
-else:
-	v = p.read().strip()
-	p.close()
-
 setup(	name = 'uckflow',
-	version = v,
+	version = os.environ['VERSION'],
 	description = 'The uck-flow GUI for the Ubuntu Customization Toolkit',
 	author = 'Wolf J. Geldmacher',
 	author_email = 'wolf@womaro.ch',
