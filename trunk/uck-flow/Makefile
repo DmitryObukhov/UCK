@@ -1,7 +1,7 @@
 #
 # $Id$
 #
-VERSION=$(shell cat VERSION)
+export VERSION=0.4.11
 SUITE=$(shell cat SUITE)
 KEY=$(shell if test `id -nu` = wjg; then echo BA4B79B2; else echo 063FFBAE; fi)
 
