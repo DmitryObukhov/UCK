@@ -1,8 +1,8 @@
 #
 # $Id$
 #
-export VERSION=0.4.11
-export SUITE=natty
+VERSION=0.4.11
+SUITE=natty
 KEY=$(shell if test `id -nu` = wjg; then echo BA4B79B2; else echo 063FFBAE; fi)
 
 all: translations
@@ -22,6 +22,7 @@ install: all
 sdist: all
 	rm -rf dist
 	sed 's/@SUITE@/$(SUITE)/g' <stdeb.cfg.tmpl >/tmp/stdeb.cfg
+	sed 's/@VERSION@/$(VERSION)/g' <setup.py.tmpl >setup.py
 	python setup.py sdist
 	cd dist; py2dsc -x /tmp/stdeb.cfg uckflow-$(VERSION).tar.gz
 	cd dist/deb_dist/uckflow-$(VERSION); \
@@ -32,6 +33,7 @@ upload: sdist
 
 dist: all
 	sed 's/@SUITE@/$(SUITE)/g' <stdeb.cfg.tmpl >/tmp/stdeb.cfg
+	sed 's/@VERSION@/$(VERSION)/g' <setup.py.tmpl >setup.py
 	python setup.py sdist
 	cd dist; py2dsc -x /tmp/stdeb.cfg uckflow-$(VERSION).tar.gz
 	cd dist/deb_dist/uckflow-$(VERSION); \
