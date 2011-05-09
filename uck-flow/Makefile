@@ -1,7 +1,7 @@
 #
 # $Id$
 #
-VERSION=0.4.11
+VERSION=0.4.12
 SUITE=natty
 KEY=$(shell if test `id -nu` = wjg; then echo BA4B79B2; else echo 063FFBAE; fi)
 
