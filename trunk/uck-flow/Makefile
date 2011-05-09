@@ -2,7 +2,7 @@
 # $Id$
 #
 export VERSION=0.4.11
-SUITE=$(shell cat SUITE)
+export SUITE=natty
 KEY=$(shell if test `id -nu` = wjg; then echo BA4B79B2; else echo 063FFBAE; fi)
 
 all: translations
@@ -21,18 +21,19 @@ install: all
 #	sudo pip install stdeb
 sdist: all
 	rm -rf dist
-	sed 's/@SUITE@/$(SUITE)/g' <stdeb.cfg.tmpl >stdeb.cfg
+	sed 's/@SUITE@/$(SUITE)/g' <stdeb.cfg.tmpl >/tmp/stdeb.cfg
 	python setup.py sdist
-	cd dist; py2dsc uckflow-$(VERSION).tar.gz
+	cd dist; py2dsc -x /tmp/stdeb.cfg uckflow-$(VERSION).tar.gz
 	cd dist/deb_dist/uckflow-$(VERSION); \
 		dpkg-buildpackage -S -rfakeroot -k$(KEY)
+
 upload: sdist
 	cd dist/deb_dist; dput ppa:uck-team/uck-unstable *.changes
 
 dist: all
-	sed 's/@SUITE@/$(SUITE)/g' <stdeb.cfg.tmpl >stdeb.cfg
+	sed 's/@SUITE@/$(SUITE)/g' <stdeb.cfg.tmpl >/tmp/stdeb.cfg
 	python setup.py sdist
-	cd dist; py2dsc uckflow-$(VERSION).tar.gz
+	cd dist; py2dsc -x /tmp/stdeb.cfg uckflow-$(VERSION).tar.gz
 	cd dist/deb_dist/uckflow-$(VERSION); \
 		dpkg-buildpackage -rfakeroot -uc -us
 	mv dist/deb_dist/*.deb .
@@ -42,6 +43,9 @@ clean:
 	rm -f src/*.bak src/*.py[co] src/uckFlow.glade.h uckFlow.glade.h
 	rm -f glademessage.pot stdeb.cfg
 	sudo rm -rf dist locale
+
+distclean: clean
+	rm -f *.gz *.deb
 
 messages.pot: src/uckFlow.glade uck-flow src/*.py
 	xgettext -L python -k_ -kN_ -o messages.pot uck-flow src/*.py
