@@ -43,7 +43,7 @@ dist: all
 
 clean:
 	rm -f src/*.bak src/*.py[co] src/uckFlow.glade.h uckFlow.glade.h
-	rm -f glademessage.pot stdeb.cfg
+	rm -f glademessage.pot stdeb.cfg setup.py
 	sudo rm -rf dist locale
 
 distclean: clean
