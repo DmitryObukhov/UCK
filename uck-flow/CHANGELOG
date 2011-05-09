@@ -1,3 +1,7 @@
+0.4.11
+	- Changes to make it package/upload with stdeb 0.6. No functional
+	  changes whatsoever.
+
 0.4.10
 	- Applied patch by Tom Freudenberg to check for renamed syslinux
 	  config file to templates.
