@@ -5,6 +5,8 @@
 * Frontend:
 	* new languages (zh-hans/zh-hant) are now correctly handled.
 	  Fixes #770810
+* Backend:
+	* /etc/fstab is not mandatory in the squashfs file system (#808506)
 
 -----------
 -- 2.4.4 --

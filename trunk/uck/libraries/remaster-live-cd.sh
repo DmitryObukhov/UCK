@@ -346,8 +346,10 @@ function prepare_rootfs_for_chroot()
 		failure "Failed to copy resolv.conf, error=$?"
 		
 	echo "Copying fstab/mtab..."
-	mv "$REMASTER_DIR/etc/fstab" "$REMASTER_DIR/etc/fstab.uck" ||
-		failure "Failed to copy fstab, error=$?"
+	if [ -f "$REMASTER_DIR/etc/fstab" ] ; then
+		mv "$REMASTER_DIR/etc/fstab" "$REMASTER_DIR/etc/fstab.uck" ||
+			failure "Failed to copy fstab, error=$?"
+	fi
 	cp -f /etc/fstab "$REMASTER_DIR/etc/fstab" ||
 		failure "Failed to copy fstab, error=$?"
 	cp -f /etc/mtab "$REMASTER_DIR/etc/mtab" ||
@@ -416,8 +418,11 @@ function clean_rootfs_after_chroot()
 	chroot "$REMASTER_DIR" rm -f /etc/resolv.conf
 	
 	echo "Removing generated fstab/mtab..."
-	mv "$REMASTER_DIR/etc/fstab.uck" "$REMASTER_DIR/etc/fstab"
 	chroot "$REMASTER_DIR" rm -f /etc/mtab
+	chroot "$REMASTER_DIR" rm -f /etc/fstab
+	if [ -f "$REMASTER_DIR/etc/fstab.uck" ] ; then
+		mv "$REMASTER_DIR/etc/fstab.uck" "$REMASTER_DIR/etc/fstab"
+	fi
 
 	unmount_pseudofilesystems
 
