@@ -1,0 +1,140 @@
+<html>
+<head>
+</head>
+<body>
+<h1>uck-flow - An alternative GUI for UCK</h1>
+uck-flow is an alternative graphical user interface for the Ubuntu
+Customization Kit.
+<p>
+In contrast to uck-gui(1), which is tuned to allow easy execution of common
+customizations, uck-flow provides a fine grained control over each of the
+customization steps. In order to make use of this flexibility, some (shell-)
+programming skills are required.
+<p>
+uck-flow provides templates for some of the most common customizations,
+can easily be extended with more templates and allows (re-)execution of
+arbitrary customization steps.
+<h2>Quick Start - For the Impatient</h2>
+The easiest way to get started with UCK-Flow is to:
+<ol>
+<li> From the Main Menu select "Project" -&gt; "New from Template"
+<li> Select a template from the list (e.g.  "localized") and click "Open"
+<li> Select an existing folder / Create a new folder to store the project in.
+(select a fresh folder here and merge any existing code into the new
+structure afterwards...)
+<li> Click "Edit" on the "Click the button to edit the project environment" to
+     verify the settings are to your liking.
+<li> Click "Edit" on the "prepare ISO" step and look all the way at the end:
+You need to copy/link your source ISO image to $UCK_SOURCE.
+<li> Toggle the buttons on all the steps you want to perform
+<li> Hit the big button that says "Ready..." and enjoy the ride.
+</ol>
+<p>
+You may want to follow what's going on by selecting "View -&gt; Show Log"  and turning on the "Follow Log" checkbox.
+<h2>Some UCK Basics</h2>
+UCK - the Ubuntu Customization toolKit - is used to customize Ubuntu CD's.
+<p>
+It consists of a set of shell procedures used to perform customization
+steps and a GUI (also written as shell procedure) that can be used to
+perform the most frequent modifications (i.e. booting, installing and
+running the Live System in a language different from English; adding
+or deleting some software to create a customized CD).
+<p>
+The GUI is aimed at novice users who "Just need to get the language
+right and add some stuff" and who only need to do this infrequently.
+<p>
+The UCK command line interface has no such restrictions, though: The
+commands provided do all the "hard stuff" and a seasoned programmer
+can use them as building blocks to create a completely customized
+distribution from almost any media and version distributed by Canonical
+or others.
+<p>
+The basic work flow defined by the UCK toolset consists of 12 steps:
+<ol>
+<li>Get an Ubuntu CD or ISO image.
+<li>(UCK) Extract the contents of an Ubuntu CD or ISO image.
+<li>(UCK) Extract the compressed root file system image.
+<li>Modify the root file system image in a chrooted environment.
+<li>(UCK) Re-compress the root file system image.
+<li>Modify other parts of the ISO image.
+<li>(Optional) (UCK) Extract the contents of the initial RAM disk.
+<li>(Optional) Modify the initial RAM disk.
+<li>(Optional) (UCK) Re-compress the initial RAM disk.
+<li>(UCK) Re-assemble the ISO image.
+<li>Test/burn CD/...
+<li>(UCK) Cleanup.
+</ol>
+The steps marked with (UCK) above directly map onto UCK supplied commands,
+the steps marked (Optional) above become mandatory if a new version of the
+Linux kernel is to be used on the generated ISO or if the initial boot
+environment of the Live CD/DVD needs to be customized, all other steps
+are user definable actions, posssibly supported by some UCK command.
+<h2>Introducing uck-flow</h2>
+Uck-flow basically casts the UCK work flow outlined in the previous chapter
+into a graphical used interface:
+<ul>
+<li>All steps outlined in the previous chapter correspond to a row in the
+GUI.
+<li>Execution of a step can be selected by ticking a checkbox. This will
+also activate all subsequent steps that now are required (e.g. ticking
+"Unpack INITRD" will also activate "Customize INITRD" and "Pack INITRD").
+<li>Activation of a step is only possible if either all prerequisite steps
+have been activated for the next run or if uck-flow determines that
+they are possible as a result of previous runs. This is especially true
+when you open an existing project: If the structure is still available you
+can go right ahead with your customization where you left last time.
+<li>User definable steps can not only be activated/deactivated like the
+others, but also have an "Edit" button associated with them, that allows
+to easily edit the procedure implementing the step.
+<li>Once the prerequisites are fullfilled a "Shell" button allows to run
+a shell within the root file system of the system being customized.
+<li>Configuration information required fore all steps of a project is collected
+in a single file that can be modified via an "Edit" button, too.
+<li>Once you have setup your customization, hitting the "Ready..." button
+will execute the steps you selected, either to completion or until the
+first error is encountered.
+<li>You can watch the progress of your customization by selecting "View
+protocol" from the "View" menu and ticking the "Follow" checkbox on the
+bottom of the dialog.
+<li>You can stop customization by hitting the "Running" button. Depending
+on configuration the stop will take effect immediately (default) or after
+the currently running step has finished.
+</ul>
+In addition, uck-flow supplies a few predefined flows (default, interactive,
+localized, updated) that can be used as a basis for your own customizations,
+cf. the chapter for the impatient at the top of this document.
+<ul>
+<li>default:
+Mostly "no-op" procedures that just comments outlining what you need to fill in for this step. Use this to start a new uck-flow project from scratch.
+<li>interactive:
+A first shot at mixing some of uck-gui into uck-flow: Semi interactive customization.
+<li>localized:
+Essentially the localization part of uck-gui, except that you need to define
+your language in the project environment file instead of in a dialog.
+<li>updated:
+Create an updated image (i.e. incorporate all the package changes since the release of the image) of the ISO supplied.
+</ul>
+You should now go back to the beginning of this text and follow the steps for the impatient to get some "hands-on" experience with uck-flow
+<h2>Conclusion and Caveats</h2>
+<ul>
+<li>Because uck-flow is built on the mechanism defined and implemented by UCK,
+ it shares its strength and the weaknesses. Most notably:
+ <ul>
+ <li>The use of a chroot environment to customize the root file system
+     restricts UCK (and therefore uck-flow, too) to customizations of images
+     whose binaries can be run in the chroot environment.
+ <li>As the chroot enivronment shares resources, (e.g. IP addresses and port
+     numbers, shared memory, semaphores, ...) with the hosting system not
+     all programs and/or services will be installable / runnable.
+ </ul>
+<li>uck-flow is geared towards multiple (re-)customizations. Therefore the
+installation of unionfs-fuse and the use of the -m option uck-flow to make
+use of unionfs mounts instead of copying is heartily recommended (although
+not required). NOTE: For any given project either -m *must* be given every
+time or it *may not* be specified at all. Mixing calls to uck-flow with and
+without -m will result in chaos, as the structure required is close but not
+identical.
+<li>Constructive feedback regarding uck-flow is welcome.
+</ul>
+</body>
+</html>
