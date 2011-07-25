@@ -49,12 +49,13 @@ can use them as building blocks to create a completely customized
 distribution from almost any media and version distributed by Canonical
 or others.
 <p>
-The basic work flow defined by the UCK toolset consists of 12 steps:
+The basic work flow defined by the UCK toolset consists of 13 steps:
 <ol>
 <li>Get an Ubuntu CD or ISO image.
 <li>(UCK) Extract the contents of an Ubuntu CD or ISO image.
 <li>(UCK) Extract the compressed root file system image.
 <li>Modify the root file system image in a chrooted environment.
+<li>Modify the root file system image from outside the chroot environment.
 <li>(UCK) Re-compress the root file system image.
 <li>Modify other parts of the ISO image.
 <li>(Optional) (UCK) Extract the contents of the initial RAM disk.
@@ -95,7 +96,8 @@ will execute the steps you selected, either to completion or until the
 first error is encountered.
 <li>You can watch the progress of your customization by selecting "View
 protocol" from the "View" menu and ticking the "Follow" checkbox on the
-bottom of the dialog.
+bottom of the dialog. (This will work only if UCK_LOGFILE variable is set
+to a file name in the configuration file. Otherwise, the log is to stdout only.)
 <li>You can stop customization by hitting the "Running" button. Depending
 on configuration the stop will take effect immediately (default) or after
 the currently running step has finished.
