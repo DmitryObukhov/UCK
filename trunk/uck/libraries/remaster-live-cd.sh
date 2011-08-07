@@ -42,11 +42,17 @@ function mountpoint()
 }
 
 # Mount - make sure target exists
+#	In oneiric $REMASTER_DIR/var/run is a symlink to /run !
 function mount_directory()
 {
 	if [ ! -d "$2" ]; then
-		mkdir -p "$2" ||
-			failure "Cannot create $2"
+		if [ -h "$2" ]; then
+			local target="$REMASTER_DIR"/$(readlink "$2")
+			set -- "$1" "$target"
+		else
+			mkdir -p "$2" ||
+				failure "Cannot create $2"
+		fi
 	fi
 	echo "Mounting $1"
 	mount --bind "$1" "$2" ||
