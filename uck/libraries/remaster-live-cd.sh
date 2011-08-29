@@ -570,7 +570,7 @@ function pack_iso()
 	fi
 
 	if [ "$1" = "ppc" ]; then
-		mkisofs -o "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
+		genisoimage -o "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
 			-p "Ubuntu Customization Kit - http://uck.sf.net" \
 			-probe -map "$UCK_LIBRARIES_DIR/hfs.map" -chrp-boot -iso-level 2 \
 			-part -no-desktop -r --netatalk -hfs \
@@ -581,7 +581,7 @@ function pack_iso()
 			$MKISOFS_EXTRA_OPTIONS \
 			"$ISO_REMASTER_DIR"
 	elif [ "$1" = "x86_64" ]; then
-		mkisofs -o "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
+		genisoimage -o "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
 			-b "isolinux/isolinux.bin" -c "isolinux/boot.cat" \
 			-p "Ubuntu Customization Kit - http://uck.sf.net" \
 			-no-emul-boot -boot-load-size 4 -boot-info-table \
@@ -591,7 +591,7 @@ function pack_iso()
 			$MKISOFS_EXTRA_OPTIONS \
 			"$ISO_REMASTER_DIR"
 	elif [ "$1" = "ia64" ]; then
-		mkisofs -o "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
+		genisoimage -o "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
 		-b "isolinux/isolinux.bin" -c "isolinux/boot.cat" \
 		-no-emul-boot -V "$LIVECD_ISO_DESCRIPTION" -J -r \
 		-x "$ISO_REMASTER_DIR"/casper/manifest.diff \
@@ -599,7 +599,7 @@ function pack_iso()
 		$MKISOFS_EXTRA_OPTIONS \
 		"$ISO_REMASTER_DIR"
 	else
-		mkisofs -o "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
+		genisoimage -o "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME" \
 			-b "isolinux/isolinux.bin" -c "isolinux/boot.cat" \
 			-p "Ubuntu Customization Kit - http://uck.sf.net" \
 			-no-emul-boot -boot-load-size 4 -boot-info-table \
