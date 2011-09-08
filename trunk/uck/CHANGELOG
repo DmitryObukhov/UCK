@@ -8,6 +8,7 @@
 * Backend:
 	* /etc/fstab is not mandatory in the squashfs file system (#808506)
 	* /var/run is now a symbolic link to /run (#812418)
+	* Oneiric alternate support was added (#842487)
 
 -----------
 -- 2.4.4 --
