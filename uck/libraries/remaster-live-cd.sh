@@ -42,17 +42,11 @@ function mountpoint()
 }
 
 # Mount - make sure target exists
-#	In oneiric $REMASTER_DIR/var/run is a symlink to /run !
 function mount_directory()
 {
 	if [ ! -d "$2" ]; then
-		if [ -h "$2" ]; then
-			local target="$REMASTER_DIR"/$(readlink "$2")
-			set -- "$1" "$target"
-		else
-			mkdir -p "$2" ||
-				failure "Cannot create $2"
-		fi
+		mkdir -p "$2" ||
+			failure "Cannot create $2"
 	fi
 	echo "Mounting $1"
 	mount --bind "$1" "$2" ||
@@ -154,10 +148,21 @@ function mount_pseudofilesystems()
 	mount_directory /proc "$REMASTER_DIR/proc"
 	mount_directory /sys "$REMASTER_DIR/sys"
 	mount_directory /dev/pts "$REMASTER_DIR/dev/pts"
-	mount_directory /var/run "$REMASTER_DIR/var/run"
 	mount_directory /tmp "$REMASTER_DIR/tmp"
 	mount_directory "$REMASTER_HOME/remaster-root-home" "$REMASTER_DIR/root"
 	mount_directory "$REMASTER_HOME/remaster-apt-cache" "$REMASTER_DIR/var/cache/apt"
+	
+	if [ -d "/run" ]; then
+		HOST_VAR_RUN="/run"
+	else
+		HOST_VAR_RUN="/var/run"
+	fi
+	if [ -d "$REMASTER_DIR/run" ]; then
+		GUEST_VAR_RUN="$REMASTER_DIR/run"
+	else
+		GUEST_VAR_RUN="$REMASTER_DIR/var/run"
+	fi
+	mount_directory "$HOST_VAR_RUN" "$GUEST_VAR_RUN"
 
 	# Mount customization scripts, iff any
 	if [ -e "$REMASTER_HOME/customization-scripts" ]; then
@@ -392,6 +397,9 @@ function prepare_rootfs_for_chroot()
 		[ -f "$varrun"/$flag ] &&
 			mv "$varrun"/$flag "$varrun"/$flag.uck_blocked
 	done
+	
+	echo "Enabling access to X..."
+	xhost +
 }
 
 function clean_rootfs_after_chroot()
