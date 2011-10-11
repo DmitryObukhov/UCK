@@ -310,7 +310,9 @@ function manifest_diff()
 	#can't trap errors with diff because of its return codes,
 	#we pass the diff's output to cut cause we strip the version number
 	if [ -e "$ISO_REMASTER_DIR/casper/filesystem.manifest" ]; then
-		diff --unchanged-group-format='' "$ISO_REMASTER_DIR/casper/filesystem.manifest" "$ISO_REMASTER_DIR/casper/filesystem.manifest-desktop" | cut -d ' ' -f 1 > "$ISO_REMASTER_DIR/casper/manifest.diff"
+		if [ -e "$ISO_REMASTER_DIR/casper/filesystem.manifest-desktop" ]; then
+			diff --unchanged-group-format='' "$ISO_REMASTER_DIR/casper/filesystem.manifest" "$ISO_REMASTER_DIR/casper/filesystem.manifest-desktop" | cut -d ' ' -f 1 > "$ISO_REMASTER_DIR/casper/manifest.diff"
+		fi
 	fi
 }
 
