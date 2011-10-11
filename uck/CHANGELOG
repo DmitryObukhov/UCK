@@ -9,6 +9,9 @@
 	* /etc/fstab is not mandatory in the squashfs file system (#808506)
 	* /var/run is now a symbolic link to /run (#812418)
 	* Oneiric alternate support was added (#842487)
+	* mkisofs calls were replaced with genisoimage (#836350)
+* Package:
+	* suggestion for syslinux (isohybrid) installation was added
 
 -----------
 -- 2.4.4 --

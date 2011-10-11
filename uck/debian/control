@@ -24,7 +24,8 @@ Depends: bash (>= 3.0),
  sudo,
  lzma,
  ${misc:Depends}
-Suggests: brasero | k3b | burn
+Suggests: brasero | k3b | burn,
+ syslinux
 Description: Tool to customize official Ubuntu Live CDs
  UCK is a tool that helps you customizing official Ubuntu Live CDs (including
  Kubuntu/Xubuntu and Edubuntu) to your needs. You can add any package to the
