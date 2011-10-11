@@ -7,12 +7,14 @@
 	  Fixes #770810
 	* hybrid image generation support was added to uck-gui (#830146)
 	* oneiric language packs support was added
+	* software-center package manager support was added (#857205)
 * Backend:
 	* /etc/fstab is not mandatory in the squashfs file system (#808506)
 	* /var/run is now a symbolic link to /run (#812418)
 	* Oneiric alternate support was added (#842487)
 	* mkisofs calls were replaced with genisoimage (#836350)
 	* isohybrid support was added (uck-remaster-pack-iso -h) (#830146)
+	* manifest diff now checks if manifest files really exist
 * Package:
 	* suggestion for syslinux (isohybrid) installation was added
 
