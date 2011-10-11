@@ -205,9 +205,9 @@ if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 fi
 
 if [ "$HYBRID" = "yes" ] ; then
-	$HYBRID="-h"
+	HYBRID="-h"
 else
-	$HYBRID=""
+	HYBRID=""
 fi
 
 $SCRIPTS_DIR/uck-remaster-pack-iso "livecd.iso" "$REMASTER_HOME" $HYBRID
