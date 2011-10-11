@@ -5,6 +5,8 @@
 * Frontend:
 	* new languages (zh-hans/zh-hant) are now correctly handled.
 	  Fixes #770810
+	* hybrid image generation support was added to uck-gui (#830146)
+	* oneiric language packs support was added
 * Backend:
 	* /etc/fstab is not mandatory in the squashfs file system (#808506)
 	* /var/run is now a symbolic link to /run (#812418)

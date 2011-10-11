@@ -95,6 +95,7 @@ CUSTOMIZE_INITRD="no"
 CUSTOMIZE_ISO="no"
 REMOVE_WIN32_FILES="no"
 CLEAN_DESKTOP_MANIFEST="no"
+HYBRID="no"
 
 if [ "$COPY_CUSTOMIZE_DIR" = "yes" ] && [ -e "$REMASTER_HOME/customization-scripts" ]; then
 	echo "\"customization-scripts\" directory already exists inside $REMASTER_HOME, remove it and run uck-remaster again"
@@ -119,6 +120,10 @@ fi
 
 if [ -e "$CUSTOMIZE_DIR/clean_desktop_manifest" ]; then
 	CLEAN_DESKTOP_MANIFEST="yes"
+fi
+
+if [ -e "$CUSTOMIZE_DIR/hybrid" ]; then
+	HYBRID="yes"
 fi
 
 $SCRIPTS_DIR/uck-remaster-clean "$REMASTER_HOME"
@@ -199,7 +204,13 @@ if [ "$CUSTOMIZE_ROOTFS" = "yes" ] ; then
 	check_exit_code
 fi
 
-$SCRIPTS_DIR/uck-remaster-pack-iso "livecd.iso" "$REMASTER_HOME"
+if [ "$HYBRID" = "yes" ] ; then
+	$HYBRID="-h"
+else
+	$HYBRID=""
+fi
+
+$SCRIPTS_DIR/uck-remaster-pack-iso "livecd.iso" "$REMASTER_HOME" $HYBRID
 check_exit_code
 
 #############
