@@ -70,5 +70,10 @@ Limitations and Caveats:
 	     (or to install a bootloader someplace) the hosting system will
 	     be unusable afterwards.
 	     
+	  5) Before entering the chroot environment an "xhost +" command is
+	     called to enable remote access to X, this won't be reset at the
+	     end of the process (because we can't know what were the previous
+	     settings).
+	     
 	     *** Again: You have been warned! ***
 
