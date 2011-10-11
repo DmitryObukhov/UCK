@@ -614,6 +614,20 @@ function pack_iso()
 	if [ $RESULT -ne 0 ]; then
 		failure "Failed to pack ISO image, error=$RESULT"
 	fi
+	
+	if [ $HYBRID = 1 ]; then
+		if [ -e "/usr/bin/isohybrid" ] ; then
+			echo "Making your ISO hybrid..."
+			/usr/bin/isohybrid "$NEW_FILES_DIR/$NEW_ISO_FILE_NAME"
+			
+			RESULT=$?
+			if [ $RESULT -ne 0 ]; then
+				failure "Failed to pack ISO image, error=$RESULT"
+			fi
+		else
+			failure "You asked for a hybrid ISO but isohybrid command was not found"
+		fi
+	fi
 }
 
 function generate_md5_for_new_iso()
