@@ -10,6 +10,7 @@
 	* /var/run is now a symbolic link to /run (#812418)
 	* Oneiric alternate support was added (#842487)
 	* mkisofs calls were replaced with genisoimage (#836350)
+	* isohybrid support was added (uck-remaster-pack-iso -h) (#830146)
 * Package:
 	* suggestion for syslinux (isohybrid) installation was added
 
