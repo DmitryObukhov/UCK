@@ -15,6 +15,7 @@
 	* mkisofs calls were replaced with genisoimage (#836350)
 	* isohybrid support was added (uck-remaster-pack-iso -h) (#830146)
 	* manifest diff now checks if manifest files really exist
+	* xhost + was added right before entering chroot environment
 * Package:
 	* suggestion for syslinux (isohybrid) installation was added
 
