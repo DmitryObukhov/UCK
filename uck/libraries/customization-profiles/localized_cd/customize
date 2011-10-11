@@ -56,6 +56,10 @@ function run_package_manager()
 		PACKAGE_APP=`which synaptic`
 		PACKAGE_APP_OPTIONS=(-t "UCK Package manager")
 	fi
+	if [ "$PACKAGE_APP" = "" ]; then
+		PACKAGE_APP=`which software-center`
+		PACKAGE_APP_OPTIONS=""
+	fi
 	
 	if [ "$PACKAGE_APP" = "" ]; then
 		dialog_msgbox "Failure" "Unable to find any package manager application"
