@@ -58,12 +58,13 @@ function run_package_manager()
 	fi
 	if [ "$PACKAGE_APP" = "" ]; then
 		PACKAGE_APP=`which software-center`
-		PACKAGE_APP_OPTIONS=""
+		PACKAGE_APP_OPTIONS=()
 	fi
 	
 	if [ "$PACKAGE_APP" = "" ]; then
 		dialog_msgbox "Failure" "Unable to find any package manager application"
 	else
+		eval `dbus-launch --sh-syntax --exit-with-session 2>/dev/null`
 		$PACKAGE_APP "${PACKAGE_APP_OPTIONS[@]}"
 		RESULT=$?
 	
@@ -98,15 +99,6 @@ function run_console()
 		eval `dbus-launch --sh-syntax --exit-with-session 2>/dev/null`
 		$CONSOLE_APP "${CONSOLE_APP_OPTIONS[@]}"
 		RESULT=$?
-	
-		if [ $RESULT -ne 0 ]; then
-			echo "Running console application $CONSOLE_APP failed, trying the fallback xterm"
-			xterm -title "UCK customization console" -e /bin/bash
-			RESULT=$?
-			if [ $RESULT -ne 0 ]; then
-				dialog_msgbox "Failure" "Running console application $CONSOLE_APP failed, error=$RESULT"
-			fi
-		fi
 	fi
 }
 
