@@ -164,7 +164,7 @@ function mount_pseudofilesystems()
 	fi
 	mount_directory "$HOST_VAR_RUN" "$GUEST_VAR_RUN"
 
-	# Mount customization scripts, iff any
+	# Mount customization scripts, if any
 	if [ -e "$REMASTER_HOME/customization-scripts" ]; then
 		if [ ! -d "$REMASTER_DIR/tmp/customization-scripts" ]; then
 			mkdir "$REMASTER_DIR/tmp/customization-scripts" ||
