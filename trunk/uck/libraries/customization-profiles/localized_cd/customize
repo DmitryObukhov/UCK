@@ -89,6 +89,10 @@ function run_console()
 		CONSOLE_APP_OPTIONS=(-t "UCK customization console" -e /bin/bash)
 	fi
 	if [ "$CONSOLE_APP" = "" ]; then
+		CONSOLE_APP=`which lxterminal`
+		CONSOLE_APP_OPTIONS=(-t "UCK customization console" -e /bin/bash)
+	fi
+	if [ "$CONSOLE_APP" = "" ]; then
 		CONSOLE_APP=`which xterm`
 		CONSOLE_APP_OPTIONS=(-title "UCK customization console" -e /bin/bash)
 	fi
