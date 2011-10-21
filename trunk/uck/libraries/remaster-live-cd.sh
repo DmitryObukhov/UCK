@@ -397,9 +397,6 @@ function prepare_rootfs_for_chroot()
 		[ -f "$varrun"/$flag ] &&
 			mv "$varrun"/$flag "$varrun"/$flag.uck_blocked
 	done
-	
-	echo "Enabling access to X..."
-	xhost +
 }
 
 function clean_rootfs_after_chroot()
