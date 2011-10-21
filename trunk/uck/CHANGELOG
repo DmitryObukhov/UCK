@@ -7,7 +7,6 @@
 	  Fixes #770810
 	* hybrid image generation support was added to uck-gui (#830146)
 	* oneiric language packs support was added
-	* software-center package manager support was added (#857205)
 * Backend:
 	* /etc/fstab is not mandatory in the squashfs file system (#808506)
 	* /var/run is now a symbolic link to /run (#812418)
