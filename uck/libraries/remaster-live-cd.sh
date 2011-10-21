@@ -483,9 +483,19 @@ function pack_rootfs()
 
 		EXTRA_OPTS=""
 
-		if [ -e "$CUSTOMIZE_DIR/rootfs.sort" ] ; then
+		if [ -e "$CUSTOMIZE_DIR/rootfs.sort" ]; then
 			#FIXME: space not allowed in $CUSTOMIZE_DIR
 			EXTRA_OPTS="-sort $CUSTOMIZE_DIR/rootfs.sort"
+		fi
+		
+		#if mksquashfs version => 4.1 and guest's kernel => 2.6.30 we can enable xz compression
+		SQUASHFS_VERSION=`dpkg-query -p squashfs-tools | grep Version | cut -d ':' -f3 | cut -d '-' -f1`
+		GUEST_KERNEL_VERSION=`ls /boot/config-* | sed 's/.*config-//' | cut -d '-' -f1 | sort -r | head -n1`
+		if [ `echo -e "${SQUASHFS_VERSION}\n4.2" | sort | head -n1` = "4.2" ]; then
+			if [ `echo -e "${GUEST_KERNEL_VERSION}\n2.6.30" | sort | head -n1` = "2.6.30" ]; then
+				echo "Squashfs>=4.1, guest kernel>=2.6.30: Enabling XZ compression for squashfs..."
+				EXTRA_OPTS="${EXTRA_OPTS} -comp xz"
+			fi
 		fi
 
 		mksquashfs "$REMASTER_DIR" "$ISO_REMASTER_DIR/casper/filesystem.squashfs" $EXTRA_OPTS ||
