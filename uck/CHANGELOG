@@ -18,6 +18,8 @@
 	* mksquashfs now uses XZ (lzma) compression if available
 	  (squashfs-tool => 4.1 and guest kernel => 2.6.30)
 	  (#654234)
+	* a double check was added when downloading gfxboot-theme-ubuntu
+	  (question #157847)
 * Package:
 	* suggestion for syslinux (isohybrid) installation was added
 
