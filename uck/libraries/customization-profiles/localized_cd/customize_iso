@@ -79,12 +79,9 @@ else
 		failure "Cannot change directory to $BUILD_DIR"
 	DISTRO_CODENAME=`cd "$ISO_REMASTER_DIR"/dists && find . -maxdepth 1 -type d | grep '/' | cut -d '/' -f2` ||
 		failure "Unable to identify Ubuntu distro codename"
-	GFXBOOT_THEME_UBUNTU_SOURCE_PACKAGE=`wget -q -O - http://packages.ubuntu.com/$DISTRO_CODENAME/gfxboot-theme-ubuntu | grep ".tar.gz" | cut -d '"' -f2`
-	if [ -z "$GFXBOOT_THEME_UBUNTU_SOURCE_PACKAGE" ]; then
-		APT_SOURCES_TMP_DIR=`mktemp -d`
-		wget -c http://archive.ubuntu.com/ubuntu/ubuntu/ubuntu/dists/$DISTRO_CODENAME/main/source/Sources.gz -O "$APT_SOURCES_TMP_DIR"/Sources.gz
-		GFXBOOT_THEME_UBUNTU_SOURCE_PACKAGE=http://archive.ubuntu.com/ubuntu/ubuntu/ubuntu/pool/main/g/gfxboot-theme-ubuntu/$(zgrep gz "$APT_SOURCES_TMP_DIR"/Sources.gz | grep gfxboot-theme-ubuntu | sed -n 1p | awk '{ print $3 }')
-	fi
+	APT_SOURCES_TMP_DIR=`mktemp -d`
+	wget -c http://archive.ubuntu.com/ubuntu/ubuntu/ubuntu/dists/$DISTRO_CODENAME/main/source/Sources.gz -O "$APT_SOURCES_TMP_DIR"/Sources.gz
+	GFXBOOT_THEME_UBUNTU_SOURCE_PACKAGE=http://archive.ubuntu.com/ubuntu/ubuntu/ubuntu/pool/main/g/gfxboot-theme-ubuntu/$(zgrep gz "$APT_SOURCES_TMP_DIR"/Sources.gz | grep gfxboot-theme-ubuntu | sed -n 1p | awk '{ print $3 }')
 	wget $GFXBOOT_THEME_UBUNTU_SOURCE_PACKAGE ||
 		failure "Unable to download gfxboot-theme-ubuntu source package from $GFXBOOT_THEME_UBUNTU_SOURCE_PACKAGE"
 	tar xfz *.tar.gz ||
