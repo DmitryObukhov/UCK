@@ -1,3 +1,31 @@
+uck (2.4.5-0ubuntu1) oneiric; urgency=low
+  * New upstream release:
+    - new languages (zh-hans/zh-hant) are now correctly handled.
+	  Fixes LP: #770810
+    - hybrid image generation support was added to uck-gui
+      Fixes LP: #830146
+    - oneiric language packs support was added
+    - /etc/fstab is not mandatory in the squashfs file system
+      Fixes LP: #808506
+    - /var/run is now a symbolic link to /run
+      Fixes LP: #812418
+    - Oneiric alternate support was added
+      Fixes LP: #842487
+    - mkisofs calls were replaced with genisoimage
+      Fixes LP: #836350
+    - isohybrid support was added (uck-remaster-pack-iso -h)
+      Fixes LP: #830146
+    - manifest diff now checks if manifest files really exist
+    - lxterminal support was added
+      Fixes LP: #865295
+    - mksquashfs now uses XZ (lzma) compression if available
+	  (squashfs-tool => 4.1 and guest kernel => 2.6.30)
+	  Fixes LP: #654234
+    - gfxboot-theme-ubuntu download method was rewritten
+    - firefox locale auto-remove workaround was added
+      Fixes LP: #886838
+    - suggestion for syslinux (isohybrid) installation was added
+
 uck (2.4.4-0ubuntu1) natty; urgency=low
   * New upstream release:
     - Extract proxy environment variables in uck-gui and pass them on to
