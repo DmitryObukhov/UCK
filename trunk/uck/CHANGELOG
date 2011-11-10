@@ -20,6 +20,7 @@
 	  (#654234)
 	* gfxboot-theme-ubuntu download method was rewritten
 	  (question #157847)
+	* firefox locale auto-remove workaround was added (#886838)
 * Package:
 	* suggestion for syslinux (isohybrid) installation was added
 

@@ -159,7 +159,7 @@ if [ -n "$LIVECD_LANGS" ]; then
 	#	installing a language pack might pull in packages that were not
 	#	previously present
 	echo "Removing unnecessary language packages..."
-	REMOVED_PACKAGES=`dpkg-query --show | cut -f1 | grep -E '^(language-pack|language-support)' | grep -Ev "[-]($LANGPACKS_CONCATENATED)\>"`
+	REMOVED_PACKAGES=`dpkg-query --show | cut -f1 | grep -E '^(language-pack|language-support|firefox-locale)' | grep -Ev "[-]($LANGPACKS_CONCATENATED)\>"`
 	remove_packages $REMOVED_PACKAGES ||
 		failure "Removing packages failed, error=$?"
 fi
