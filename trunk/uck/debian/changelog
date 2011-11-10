@@ -26,6 +26,8 @@ uck (2.4.5-0ubuntu1) oneiric; urgency=low
       Fixes LP: #886838
     - suggestion for syslinux (isohybrid) installation was added
 
+ -- Fabrizio Balliano <fabrizio@fabrizioballiano.it>  Thu, 10 Nov 2011 01:47:14 +0200
+
 uck (2.4.4-0ubuntu1) natty; urgency=low
   * New upstream release:
     - Extract proxy environment variables in uck-gui and pass them on to
