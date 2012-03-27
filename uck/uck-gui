@@ -214,7 +214,10 @@ done
 if [ -z "$CD_LANGS" ] ; then
 	DESKTOP_TYPES=""
 else
-	DESKTOP_TYPES=`dialog_multi_choice $'Please choose desktop environments which will be present on customized CD\n(you can choose more than one)' kde gnome others`
+	DESKTOP_TYPES=`dialog_multi_choice $'Please choose desktop environments which will be present on customized CD\n(you can choose more than one)' unity gnome kde others`
+	if [ "$DESKTOP_TYPES" = "unity" ]; then
+		DESKTOP_TYPES="gnome"
+	fi
 	if [ "$DESKTOP_TYPES" = "others" ]; then
 		DESKTOP_TYPES=""
 	fi
