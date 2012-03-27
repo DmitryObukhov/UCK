@@ -354,9 +354,11 @@ function prepare_rootfs_for_chroot()
 {
 	mount_pseudofilesystems
 
-	echo "Copying resolv.conf..."
-	cp -f /etc/resolv.conf "$REMASTER_DIR/etc/resolv.conf" ||
-		failure "Failed to copy resolv.conf, error=$?"
+	if [ ! -e "$REMASTER_DIR/etc/resolv.conf" ] ; then
+		echo "Copying resolv.conf..."
+		cp -f /etc/resolv.conf "$REMASTER_DIR/etc/resolv.conf" ||
+			failure "Failed to copy resolv.conf, error=$?"
+	fi
 		
 	echo "Copying fstab/mtab..."
 	if [ -f "$REMASTER_DIR/etc/fstab" ] ; then
@@ -427,8 +429,10 @@ function clean_rootfs_after_chroot()
 	echo "Removing generated machine uuid..."
 	chroot "$REMASTER_DIR" rm -f /var/lib/dbus/machine-id
 
-	echo "Removing generated resolv.conf..."
-	chroot "$REMASTER_DIR" rm -f /etc/resolv.conf
+	if [ ! -h "$REMASTER_DIR/etc/resolv.conf" ] ; then
+		echo "Removing generated resolv.conf..."
+		chroot "$REMASTER_DIR" rm -f /etc/resolv.conf
+	fi
 	
 	echo "Removing generated fstab/mtab..."
 	chroot "$REMASTER_DIR" rm -f /etc/mtab
