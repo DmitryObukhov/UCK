@@ -10,6 +10,8 @@
 	* Languages list was updated to precise
 	* A bug with /etc/resolv.con on precise was fixed
 	  Fixes #946480
+	* A bug with xubuntu-terminal was fixed
+	  Fixes #892590
 
 -----------
 -- 2.4.5 --
