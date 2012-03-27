@@ -1,4 +1,17 @@
 -----------
+-- 2.4.6 --
+-----------
+
+* Frontend:
+	* Unity was added to the desktop manager choice
+	  Fixes #946404
+
+* Backend:
+	* Languages list was updated to precise
+	* A bug with /etc/resolv.con on precise was fixed
+	  Fixes #946480
+
+-----------
 -- 2.4.5 --
 -----------
 
