@@ -82,7 +82,7 @@ function run_console()
 	fi
 	if [ "$CONSOLE_APP" = "" ]; then
 		CONSOLE_APP=`which xfce4-terminal`
-		CONSOLE_APP_OPTIONS=(-t "UCK customization console" -e /bin/bash)
+		CONSOLE_APP_OPTIONS=(-T "UCK customization console" -e /bin/bash)
 	fi
 	if [ "$CONSOLE_APP" = "" ]; then
 		CONSOLE_APP=`which lxterminal`
