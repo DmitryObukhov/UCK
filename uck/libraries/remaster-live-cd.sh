@@ -392,6 +392,11 @@ function prepare_rootfs_for_chroot()
 	chroot "$REMASTER_DIR" mv /usr/sbin/update-grub /usr/sbin/update-grub.uck_blocked
 	chroot "$REMASTER_DIR" ln -s /bin/true /usr/sbin/update-grub
 
+	echo "Deactivating grub-probe..."
+	chroot "$REMASTER_DIR" mv /usr/sbin/grub-probe /usr/sbin/grub-probe.uck_blocked
+	chroot "$REMASTER_DIR" ln -s /bin/true /usr/sbin/grub-probe
+
+
 	echo "Remembering kernel update state..."
 	update_flags="reboot-required reboot-required.pkgs do-not-hibernate"
 	varrun="$REMASTER_DIR"/var/run
@@ -418,7 +423,11 @@ function clean_rootfs_after_chroot()
 	
 	echo "Reactivating update-grub..."
 	chroot "$REMASTER_DIR" rm /usr/sbin/update-grub
-	chroot "$REMASTER_DIR" mv /usr/sbin/update-grub.uck_blocked /usr/sbin/update-grub 
+	chroot "$REMASTER_DIR" mv /usr/sbin/update-grub.uck_blocked /usr/sbin/update-grub
+
+	echo "Reactivating update-grub..."
+	chroot "$REMASTER_DIR" rm /usr/sbin/grub-probe
+	chroot "$REMASTER_DIR" mv /usr/sbin/grub-probe.uck_blocked /usr/sbin/grub-probe
 	
 	UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
 	if [ `echo $UCK_USER_HOME_DIR | cut -d '/' -f2` == 'home' ] ; then
