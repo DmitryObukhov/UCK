@@ -12,6 +12,8 @@
 	  Fixes #946480
 	* A bug with xubuntu-terminal was fixed
 	  Fixes #892590
+	* grub-probe now is deactivated during chroot processes
+	  Fixes #956495
 
 -----------
 -- 2.4.5 --
