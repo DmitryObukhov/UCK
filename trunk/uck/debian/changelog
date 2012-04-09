@@ -1,3 +1,8 @@
+uck (2.4.6-0ubuntu1) precise; urgency=low
+  * New upstream release:
+
+ -- Fabrizio Balliano <fabrizio@fabrizioballiano.it>  Mon, 09 Apr 2012 01:47:14 +0200
+
 uck (2.4.5-0ubuntu1) oneiric; urgency=low
   * New upstream release:
     - new languages (zh-hans/zh-hant) are now correctly handled.
