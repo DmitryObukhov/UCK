@@ -14,6 +14,9 @@
 	  Fixes #892590
 	* grub-probe now is deactivated during chroot processes
 	  Fixes #956495
+* Package:
+	* Added 64x64px icon
+	  Fixes #970827
 
 -----------
 -- 2.4.5 --
