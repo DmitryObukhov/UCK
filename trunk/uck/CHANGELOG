@@ -1,6 +1,13 @@
 -----------
 -- 2.4.7 --
 -----------
+
+* Frontend:
+	* "Run package manager" option (while customizing) was removed
+	  due to the latest ubuntu changes in package managers (they
+	  cannot be used in a chrooted environment, use apt-get instead)
+	  Fixes #892038
+
 * Backend:
 	* chroot crash reports are cleaned while exiting chroot environment
 	  Fixes #1011260
@@ -10,6 +17,8 @@
 	  Fixes #956495
 	* bug #997033 was fixed
 	* bug #1008787 was fixed
+	* grub-probe postinst/postrm are now deactivated while customizing
+	  Fixes #1008620
 
 -----------
 -- 2.4.6 --
