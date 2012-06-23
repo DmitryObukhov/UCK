@@ -4,6 +4,8 @@
 * Backend:
 	* chroot crash reports are cleaned while exiting chroot environment
 	  Fixes #1011260
+	* non blocking error is thrown upon resolv.conf copying failure
+	  Fixes #1011191
 
 -----------
 -- 2.4.6 --
