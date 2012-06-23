@@ -74,6 +74,14 @@ Limitations and Caveats:
 	     called to enable remote access to X, this won't be reset at the
 	     end of the process (because we can't know what were the previous
 	     settings).
+
+	  5) If you update grub in your chroot environment you can have troubles,
+	     every software that dialogs with hardware (while installing) could
+	     can couse troblues and UCK cannot detect or work around this thing.
+	     grub-probe binary is deactivated (renamed to grub-probe.uck-blocked
+	     and symlinked to /bin/true) so if you update grub you'll have to take
+	     care of this, renaming grub-probe to grub-probe.uck-blocked before
+	     leaving the chrooted environment.
 	     
 	     *** Again: You have been warned! ***
 
