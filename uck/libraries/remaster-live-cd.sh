@@ -357,7 +357,7 @@ function prepare_rootfs_for_chroot()
 	if [ ! -e "$REMASTER_DIR/etc/resolv.conf" ] ; then
 		echo "Copying resolv.conf..."
 		cp -f /etc/resolv.conf "$REMASTER_DIR/etc/resolv.conf" ||
-			failure "Failed to copy resolv.conf, error=$?"
+			echo "Failed to copy resolv.conf, error=$?"
 	fi
 		
 	echo "Copying fstab/mtab..."
