@@ -1,6 +1,13 @@
 -----------
 -- 2.4.6 --
 -----------
+* Backend:
+	* chroot crash reports are cleaned while exiting chroot environment
+	  Fixes #1011260
+
+-----------
+-- 2.4.6 --
+-----------
 
 * Frontend:
 	* Unity was added to the desktop manager choice
