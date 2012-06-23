@@ -9,6 +9,7 @@
 	* README was updated with info about grub update and grub-probe
 	  Fixes #956495
 	* bug #997033 was fixed
+	* bug #1008787 was fixed
 
 -----------
 -- 2.4.6 --

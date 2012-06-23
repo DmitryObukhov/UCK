@@ -67,7 +67,7 @@ fi
 ##########################
 
 if [ ! -d "$ISO_REMASTER_DIR"/dists/stable/main ]; then
-	ARCH=`ls "$ISO_REMASTER_DIR"/dists/stable/main | grep binary | cut -d \- -f2`
+	ARCH=$(ls $ISO_REMASTER_DIR/dists/stable/main | grep binary | cut -d \- -f2 | head -1)
 else
 	ARCH=$(ls "$ISO_REMASTER_DIR"/install/netboot/ubuntu-installer/)
 fi

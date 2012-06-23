@@ -59,7 +59,7 @@ fi
 # detecting architecture #
 ##########################
 
-ARCH=`ls "$ISO_REMASTER_DIR"/dists/stable/main | grep binary | cut -d \- -f2`
+ARCH=`ls "$ISO_REMASTER_DIR"/dists/stable/main | grep binary | cut -d \- -f2 | head -1`
 
 #######################################
 # creating basic extra pool structure #
