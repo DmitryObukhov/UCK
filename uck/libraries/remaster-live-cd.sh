@@ -396,6 +396,9 @@ function prepare_rootfs_for_chroot()
 	chroot "$REMASTER_DIR" mv /usr/sbin/grub-probe /usr/sbin/grub-probe.uck_blocked
 	chroot "$REMASTER_DIR" ln -s /bin/true /usr/sbin/grub-probe
 
+	echo "Hacking grub-probe postinst/postrm..."
+	chroot "$REMASTER_DIR" sed -i -e "s/exec update-grub/#exec update-grub/" /etc/kernel/postinst.d/zz-update-grub
+	chroot "$REMASTER_DIR" sed -i -e "s/exec update-grub/#exec update-grub/" /etc/kernel/postrm.d/zz-update-grub
 
 	echo "Remembering kernel update state..."
 	update_flags="reboot-required reboot-required.pkgs do-not-hibernate"
@@ -425,9 +428,13 @@ function clean_rootfs_after_chroot()
 	chroot "$REMASTER_DIR" rm /usr/sbin/update-grub
 	chroot "$REMASTER_DIR" mv /usr/sbin/update-grub.uck_blocked /usr/sbin/update-grub
 
-	echo "Reactivating update-grub..."
+	echo "Reactivating grub-probe..."
 	chroot "$REMASTER_DIR" rm /usr/sbin/grub-probe
 	chroot "$REMASTER_DIR" mv /usr/sbin/grub-probe.uck_blocked /usr/sbin/grub-probe
+
+	echo "Reactivating grub-probe postinst/postrm..."
+	chroot "$REMASTER_DIR" sed -i -e "s/#exec update-grub/exec update-grub/" /etc/kernel/postinst.d/zz-update-grub
+	chroot "$REMASTER_DIR" sed -i -e "s/#exec update-grub/exec update-grub/" /etc/kernel/postrm.d/zz-update-grub
 	
 	UCK_USER_HOME_DIR=`xauth info|grep 'Authority file'| sed "s/[ \t]//g" | sed "s/\/\.Xauthority//" | cut -d ':' -f2`
 	if [ `echo $UCK_USER_HOME_DIR | cut -d '/' -f2` == 'home' ] ; then
