@@ -6,6 +6,9 @@
 	  Fixes #1011260
 	* non blocking error is thrown upon resolv.conf copying failure
 	  Fixes #1011191
+	* README was updated with info about grub update and grub-probe
+	  Fixes #956495
+	* bug #997033 was fixed
 
 -----------
 -- 2.4.6 --

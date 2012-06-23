@@ -172,7 +172,7 @@ if [ "$RUN_MANUAL_CUSTOMIZATIONS" = "yes" ] ; then
 		CHOICE=`dialog_menu "Please choose customization action" "$CHOICE_PACKAGE_MANAGER" "$CHOICE_CONSOLE" "$CHOICE_EXIT"`
 		RESULT=$?
 
-		if [ $RESULT -ne 0 ] ; then
+		if [ -z $CHOICE ] ; then
 			failure "Script cancelled by user"
 		fi
 		#workaround for KDE bug (https://bugs.kde.org/show_bug.cgi?id=139025)
