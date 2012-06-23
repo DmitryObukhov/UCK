@@ -450,6 +450,9 @@ function clean_rootfs_after_chroot()
 		mv "$REMASTER_DIR/etc/fstab.uck" "$REMASTER_DIR/etc/fstab"
 	fi
 
+	echo "Removing crash reports..."
+	chroot "$REMASTER_DIR" rm -f /var/crash/*
+
 	unmount_pseudofilesystems
 
 	# Need a shell to perform wildcard expansion in chroot environment!
