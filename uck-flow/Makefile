@@ -1,8 +1,8 @@
 #
 # $Id$
 #
-VERSION=0.4.12
-SUITE=natty
+VERSION=0.4.13
+SUITE=precise
 KEY=$(shell if test `id -nu` = wjg; then echo BA4B79B2; else echo 063FFBAE; fi)
 
 all: translations
