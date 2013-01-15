@@ -23,6 +23,7 @@ Depends: bash (>= 3.0),
  wget,
  sudo,
  lzma,
+ libfribidi-bin,
  ${misc:Depends}
 Suggests: brasero | k3b | burn,
  syslinux
