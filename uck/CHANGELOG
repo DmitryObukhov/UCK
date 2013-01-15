@@ -19,6 +19,9 @@
 	* bug #1008787 was fixed
 	* grub-probe postinst/postrm are now deactivated while customizing
 	  Fixes #1008620
+* Package:
+	* libfribidi-bin was added as dep
+	  Fixes #1075054
 
 -----------
 -- 2.4.6 --
