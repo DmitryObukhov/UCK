@@ -1,3 +1,8 @@
+uck (2.4.7-0ubuntu1) quantal; urgency=low
+  * New upstream release
+
+ -- Fabrizio Balliano <fabrizio@fabrizioballiano.it>  Wed, 16 Jan 2013 01:47:14 +0200
+
 uck (2.4.6-0ubuntu1) precise; urgency=low
   * New upstream release:
 
