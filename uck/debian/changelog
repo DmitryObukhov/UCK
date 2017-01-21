@@ -1,3 +1,10 @@
+uck (2.4.8-0ubuntu1) quantal; urgency=low
+  * Bug fixes
+    - Temporary fix for tar.xz format
+    - Temporary fix, hybrid disabled
+
+ -- Dmitry Obukhov <dmitry.obukhov@gmail.com> Fri, 20 Jan 2017 21:31:00 -0800
+
 uck (2.4.7-0ubuntu1) quantal; urgency=low
   * New upstream release
 

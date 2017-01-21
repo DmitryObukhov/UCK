@@ -4,7 +4,7 @@ cd /tmp
 rm -rf uckbuild
 mkdir uckbuild
 cd uckbuild
-svn co https://uck.svn.sourceforge.net/svnroot/uck/trunk/uck
+#svn co https://uck.svn.sourceforge.net/svnroot/uck/trunk/uck
 cd uck
 VERSION=`cat VERSION`
 

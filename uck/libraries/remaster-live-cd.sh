@@ -654,7 +654,10 @@ function pack_iso()
 	if [ $RESULT -ne 0 ]; then
 		failure "Failed to pack ISO image, error=$RESULT"
 	fi
-	
+
+   # https://answers.launchpad.net/uck/+question/180621
+	HYBRID = 0 # Hybrid is disabled in Lucid & up
+   # todo: remove the code or add check to avoid error message
 	if [ $HYBRID = 1 ]; then
 		if [ -e "/usr/bin/isohybrid" ] ; then
 			echo "Making your ISO hybrid..."
