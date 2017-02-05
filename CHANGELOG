@@ -1,7 +1,17 @@
 -----------
+-- 2.4.9 --
+-----------
+* Bugfixes:
+	* Directory structure simplified UCK/uck --> UCK, .gitignore to match
+	* Added target install to make file to build and install in one shot
+	* Fix for warnings in change log
+
+-----------
 -- 2.4.8 --
 -----------
-* Bugfixes
+* Bugfixes:
+	* fixed minor bugs in previous release: hardcoded latest theme
+	  in gz format
 
 
 -----------
