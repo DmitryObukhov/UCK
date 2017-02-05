@@ -3,6 +3,13 @@
 #
 all:
 
+install:
+	rm -rf dist
+	./localbuild.sh
+	dpkg --install ./dist/uck*.deb
+	apt-get install -f -y
+
+
 sdist: all
 	rm -rf dist
 	./localbuild.sh -S
